@@ -19,11 +19,13 @@ endif()
 set ( SOURCES
 		include/ltps.h
 		include/global.h
+		include/utilities.h
 		include/drivers/cpin.h
 		include/drivers/ci2c.h
 		include/drivers/ci2c_smbus.h
 		include/tibbits/i2c/accelerometer.h
 		src/main.cpp
+		src/utilities.cpp
 		src/drivers/cpin.cpp
 		src/drivers/ci2c.cpp
 		src/drivers/ci2c_smbus.cpp

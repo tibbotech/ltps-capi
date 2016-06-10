@@ -6,10 +6,18 @@
 #include "tibbits/i2c/accelerometer.h"
 
 #include "global.h"
+#include "utilities.h"
 
 Accelerometer::Accelerometer(const char* socket)
 {
-    m_res = m_i2c.set_bus(socket);
+    std::string sock(socket);
+
+    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
+
+    if (hwSocket.empty()) //< Software I2C
+        m_res = m_i2c.set_bus(Lutilites::getI2CName(sock).c_str());
+    else //< Hardware I2C
+        m_res = m_i2c.set_bus(atoi(hwSocket.c_str()));
 
     if (m_res != 1)
         printf("Accelerometer set I2C bus errno: %i\n", m_res);

@@ -31,7 +31,7 @@ public:
 
     /// Constructor
     /*!
-        \param socket I2C socket (eg: -s01, -s11)
+        \param socket I2C socket (eg: s1, s11)
     */
     Accelerometer(const char* socket);
 

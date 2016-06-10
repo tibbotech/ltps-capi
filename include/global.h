@@ -6,6 +6,8 @@
 #ifndef __GLOBAL_H__
 #define __GLOBAL_H__
 
+#define PINS_FILE                   "/opt/tps-shared/hwini/pins.ini"
+
 #define PIN_DIR_I                   0
 #define PIN_DIR_O                   1
 

@@ -1,7 +1,6 @@
 /*!
     \copyright Tibbo Technology Inc
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
-    \author Dmitry Soldatov (dvorkin@tibbo.com)
 */
 
 #ifndef __LTPS_H__

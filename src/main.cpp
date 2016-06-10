@@ -1,7 +1,6 @@
 /*!
     \copyright Tibbo Technology Inc
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
-    \author Dmitry Soldatov (dvorkin@tibbo.com)
 */
 
 #include "ltps.h"
@@ -15,7 +14,7 @@ int main(int argc, char *argv[])
     if (argc < 2)
     {
         printf("Usage with I2C Tibbit's: %s tibbit_number socket\n", argv[0]);
-        printf("For example: %s 36 -s01\n", argv[0]);
+        printf("For example: %s 36 s1\n", argv[0]);
     }
 
     if (argc == 3) //< I2C Tibbit's
