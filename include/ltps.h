@@ -11,5 +11,6 @@
 #include "drivers/ci2c_smbus.h"
 
 #include "tibbits/i2c/accelerometer.h"
+#include "tibbits/i2c/adc.h"
 
 #endif

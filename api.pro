@@ -15,18 +15,20 @@ INCLUDEPATH		+= include
 LIBS			+=
 
 HEADERS			+= \
-                        include/ltps.h \
-                        include/global.h \
-                        include/utilities.h \
-                        include/drivers/cpin.h \
-                        include/drivers/ci2c.h \
-                        include/drivers/ci2c_smbus.h \
-                        include/tibbits/i2c/accelerometer.h
+			include/ltps.h \
+			include/global.h \
+			include/utilities.h \
+			include/drivers/cpin.h \
+			include/drivers/ci2c.h \
+			include/drivers/ci2c_smbus.h \
+			include/tibbits/i2c/accelerometer.h \
+			include/tibbits/i2c/adc.h
 
 SOURCES			+= \
-                        src/main.cpp \
-                        src/utilities.cpp \
-                        src/drivers/cpin.cpp \
-                        src/drivers/ci2c.cpp \
-                        src/drivers/ci2c_smbus.cpp \
-                        src/tibbits/i2c/accelerometer.cpp
+			src/main.cpp \
+			src/utilities.cpp \
+			src/drivers/cpin.cpp \
+			src/drivers/ci2c.cpp \
+			src/drivers/ci2c_smbus.cpp \
+			src/tibbits/i2c/accelerometer.cpp \
+			src/tibbits/i2c/adc.cpp

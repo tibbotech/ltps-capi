@@ -19,7 +19,17 @@ int main(int argc, char *argv[])
 
     if (argc == 3) //< I2C Tibbit's
     {
-        if (atoi(argv[1]) == 36) //< #36: 3-axis accelerometer
+        if (atoi(argv[1]) == 13) //< ADC (Tibbit #13)
+        {
+            Adc adc(argv[2]);
+
+            printf("Channel 1 = %i mV\n", adc.getVoltage(1));
+            printf("Channel 2 = %i mV\n", adc.getVoltage(2));
+            printf("Channel 3 = %i mV\n", adc.getVoltage(3));
+            printf("Channel 4 = %i mV\n", adc.getVoltage(4));
+        }
+
+        if (atoi(argv[1]) == 36) //< 3-axis accelerometer (Tibbit #36)
         {
             Accelerometer accel(argv[2]);
 

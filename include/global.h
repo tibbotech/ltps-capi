@@ -17,6 +17,23 @@
 #define SCS_I2C_PFX                 "/sys/class/i2c-dev/"
 
 /*!
+    \namespace LTC2309
+    \brief ADC I2C (Tibbit #13) addresses
+*/
+
+namespace LTC2309
+{
+    static const unsigned int I2C_ADDRESS = 0x08; // AD0 and AD1 setted to Low
+
+    static const unsigned int UNIPOLAR_MODE = 0x08;
+
+    static const unsigned int CH0 = 0x80;
+    static const unsigned int CH2 = 0x90;
+    static const unsigned int CH4 = 0xA0;
+    static const unsigned int CH6 = 0xB0;
+}
+
+/*!
     \namespace ADXL312
     \brief 3-axis accelerometer (Tibbit #36) I2C addresses
 */
