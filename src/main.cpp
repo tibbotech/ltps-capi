@@ -29,6 +29,23 @@ int main(int argc, char *argv[])
             printf("Channel 4 = %i mV\n", adc.getVoltage(4));
         }
 
+        if (atoi(argv[1]) == 14) //< DAC (Tibbit #14)
+        {
+            Dac dac(argv[2]);
+
+            printf("Trying set channel 1 to 2500 mV\n");
+            dac.setVoltage(1, 2500);
+
+            printf("CTrying set channel 2 to 5000 mV\n");
+            dac.setVoltage(2, 5000);
+
+            printf("Trying set channel 3 to -7500 mV\n");
+            dac.setVoltage(3, -7500);
+
+            printf("Trying set channel 4 to 10000 mV\n");
+            dac.setVoltage(4, 10000);
+        }
+
         if (atoi(argv[1]) == 36) //< 3-axis accelerometer (Tibbit #36)
         {
             Accelerometer accel(argv[2]);

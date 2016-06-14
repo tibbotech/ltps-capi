@@ -22,7 +22,8 @@ HEADERS			+= \
 			include/drivers/ci2c.h \
 			include/drivers/ci2c_smbus.h \
 			include/tibbits/i2c/accelerometer.h \
-			include/tibbits/i2c/adc.h
+			include/tibbits/i2c/adc.h \
+			include/tibbits/i2c/dac.h
 
 SOURCES			+= \
 			src/main.cpp \
@@ -31,4 +32,5 @@ SOURCES			+= \
 			src/drivers/ci2c.cpp \
 			src/drivers/ci2c_smbus.cpp \
 			src/tibbits/i2c/accelerometer.cpp \
-			src/tibbits/i2c/adc.cpp
+			src/tibbits/i2c/adc.cpp \
+			src/tibbits/i2c/dac.cpp

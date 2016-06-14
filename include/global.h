@@ -34,6 +34,19 @@ namespace LTC2309
 }
 
 /*!
+    \namespace MCP4728
+    \brief DAC I2C (Tibbit #14) addresses
+*/
+
+namespace MCP4728
+{
+    static const unsigned int I2C_ADDRESS = 0x60;
+
+    static const unsigned int MULTI_WRITE = 0x40;
+    static const unsigned int VREF_GX = 0x90;
+}
+
+/*!
     \namespace ADXL312
     \brief 3-axis accelerometer (Tibbit #36) I2C addresses
 */

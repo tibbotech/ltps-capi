@@ -25,6 +25,7 @@ set ( SOURCES
 		include/drivers/ci2c_smbus.h
 		include/tibbits/i2c/accelerometer.h
 		include/tibbits/i2c/adc.h
+		include/tibbits/i2c/dac.h
 		src/main.cpp
 		src/utilities.cpp
 		src/drivers/cpin.cpp
@@ -32,6 +33,7 @@ set ( SOURCES
 		src/drivers/ci2c_smbus.cpp
 		src/tibbits/i2c/accelerometer.cpp
 		src/tibbits/i2c/adc.cpp
+		src/tibbits/i2c/dac.cpp
     )
 
 include_directories( include )

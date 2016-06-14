@@ -40,7 +40,7 @@ int Adc::getVoltage(unsigned int channel)
 {
     int result = 0;
 
-    if (m_res == 1)  //< I2C setbus successfully
+    if (m_res == 1) //< I2C setbus successfully
     {
         unsigned int addr = LTC2309::CH0 | LTC2309::UNIPOLAR_MODE; //< Channel 1
 

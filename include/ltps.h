@@ -12,5 +12,6 @@
 
 #include "tibbits/i2c/accelerometer.h"
 #include "tibbits/i2c/adc.h"
+#include "tibbits/i2c/dac.h"
 
 #endif
