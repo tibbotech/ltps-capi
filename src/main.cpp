@@ -46,6 +46,24 @@ int main(int argc, char *argv[])
             dac.setVoltage(argv[2], 4, 10000);
         }
 
+        if (atoi(argv[1]) == 28) //< Ambient light sensor (Tibbit #28)
+        {
+            Light lt;
+
+            printf("Illumination = %i lx\n", lt.getIllumination(argv[2]));
+        }
+
+        if (atoi(argv[1]) == 30) //< Ambient humidity meter (Tibbit #30)
+        {
+            Humidity hum;
+
+            Hih6130 data = hum.getData(argv[2]);
+
+            printf("RH = %f percents\n", data.humidity);
+            printf("Temperature = %f degrees Celsius\n", data.temperature);
+            printf("Status = %i\n", data.status);
+        }
+
         if (atoi(argv[1]) == 36) //< 3-axis accelerometer (Tibbit #36)
         {
             Accelerometer accel;

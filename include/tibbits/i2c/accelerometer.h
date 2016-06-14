@@ -3,8 +3,8 @@
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
 */
 
-#ifndef __ACCELEROMETER_H__
-#define __ACCELEROMETER_H__
+#ifndef __LACCELEROMETER_H__
+#define __LACCELEROMETER_H__
 
 #include "drivers/ci2c_smbus.h"
 

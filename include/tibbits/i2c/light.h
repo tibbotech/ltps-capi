@@ -1,0 +1,32 @@
+/*!
+    \copyright Tibbo Technology Inc
+    \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
+*/
+
+#ifndef __LLIGHT_H__
+#define __LLIGHT_H__
+
+#include "drivers/ci2c_smbus.h"
+
+/*!
+    \class Light
+    \brief Class for ambient light sensor tibbit control (Tibbit #28)
+*/
+
+class Light
+{
+public:
+
+    Light();
+
+    virtual ~Light();
+
+    /// Get current illumination in lx
+    /*!
+        \param socket I2C socket (eg: s1, s11)
+        \return Illumination in lx
+    */
+    int getIllumination(const char* socket);
+};
+
+#endif

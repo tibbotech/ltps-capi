@@ -3,8 +3,8 @@
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
 */
 
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef __LADC_H__
+#define __LADC_H__
 
 #include "drivers/ci2c_smbus.h"
 

@@ -3,8 +3,8 @@
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
 */
 
-#ifndef __DAC_H__
-#define __DAC_H__
+#ifndef __LDAC_H__
+#define __LDAC_H__
 
 #include "drivers/ci2c_smbus.h"
 #include "drivers/cpin.h"

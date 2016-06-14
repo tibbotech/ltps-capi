@@ -12,6 +12,8 @@
 
 #include "tibbits/i2c/adc.h"
 #include "tibbits/i2c/dac.h"
+#include "tibbits/i2c/light.h"
+#include "tibbits/i2c/humidity.h"
 #include "tibbits/i2c/accelerometer.h"
 
 #endif

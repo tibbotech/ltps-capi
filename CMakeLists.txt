@@ -22,18 +22,22 @@ set ( SOURCES
 		include/utilities.h
 		include/drivers/cpin.h
 		include/drivers/ci2c.h
-		include/drivers/ci2c_smbus.h
-		include/tibbits/i2c/accelerometer.h
+		include/drivers/ci2c_smbus.h		
 		include/tibbits/i2c/adc.h
 		include/tibbits/i2c/dac.h
+		include/tibbits/i2c/light.h
+		include/tibbits/i2c/humidity.h
+		include/tibbits/i2c/accelerometer.h
 		src/main.cpp
 		src/utilities.cpp
 		src/drivers/cpin.cpp
 		src/drivers/ci2c.cpp
-		src/drivers/ci2c_smbus.cpp
-		src/tibbits/i2c/accelerometer.cpp
+		src/drivers/ci2c_smbus.cpp		
 		src/tibbits/i2c/adc.cpp
 		src/tibbits/i2c/dac.cpp
+		src/tibbits/i2c/light.cpp
+		src/tibbits/i2c/humidity.cpp
+		src/tibbits/i2c/accelerometer.cpp
     )
 
 include_directories( include )

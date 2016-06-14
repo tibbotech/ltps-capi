@@ -3,8 +3,8 @@
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
 */
 
-#ifndef __GLOBAL_H__
-#define __GLOBAL_H__
+#ifndef __LGLOBAL_H__
+#define __LGLOBAL_H__
 
 #define PINS_FILE                   "/opt/tps-shared/hwini/pins.ini"
 
@@ -44,6 +44,30 @@ namespace MCP4728
 
     static const unsigned int MULTI_WRITE = 0x40;
     static const unsigned int VREF_GX = 0x90;
+}
+
+/*!
+    \namespace BH1721FVC
+    \brief Ambient light sensor I2C addresses (Tibbit #28)
+*/
+
+namespace BH1721FVC
+{
+    static const unsigned int I2C_ADDRESS = 0x23;
+
+    static const unsigned int POWEROFF = 0x00;
+    static const unsigned int POWERON = 0x01;
+    static const unsigned int HIGHRES = 0x12;
+}
+
+/*!
+    \namespace HIH6130
+    \brief Ambient humidity/temperature meter I2C addresses (Tibbit #30)
+*/
+
+namespace HIH6130
+{
+    static const unsigned int I2C_ADDRESS = 0x27;
 }
 
 /*!
