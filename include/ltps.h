@@ -10,8 +10,8 @@
 #include "drivers/ci2c.h"
 #include "drivers/ci2c_smbus.h"
 
-#include "tibbits/i2c/accelerometer.h"
 #include "tibbits/i2c/adc.h"
 #include "tibbits/i2c/dac.h"
+#include "tibbits/i2c/accelerometer.h"
 
 #endif

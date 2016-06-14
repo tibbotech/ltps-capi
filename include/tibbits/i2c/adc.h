@@ -17,32 +17,17 @@ class Adc
 {
 public:
 
-    /// Constructor
-    /*!
-        \param socket I2C socket (eg: s1, s11)
-    */
-    Adc(const char* socket);
-
-    /// Constructor
-    /*!
-        \param busn I2C bus number
-    */
-    Adc(uint16_t busn);
+    Adc();
 
     virtual ~Adc();
 
     /// Get voltage value for channel
     /*!
+        \param socket I2C socket (eg: s1, s11)
         \param channel ADC channel (1...4)
         \return Value in millivolts
     */
-    int getVoltage(unsigned int channel);
-
-private:
-
-    Ci2c_smbus m_i2c;
-
-    int m_res;
+    int getVoltage(const char* socket, unsigned int channel);
 };
 
 #endif

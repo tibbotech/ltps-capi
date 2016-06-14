@@ -29,31 +29,16 @@ class Accelerometer
 {
 public:
 
-    /// Constructor
-    /*!
-        \param socket I2C socket (eg: s1, s11)
-    */
-    Accelerometer(const char* socket);
-
-    /// Constructor
-    /*!
-        \param busn I2C bus number
-    */
-    Accelerometer(uint16_t busn);
+    Accelerometer();
 
     virtual ~Accelerometer();
 
     /// Get current data for accelerometer axises
     /*!
+        \param socket I2C socket (eg: s1, s11)
         \return Adxl312 data struct
     */
-    Adxl312 getData();
-
-private:
-
-    Ci2c_smbus m_i2c;
-
-    int m_res;
+    Adxl312 getData(const char* socket);
 };
 
 #endif

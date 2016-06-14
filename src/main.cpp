@@ -21,36 +21,36 @@ int main(int argc, char *argv[])
     {
         if (atoi(argv[1]) == 13) //< ADC (Tibbit #13)
         {
-            Adc adc(argv[2]);
+            Adc adc;
 
-            printf("Channel 1 = %i mV\n", adc.getVoltage(1));
-            printf("Channel 2 = %i mV\n", adc.getVoltage(2));
-            printf("Channel 3 = %i mV\n", adc.getVoltage(3));
-            printf("Channel 4 = %i mV\n", adc.getVoltage(4));
+            printf("Channel 1 = %i mV\n", adc.getVoltage(argv[2], 1));
+            printf("Channel 2 = %i mV\n", adc.getVoltage(argv[2], 2));
+            printf("Channel 3 = %i mV\n", adc.getVoltage(argv[2], 3));
+            printf("Channel 4 = %i mV\n", adc.getVoltage(argv[2] ,4));
         }
 
         if (atoi(argv[1]) == 14) //< DAC (Tibbit #14)
         {
-            Dac dac(argv[2]);
+            Dac dac;
 
             printf("Trying set channel 1 to 2500 mV\n");
-            dac.setVoltage(1, 2500);
+            dac.setVoltage(argv[2], 1, 2500);
 
-            printf("CTrying set channel 2 to 5000 mV\n");
-            dac.setVoltage(2, 5000);
+            printf("Trying set channel 2 to 5000 mV\n");
+            dac.setVoltage(argv[2], 2, 5000);
 
             printf("Trying set channel 3 to -7500 mV\n");
-            dac.setVoltage(3, -7500);
+            dac.setVoltage(argv[2], 3, -7500);
 
             printf("Trying set channel 4 to 10000 mV\n");
-            dac.setVoltage(4, 10000);
+            dac.setVoltage(argv[2], 4, 10000);
         }
 
         if (atoi(argv[1]) == 36) //< 3-axis accelerometer (Tibbit #36)
         {
-            Accelerometer accel(argv[2]);
+            Accelerometer accel;
 
-            Adxl312 data = accel.getData();
+            Adxl312 data = accel.getData(argv[2]);
 
             printf("X = %i mG\n", data.lx);
             printf("Y = %i mG\n", data.ly);
