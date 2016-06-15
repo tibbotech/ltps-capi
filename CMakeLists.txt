@@ -29,6 +29,7 @@ set ( SOURCES
 		include/tibbits/i2c/light.h
 		include/tibbits/i2c/humidity.h
 		include/tibbits/i2c/accelerometer.h
+		include/tibbits/i2c/portextender.h
 		src/main.cpp
 		src/utilities.cpp
 		src/drivers/cpin.cpp
@@ -40,6 +41,7 @@ set ( SOURCES
 		src/tibbits/i2c/light.cpp
 		src/tibbits/i2c/humidity.cpp
 		src/tibbits/i2c/accelerometer.cpp
+		src/tibbits/i2c/portextender.cpp
     )
 
 include_directories( include )

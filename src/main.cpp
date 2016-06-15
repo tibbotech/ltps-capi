@@ -21,6 +21,8 @@ int main(int argc, char *argv[])
     {
         if (atoi(argv[1]) == 13) //< ADC (Tibbit #13)
         {
+            printf("ADC (Tibbit #13) selected\n");
+
             Adc adc;
 
             printf("Channel 1 = %i mV\n", adc.getVoltage(argv[2], 1));
@@ -31,6 +33,8 @@ int main(int argc, char *argv[])
 
         if (atoi(argv[1]) == 14) //< DAC (Tibbit #14)
         {
+            printf("DAC (Tibbit #14) selected\n");
+
             Dac dac;
 
             printf("Trying to set channel 1 to 2500 mV\n");
@@ -49,6 +53,8 @@ int main(int argc, char *argv[])
         if ((atoi(argv[1]) == 16) ||
                 (atoi(argv[1]) == 17)) //< PIC (PWM) (Tibbit #16, Tibbit #17) (Tibbit #31 also supported PWM)
         {
+            printf("PIC-based Tibbit (Tibbit #%i) selected\n", atoi(argv[1]));
+
             Pic pic;
 
             printf("Trying to initialize PIC\n");
@@ -71,6 +77,8 @@ int main(int argc, char *argv[])
 
         if (atoi(argv[1]) == 28) //< Ambient light sensor (Tibbit #28)
         {
+            printf("Ambient light sensor (Tibbit #28) selected\n");
+
             Light lt;
 
             printf("Illumination = %i lx\n", lt.getIllumination(argv[2]));
@@ -78,6 +86,8 @@ int main(int argc, char *argv[])
 
         if (atoi(argv[1]) == 30) //< Ambient humidity meter (Tibbit #30)
         {
+            printf("Ambient humidity meter (Tibbit #30) selected\n");
+
             Humidity hum;
 
             Hih6130 data = hum.getData(argv[2]);
@@ -89,6 +99,8 @@ int main(int argc, char *argv[])
 
         if (atoi(argv[1]) == 31) //< PIC (ADC) (Tibbit #31)
         {
+            printf("PIC-based Tibbit (Tibbit #%i) selected\n", atoi(argv[1]));
+
             Pic pic;
 
             printf("Trying to initialize PIC\n");
@@ -106,6 +118,8 @@ int main(int argc, char *argv[])
 
         if (atoi(argv[1]) == 36) //< 3-axis accelerometer (Tibbit #36)
         {
+            printf("3-axis accelerometer (Tibbit #36) selected\n");
+
             Accelerometer accel;
 
             Adxl312 data = accel.getData(argv[2]);
@@ -113,6 +127,24 @@ int main(int argc, char *argv[])
             printf("X = %i mG\n", data.lx);
             printf("Y = %i mG\n", data.ly);
             printf("Z = %i mG\n", data.lz);
+        }
+
+        if (atoi(argv[1]) == 41) //< 8-bit port extender (Tibbit #41)
+        {
+            printf("8-bit port extender (Tibbit #41) selected\n");
+
+            Portextender pext;
+
+            Mcp23008 data;
+            data.direction = false;
+            data.pullup = false; //< It does not matter for output mode (see Mcp23008 struct definition)
+
+            for (int i = 1; i < 9; i++)
+            {
+                printf("Setting pin %i to output with value = %i\n", i, i % 2);
+                data.value = i % 2;
+                pext.setData(argv[2], i, data);
+            }
         }
     }
 }

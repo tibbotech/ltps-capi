@@ -26,7 +26,8 @@ HEADERS			+= \
 			include/tibbits/i2c/pic.h \
 			include/tibbits/i2c/light.h \
 			include/tibbits/i2c/humidity.h \
-			include/tibbits/i2c/accelerometer.h
+			include/tibbits/i2c/accelerometer.h \
+			include/tibbits/i2c/portextender.h
 
 SOURCES			+= \
 			src/main.cpp \
@@ -39,4 +40,5 @@ SOURCES			+= \
 			src/tibbits/i2c/pic.cpp \
 			src/tibbits/i2c/light.cpp \
 			src/tibbits/i2c/humidity.cpp \
-			src/tibbits/i2c/accelerometer.cpp
+			src/tibbits/i2c/accelerometer.cpp \
+			src/tibbits/i2c/portextender.cpp

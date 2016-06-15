@@ -41,28 +41,26 @@ Hih6130 Humidity::getData(const char* socket)
         printf("Ambient humidity meter set I2C bus errno: %i\n", res);
         return hum;
     }
-    else
+
+    uint8_t data[4];
+    memset(&data, 0, 4);
+
+    i2c.Rbb(HIH6130::I2C_ADDRESS, 0x00, data, 4);
+    memset(&data, 0, 4);
+
+    res = i2c.Rbb(HIH6130::I2C_ADDRESS, 0x00, data, 4);
+
+    if (res != 4)
     {
-        uint8_t data[4];
-        memset(&data, 0, 4);
-
-        i2c.Rbb(HIH6130::I2C_ADDRESS, 0x00, data, 4);
-        memset(&data, 0, 4);
-
-        res = i2c.Rbb(HIH6130::I2C_ADDRESS, 0x00, data, 4);
-
-        if (res != 4)
-        {
-            printf("Error while get data for ambient humidity meter.\n");
-            return hum;
-        }
-
-        hum.status = (data[0] >> 6);
-
-        hum.humidity = (float) (((unsigned int) (data[0] & 0x3F) << 8) | data[1]) * 100 / (pow(2, 14) - 2);
-
-        hum.temperature = (float) (((unsigned int) (data[2] << 6) + (data[3] >> 2)) / (pow(2, 14) - 2) * 165 - 40);
-
+        printf("Error while get data for ambient humidity meter\n");
         return hum;
     }
+
+    hum.status = (data[0] >> 6);
+
+    hum.humidity = (float) (((unsigned int) (data[0] & 0x3F) << 8) | data[1]) * 100 / (pow(2, 14) - 2);
+
+    hum.temperature = (float) (((unsigned int) (data[2] << 6) + (data[3] >> 2)) / (pow(2, 14) - 2) * 165 - 40);
+
+    return hum;
 }

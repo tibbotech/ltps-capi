@@ -152,4 +152,18 @@ namespace ADXL312
     static const unsigned int DATA_MASK = 0x1FFF;
 }
 
+/*!
+    \namespace MCP23008
+    \brief 8-bit port extender I2C addresses (Tibbit #41)
+*/
+
+namespace MCP23008
+{
+    static const unsigned int I2C_ADDRESS = 0x20;
+
+    static const unsigned int IODIR = 0x00;
+    static const unsigned int GPPU = 0x06;
+    static const unsigned int GPIO = 0x09;
+}
+
 #endif

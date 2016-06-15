@@ -27,7 +27,7 @@ void Pic::initPic(const char *socket, PicFreq freq)
     CPin gpio;
     if (gpio.init(gpin))
     {
-        printf("PIC GPIO initialization error.\n");
+        printf("PIC GPIO initialization error\n");
         return;
     }
 
@@ -329,7 +329,7 @@ uint8_t Pic::readPic(const char* socket, uint16_t addr)
 
     if (ret != 3)
     {
-        printf("Error while reading data for PIC.\n");
+        printf("Error while reading data for PIC\n");
         return 0;
     }
 
@@ -365,5 +365,5 @@ void Pic::writePic(const char* socket, uint16_t addr, uint8_t data)
     res = i2c.Wbb(PIC16F1824::I2C_ADDRESS, PIC16F1824::CMD_W, str, 3);
 
     if (res != 3)
-        printf("Error while writing data for PIC.\n");
+        printf("Error while writing data for PIC\n");
 }
