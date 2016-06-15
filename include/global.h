@@ -18,7 +18,7 @@
 
 /*!
     \namespace LTC2309
-    \brief ADC I2C (Tibbit #13) addresses
+    \brief ADC I2C addresses (Tibbit #13)
 */
 
 namespace LTC2309
@@ -35,7 +35,7 @@ namespace LTC2309
 
 /*!
     \namespace MCP4728
-    \brief DAC I2C (Tibbit #14) addresses
+    \brief DAC I2C addresses (Tibbit #14)
 */
 
 namespace MCP4728
@@ -44,6 +44,51 @@ namespace MCP4728
 
     static const unsigned int MULTI_WRITE = 0x40;
     static const unsigned int VREF_GX = 0x90;
+}
+
+/*!
+    \namespace PIC16F1824
+    \brief PIC16F1824 I2C addresses (Tibbit #16, #17, #31)
+*/
+
+namespace PIC16F1824
+{
+    static const unsigned int I2C_ADDRESS = 0x03;
+
+    static const unsigned int CMD_R = 0x01;
+    static const unsigned int CMD_W = 0x02;
+
+    static const unsigned int APFCON0 = 0x011D;
+    static const unsigned int APFCON1 = 0x011E;
+    static const unsigned int CCPTMRS0 = 0x029E;
+
+    static const unsigned int OSCCON = 0x0099;
+
+    static const unsigned int TRISA = 0x008C;
+    static const unsigned int TRISC = 0x008E;
+    static const unsigned int ANSELA = 0x018C;
+    static const unsigned int ANSELC = 0x018E;
+
+    static const unsigned int LATC = 0x010E;
+    static const unsigned int CCP1CON = 0x0293;
+    static const unsigned int CCP2CON = 0x029A;
+    static const unsigned int CCP3CON = 0x0313;
+    static const unsigned int T2CON = 0x001C;
+    static const unsigned int T4CON = 0x0417;
+    static const unsigned int T6CON = 0x041E;
+
+    static const unsigned int PR2 = 0x001B;
+    static const unsigned int PR4 = 0x0416;
+    static const unsigned int PR6 = 0x041D;
+    static const unsigned int CCPR1L = 0x0291;
+    static const unsigned int CCPR2L = 0x0298;
+    static const unsigned int CCPR3L = 0x0311;
+
+    static const unsigned int ADCON0 = 0x009D;
+    static const unsigned int ADCON1 = 0x009E;
+    static const unsigned int FVRCON = 0x0117;
+    static const unsigned int ADRESL = 0x009B;
+    static const unsigned int ADRESH = 0x009C;
 }
 
 /*!
@@ -72,7 +117,7 @@ namespace HIH6130
 
 /*!
     \namespace ADXL312
-    \brief 3-axis accelerometer (Tibbit #36) I2C addresses
+    \brief 3-axis accelerometer I2C addresses (Tibbit #36)
 */
 
 namespace ADXL312

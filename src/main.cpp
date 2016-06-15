@@ -33,17 +33,40 @@ int main(int argc, char *argv[])
         {
             Dac dac;
 
-            printf("Trying set channel 1 to 2500 mV\n");
+            printf("Trying to set channel 1 to 2500 mV\n");
             dac.setVoltage(argv[2], 1, 2500);
 
-            printf("Trying set channel 2 to 5000 mV\n");
+            printf("Trying to set channel 2 to 5000 mV\n");
             dac.setVoltage(argv[2], 2, 5000);
 
-            printf("Trying set channel 3 to -7500 mV\n");
+            printf("Trying to set channel 3 to -7500 mV\n");
             dac.setVoltage(argv[2], 3, -7500);
 
-            printf("Trying set channel 4 to 10000 mV\n");
+            printf("Trying to set channel 4 to 10000 mV\n");
             dac.setVoltage(argv[2], 4, 10000);
+        }
+
+        if ((atoi(argv[1]) == 16) ||
+                (atoi(argv[1]) == 17)) //< PIC (PWM) (Tibbit #16, Tibbit #17) (Tibbit #31 also supported PWM)
+        {
+            Pic pic;
+
+            printf("Trying to initialize PIC\n");
+            pic.initPic(argv[2], _32MHz);
+
+            for (int i = 1; i < 4; i++)
+            {
+                printf("Trying to configure PIC as PWM at channel %i\n", i);
+                pic.configurePwm(argv[2], i);
+                sleep(1);
+
+                printf("Trying to start PWM at channel %i (pusle = %i, period = %i, prescaler = %i)\n", i, 100, i * 300, 1);
+                pic.startPwm(argv[2], i, 100, i * 300, 1);
+                sleep(3);
+
+                printf("Trying to stop PWM at channel %i\n", i);
+                pic.stopPwm(argv[2], i);
+            }
         }
 
         if (atoi(argv[1]) == 28) //< Ambient light sensor (Tibbit #28)
@@ -62,6 +85,23 @@ int main(int argc, char *argv[])
             printf("RH = %f percents\n", data.humidity);
             printf("Temperature = %f degrees Celsius\n", data.temperature);
             printf("Status = %i\n", data.status);
+        }
+
+        if (atoi(argv[1]) == 31) //< PIC (ADC) (Tibbit #31)
+        {
+            Pic pic;
+
+            printf("Trying to initialize PIC\n");
+            pic.initPic(argv[2], _32MHz);
+
+            for (int i = 1; i < 5; i++)
+            {
+                printf("Trying to configure PIC as ADC at channel %i\n", i);
+                pic.configureAdc(argv[2], i);
+                sleep(1);
+
+                printf("Channel %i = %i mV\n", i, pic.getAdcVoltage(argv[2], i));
+            }
         }
 
         if (atoi(argv[1]) == 36) //< 3-axis accelerometer (Tibbit #36)
