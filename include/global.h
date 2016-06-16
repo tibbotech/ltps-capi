@@ -153,6 +153,21 @@ namespace ADXL312
 }
 
 /*!
+    \namespace MCP4561
+    \brief Digital potentiometer I2C addresses (Tibbit #40)
+*/
+
+namespace MCP4561
+{
+    static const unsigned int I2C_ADDRESS = 0x2F;
+
+    static const unsigned int VOLATILE_WIPER = 0x00;
+    static const unsigned int NON_VOLATILE_WIPER = 0x20;
+
+    static const unsigned int VOLATILE_TCON = 0x40;
+}
+
+/*!
     \namespace MCP23008
     \brief 8-bit port extender I2C addresses (Tibbit #41)
 */

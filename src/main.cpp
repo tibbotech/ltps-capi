@@ -129,6 +129,16 @@ int main(int argc, char *argv[])
             printf("Z = %i mG\n", data.lz);
         }
 
+        if (atoi((argv[1])) == 40) //< Digital potentiometer (Tibbit #40)
+        {
+            printf("Digital potentiometer (Tibbit #40) selected\n");
+
+            Potentiometer pot;
+
+            printf("Trying to set impedance to 30 kOhm of 50 kOhm\n");
+            pot.setImpedance(argv[2], 30000, _50kOhm);
+        }
+
         if (atoi(argv[1]) == 41) //< 8-bit port extender (Tibbit #41)
         {
             printf("8-bit port extender (Tibbit #41) selected\n");

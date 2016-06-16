@@ -9,12 +9,22 @@
 #include "drivers/cpin.h"
 #include "drivers/ci2c_smbus.h"
 
+/*!
+    \enum PicFreq
+    \brief Possible frequencies of internal oscillator for PWM
+*/
+
 enum PicFreq
 {
     _8MHz = 8,
     _16MHz = 16,
     _32MHz = 32
 };
+
+/*!
+    \class PIC
+    \brief Class for PWM/ADC PIC16F1824 tibbit control (Tibbit #16, Tibbit #17 and Tibbit #31)
+*/
 
 class Pic
 {
