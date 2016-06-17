@@ -116,6 +116,18 @@ int main(int argc, char *argv[])
             }
         }
 
+        if (atoi(argv[1]) == 35) //< Ambient pressure sensor (Tibbit #35)
+        {
+            printf("Ambient pressure sensor (Tibbit #35) selected\n");
+
+            Pressure pres;
+
+            Mpl115a2 data = pres.getData(argv[2]);
+
+            printf("Pressure = %f mm Hg\n", data.pressure);
+            printf("Temperature = %f degrees Celsius\n", data.temperature);
+        }
+
         if (atoi(argv[1]) == 36) //< 3-axis accelerometer (Tibbit #36)
         {
             printf("3-axis accelerometer (Tibbit #36) selected\n");

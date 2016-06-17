@@ -116,6 +116,26 @@ namespace HIH6130
 }
 
 /*!
+    \namespace MPL115A2
+    \brief Ambient pressure/temperature meter I2C addresses (Tibbit #35)
+*/
+
+namespace MPL115A2
+{
+    static const unsigned int I2C_ADDRESS = 0x60;
+
+    static const unsigned int REG_A0_MSB = 0x04;
+    static const unsigned int REG_B1_MSB = 0x06;
+    static const unsigned int REG_B2_MSB = 0x08;
+    static const unsigned int REG_C12_MSB = 0x0A;
+
+    static const unsigned int CMD_CONVERSION = 0x12;
+
+    static const unsigned int PRESSURE_MSB = 0x00;
+    static const unsigned int TEMPERATURE_MSB = 0x02;
+}
+
+/*!
     \namespace ADXL312
     \brief 3-axis accelerometer I2C addresses (Tibbit #36)
 */

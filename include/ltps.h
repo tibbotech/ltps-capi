@@ -15,6 +15,7 @@
 #include "tibbits/i2c/pic.h"
 #include "tibbits/i2c/light.h"
 #include "tibbits/i2c/humidity.h"
+#include "tibbits/i2c/pressure.h"
 #include "tibbits/i2c/accelerometer.h"
 #include "tibbits/i2c/potentiometer.h"
 #include "tibbits/i2c/portextender.h"
