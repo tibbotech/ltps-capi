@@ -84,6 +84,15 @@ int main(int argc, char *argv[])
             printf("Illumination = %i lx\n", lt.getIllumination(argv[2]));
         }
 
+        if (atoi(argv[1]) == 29) //< Ambient temperature sensor (Tibbit #29)
+        {
+            printf("Ambient temperature sensor (Tibbit #29) selected\n");
+
+            Temperature temp;
+
+            printf("Temperature = %f degrees Celsius\n", temp.getTemperature(argv[2]));
+        }
+
         if (atoi(argv[1]) == 30) //< Ambient humidity meter (Tibbit #30)
         {
             printf("Ambient humidity meter (Tibbit #30) selected\n");

@@ -25,6 +25,7 @@ HEADERS			+= \
 			include/tibbits/i2c/dac.h \
 			include/tibbits/i2c/pic.h \
 			include/tibbits/i2c/light.h \
+			include/tibbits/i2c/temperature.h \
 			include/tibbits/i2c/humidity.h \
 			include/tibbits/i2c/pressure.h \
 			include/tibbits/i2c/accelerometer.h \
@@ -41,6 +42,7 @@ SOURCES			+= \
 			src/tibbits/i2c/dac.cpp \
 			src/tibbits/i2c/pic.cpp \
 			src/tibbits/i2c/light.cpp \
+			src/tibbits/i2c/temperature.cpp \
 			src/tibbits/i2c/humidity.cpp \
 			src/tibbits/i2c/pressure.cpp \
 			src/tibbits/i2c/accelerometer.cpp \

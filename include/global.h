@@ -106,6 +106,20 @@ namespace BH1721FVC
 }
 
 /*!
+    \namespace MCP9808
+    \brief Ambient temperature sensor I2C addresses (Tibbit #29)
+*/
+
+namespace MCP9808
+{
+    static const unsigned int I2C_ADDRESS = 0x18;
+
+    static const unsigned int RESOLUTION = 0x08;
+    static const unsigned int RESOLUSIONMODE = 0x01;
+    static const unsigned int TA = 0x05;
+}
+
+/*!
     \namespace HIH6130
     \brief Ambient humidity/temperature meter I2C addresses (Tibbit #30)
 */
