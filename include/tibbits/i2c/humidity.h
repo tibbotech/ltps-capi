@@ -15,7 +15,7 @@ struct Hih6130
 {
     float humidity; //< % RH
     float temperature; //< °C
-    uint8_t status;
+    int status;
 };
 
 /*!
