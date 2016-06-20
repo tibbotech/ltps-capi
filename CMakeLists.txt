@@ -23,7 +23,7 @@ set ( SOURCES
 		include/global.h
 		include/drivers/cpin.h
 		include/drivers/ci2c.h
-		include/drivers/ci2c_smbus.h		
+		include/drivers/ci2c_smbus.h
 		include/tibbits/i2c/adc.h
 		include/tibbits/i2c/dac.h
 		include/tibbits/i2c/pic.h
@@ -37,7 +37,7 @@ set ( SOURCES
 #		src/main.cpp
 		src/drivers/cpin.cpp
 		src/drivers/ci2c.cpp
-		src/drivers/ci2c_smbus.cpp		
+		src/drivers/ci2c_smbus.cpp
 		src/tibbits/i2c/adc.cpp
 		src/tibbits/i2c/dac.cpp
 		src/tibbits/i2c/pic.cpp
@@ -56,6 +56,8 @@ include_directories( include )
 
 add_library (Ltps SHARED ${SOURCES} )
 add_library (LtpsStatic STATIC ${SOURCES} )
+
+set_target_properties(Ltps PROPERTIES SOVERSION "0.1")
 
 install( TARGETS Ltps DESTINATION lib )
 install( TARGETS LtpsStatic DESTINATION lib )   
