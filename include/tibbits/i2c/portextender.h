@@ -33,19 +33,19 @@ public:
 
     /// Get current data for 8-bit port
     /*!
-        \param socket I2C socket (eg: s1, s11)
+        \param bus I2C bus number
         \param pin Current pin (1...8)
         \return Data in Mcp23008 struct
     */
-    Mcp23008 getData(const char* socket, uint8_t pin);
+    Mcp23008 getData(int bus, int pin);
 
     /// Set current data for 8-bit port
     /*!
-        \param socket I2C socket (eg: s1, s11)
+        \param bus I2C bus number
         \param pin Current pin (1...8)
         \param params Data in Mcp23008 struct
     */
-    void setData(const char* socket, uint8_t pin, Mcp23008 params);
+    void setData(int bus, int pin, Mcp23008 params);
 };
 
 #endif

@@ -7,7 +7,6 @@
 #include "tibbits/i2c/light.h"
 
 #include "global.h"
-#include "utilities.h"
 
 Light::Light()
 {
@@ -19,18 +18,11 @@ Light::~Light()
 
 }
 
-int Light::getIllumination(const char* socket)
+int Light::getIllumination(int bus)
 {
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {

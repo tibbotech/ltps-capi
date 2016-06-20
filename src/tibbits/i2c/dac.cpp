@@ -8,7 +8,6 @@
 #include "tibbits/i2c/dac.h"
 
 #include "global.h"
-#include "utilities.h"
 
 Dac::Dac()
 {
@@ -20,31 +19,15 @@ Dac::~Dac()
 
 }
 
-void Dac::setVoltage(const char* socket, unsigned int channel, int voltage)
+void Dac::setVoltage(int bus, int gpin_c, int gpin_d, unsigned int channel, int voltage)
 {
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {
         printf("DAC set I2C bus errno: %i\n", res);
-        return;
-    }
-
-    int gpin_c = Lutilites::readInteger(PINS_FILE, "CPU", sock.replace(0, 1, "S").append("C").c_str());
-    int gpin_d = Lutilites::readInteger(PINS_FILE, "CPU", sock.replace(sock.length() - 1, 1, "D").c_str());
-
-    if ((gpin_c == 0) || (gpin_d == 0))
-    {
-        printf("DAC GPIO pins search error\n");
         return;
     }
 

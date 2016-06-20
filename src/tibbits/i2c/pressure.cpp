@@ -7,7 +7,6 @@
 #include "tibbits/i2c/pressure.h"
 
 #include "global.h"
-#include "utilities.h"
 
 Pressure::Pressure()
 {
@@ -19,21 +18,14 @@ Pressure::~Pressure()
 
 }
 
-Mpl115a2 Pressure::getData(const char *socket)
+Mpl115a2 Pressure::getData(int bus)
 {
     Mpl115a2 data;
     memset(&data, 0, sizeof data);
 
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {

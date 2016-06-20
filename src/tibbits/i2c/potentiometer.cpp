@@ -7,7 +7,6 @@
 #include "tibbits/i2c/potentiometer.h"
 
 #include "global.h"
-#include "utilities.h"
 
 Potentiometer::Potentiometer()
 {
@@ -19,11 +18,11 @@ Potentiometer::~Potentiometer()
 
 }
 
-void Potentiometer::setImpedance(const char *socket, unsigned int impedance, Imps max)
+void Potentiometer::setImpedance(int bus, unsigned int impedance, Imps max)
 {
-    bool result = writeData(socket, MCP4561::VOLATILE_TCON, 0x000F);
+    bool result = writeData(bus, MCP4561::VOLATILE_TCON, 0x000F);
 
-    if (!writeData(socket, MCP4561::NON_VOLATILE_WIPER, convertImpToOhm(impedance, max)))
+    if (!writeData(bus, MCP4561::NON_VOLATILE_WIPER, convertImpToOhm(impedance, max)))
         result = false;
 
     if (!result)
@@ -38,18 +37,11 @@ unsigned int Potentiometer::convertImpToOhm(unsigned int impedance, unsigned int
     return impedance;
 }
 
-bool Potentiometer::writeData(const char *socket, char addr, unsigned int value)
+bool Potentiometer::writeData(int bus, char addr, unsigned int value)
 {
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {
@@ -66,24 +58,17 @@ bool Potentiometer::writeData(const char *socket, char addr, unsigned int value)
 
     usleep(10000);
 
-    if (readData(socket, addr) == value)
+    if (readData(bus, addr) == value)
         return true;
     else
         return false;
 }
 
-unsigned int Potentiometer::readData(const char *socket, char addr)
+unsigned int Potentiometer::readData(int bus, char addr)
 {
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {

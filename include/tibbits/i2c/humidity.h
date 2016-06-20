@@ -33,10 +33,10 @@ public:
 
     /// Get current humidity/temperature
     /*!
-        \param socket I2C socket (eg: s1, s11)
+        \param bus I2C bus number
         \return Hih6130 data struct
     */
-    Hih6130 getData(const char* socket);
+    Hih6130 getData(int bus);
 };
 
 #endif

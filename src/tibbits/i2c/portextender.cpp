@@ -7,7 +7,6 @@
 #include "tibbits/i2c/portextender.h"
 
 #include "global.h"
-#include "utilities.h"
 
 Portextender::Portextender()
 {
@@ -19,21 +18,14 @@ Portextender::~Portextender()
 
 }
 
-Mcp23008 Portextender::getData(const char *socket, uint8_t pin)
+Mcp23008 Portextender::getData(int bus, int pin)
 {
     Mcp23008 params;
     memset(&params, 0, sizeof params);
 
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {
@@ -66,18 +58,11 @@ Mcp23008 Portextender::getData(const char *socket, uint8_t pin)
     return params;
 }
 
-void Portextender::setData(const char *socket, uint8_t pin, Mcp23008 params)
+void Portextender::setData(int bus, int pin, Mcp23008 params)
 {
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {

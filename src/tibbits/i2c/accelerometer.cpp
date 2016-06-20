@@ -7,7 +7,6 @@
 #include "tibbits/i2c/accelerometer.h"
 
 #include "global.h"
-#include "utilities.h"
 
 Accelerometer::Accelerometer()
 {
@@ -19,21 +18,14 @@ Accelerometer::~Accelerometer()
 
 }
 
-Adxl312 Accelerometer::getData(const char* socket)
+Adxl312 Accelerometer::getData(int bus)
 {
     Adxl312 accel;
     memset(&accel, 0, sizeof accel);
 
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {

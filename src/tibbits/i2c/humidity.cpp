@@ -7,7 +7,6 @@
 #include "tibbits/i2c/humidity.h"
 
 #include "global.h"
-#include "utilities.h"
 
 #include <math.h>
 
@@ -21,21 +20,14 @@ Humidity::~Humidity()
 
 }
 
-Hih6130 Humidity::getData(const char* socket)
+Hih6130 Humidity::getData(int bus)
 {
     Hih6130 hum;
     memset(&hum, 0, sizeof hum);
 
-    std::string sock(socket);
-    std::string hwSocket = Lutilites::readString(PINS_FILE, "I2C", "S" + sock.substr(1, sock.length() - 1));
-
-    int res;
     Ci2c_smbus i2c;
 
-    if (hwSocket.empty()) //< Software I2C
-        res = i2c.set_bus(Lutilites::getI2CName(sock).c_str());
-    else //< Hardware I2C
-        res = i2c.set_bus(atoi(hwSocket.c_str()));
+    int res = i2c.set_bus(bus);
 
     if (res != 1)
     {

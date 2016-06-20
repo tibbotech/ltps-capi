@@ -33,10 +33,10 @@ public:
 
     /// Get current data for accelerometer axises
     /*!
-        \param socket I2C socket (eg: s1, s11)
+        \param bus I2C bus number
         \return Adxl312 data struct
     */
-    Adxl312 getData(const char* socket);
+    Adxl312 getData(int bus);
 };
 
 #endif

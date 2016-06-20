@@ -32,10 +32,10 @@ public:
 
     /// Get current pressure/temperature
     /*!
-        \param socket I2C socket (eg: s1, s11)
+        \param bus I2C bus number
         \return Mpl115a2 data struct
     */
-    Mpl115a2 getData(const char* socket);
+    Mpl115a2 getData(int bus);
 };
 
 #endif
