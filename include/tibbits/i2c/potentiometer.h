@@ -6,8 +6,6 @@
 #ifndef __LPOTENTIOMETER_H__
 #define __LPOTENTIOMETER_H__
 
-#include "drivers/ci2c_smbus.h"
-
 /*!
     \enum Imps
     \brief Possible impedance maximum values

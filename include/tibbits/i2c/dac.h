@@ -6,9 +6,6 @@
 #ifndef __LDAC_H__
 #define __LDAC_H__
 
-#include "drivers/ci2c_smbus.h"
-#include "drivers/cpin.h"
-
 /*!
     \class DAC
     \brief Class for DAC (Tibbit #14)

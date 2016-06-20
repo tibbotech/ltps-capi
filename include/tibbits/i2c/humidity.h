@@ -6,8 +6,6 @@
 #ifndef __LHUMIDITY_H__
 #define __LHUMIDITY_H__
 
-#include "drivers/ci2c_smbus.h"
-
 /*!
     \struct Hih6130
     \brief Struct with data output for HIH6130

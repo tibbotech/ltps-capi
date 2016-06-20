@@ -1,11 +1,12 @@
-cmake_minimum_required( VERSION 2.8 )
+cmake_minimum_required( VERSION 3.0 )
 
-project( LTPSDEMO )
+project( LTPS )
 
 set( CMAKE_SYSTEM_NAME Linux )
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -W -Wall -fdata-sections -ffunction-sections -feliminate-unused-debug-types -fno-var-tracking-assignments" )
 set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--gc-sections" )
+set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--gc-sections" )
 
 if( CMAKE_BUILD_TYPE MATCHES Debug)
 	set( CMAKE_BUILD_TYPE Debug )
@@ -14,10 +15,11 @@ else()
 	set( CMAKE_BUILD_TYPE Release )
 	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2" )
 	set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--strip-all" )
+	set( CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Wl,--strip-all" )
 endif()
 
 set ( SOURCES
-		include/ltps.h
+#		include/ltps.h
 		include/global.h
 		include/utilities.h
 		include/drivers/cpin.h
@@ -33,7 +35,7 @@ set ( SOURCES
 		include/tibbits/i2c/accelerometer.h
 		include/tibbits/i2c/potentiometer.h
 		include/tibbits/i2c/portextender.h
-		src/main.cpp
+#		src/main.cpp
 		src/utilities.cpp
 		src/drivers/cpin.cpp
 		src/drivers/ci2c.cpp
@@ -52,5 +54,14 @@ set ( SOURCES
 
 include_directories( include )
 
-add_executable( ltps_demo ${SOURCES} )
+#add_executable( ltps ${SOURCES} )
+
+add_library (Ltps SHARED ${SOURCES} )
+add_library (LtpsStatic STATIC ${SOURCES} )
+
+install( TARGETS Ltps DESTINATION lib )
+install( TARGETS LtpsStatic DESTINATION lib )   
+ 
+install( DIRECTORY include/tibbits/i2c/ DESTINATION include )
+install( DIRECTORY include/drivers/ DESTINATION include )
 

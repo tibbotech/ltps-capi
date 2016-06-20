@@ -6,9 +6,6 @@
 #ifndef __LTEMPERATURE_H__
 #define __LTEMPERATURE_H__
 
-
-#include "drivers/ci2c_smbus.h"
-
 /*!
     \class Temperature
     \brief Class for ambient temperature sensor tibbit control (Tibbit #29)

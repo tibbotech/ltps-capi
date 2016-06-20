@@ -6,8 +6,6 @@
 #ifndef __LADC_H__
 #define __LADC_H__
 
-#include "drivers/ci2c_smbus.h"
-
 /*!
     \class ADC
     \brief Class for ADC (Tibbit #13)

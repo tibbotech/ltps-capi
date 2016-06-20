@@ -6,8 +6,6 @@
 #ifndef __LPRESSURE_H__
 #define __LPRESSURE_H__
 
-#include "drivers/ci2c_smbus.h"
-
 /*!
     \struct Mpl115a2
     \brief Struct with data output for MPL115A2

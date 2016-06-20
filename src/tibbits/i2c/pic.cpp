@@ -3,6 +3,8 @@
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
 */
 
+#include "drivers/cpin.h"
+#include "drivers/ci2c_smbus.h"
 #include "tibbits/i2c/pic.h"
 
 #include "global.h"

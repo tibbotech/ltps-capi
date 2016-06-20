@@ -6,8 +6,6 @@
 #ifndef __LPORTEXTENDER_H__
 #define __LPORTEXTENDER_H__
 
-#include "drivers/ci2c_smbus.h"
-
 /*!
     \struct Mcp23008
     \brief Struct with data for MCP23008

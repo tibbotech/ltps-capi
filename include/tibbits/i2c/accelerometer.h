@@ -6,8 +6,6 @@
 #ifndef __LACCELEROMETER_H__
 #define __LACCELEROMETER_H__
 
-#include "drivers/ci2c_smbus.h"
-
 /*!
     \struct Adxl312
     \brief Struct with data output for ADXL312

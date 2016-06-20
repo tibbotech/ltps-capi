@@ -6,9 +6,6 @@
 #ifndef __LPIC_H__
 #define __LPIC_H__
 
-#include "drivers/cpin.h"
-#include "drivers/ci2c_smbus.h"
-
 /*!
     \enum PicFreq
     \brief Possible frequencies of internal oscillator for PWM
