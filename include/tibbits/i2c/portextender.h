@@ -7,15 +7,20 @@
 #define __LPORTEXTENDER_H__
 
 /*!
-    \struct ExtenderData
+    \struct PortexData
     \brief Struct with data for MCP23008
 */
 
-struct ExtenderData
+struct PortexData
 {
-    bool direction; //< false - output, true - input
-    bool value; //< read/write for output, read for input
-    bool pullup; //< read/write for input, read for output
+    /// Current direction (false for output, true for input)
+    bool direction;
+
+    /// Current value (read/write for output, read for input)
+    bool value;
+
+    /// Pull-up enabled (read/write for input, read for output)
+    bool pullup;
 };
 
 /*!
@@ -33,35 +38,35 @@ public:
 
     /// Get current data for 8-bit port
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param pin Current pin (1...8)
-        \return extender Data in ExtenderData struct
+        \param pextender Data in PortexData struct
     */
-    void getData(const char *socket, int pin, ExtenderData &extender);
+    void getData(const char *socket, int pin, PortexData &pextender);
 
     /// Get current data for 8-bit port
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param pin Current pin (1...8)
-        \return extender Data in ExtenderData struct
+        \param pextender Data in PortexData struct
     */
-    void getData(int busn, int pin, ExtenderData &extender);
+    void getData(int busn, int pin, PortexData &pextender);
 
     /// Set current data for 8-bit port
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param pin Current pin (1...8)
-        \param params Data in ExtenderData struct
+        \param pextender Data in PortexData struct
     */
-    void setData(const char *socket, int pin, ExtenderData &extender);
+    void setData(const char *socket, int pin, PortexData &pextender);
 
     /// Set current data for 8-bit port
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param pin Current pin (1...8)
-        \param params Data in ExtenderData struct
+        \param pextender Data in PortexData struct
     */
-    void setData(int busn, int pin, ExtenderData &extender);
+    void setData(int busn, int pin, PortexData &pextender);
 };
 
 #endif

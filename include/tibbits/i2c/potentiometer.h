@@ -34,7 +34,7 @@ public:
 
     /// Set current impedance and saves the value into the ICs EEPROM
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param impedance Current value
         \param max Maximum posible impedance
     */
@@ -42,7 +42,7 @@ public:
 
     /// Set current impedance and saves the value into the ICs EEPROM
     /*!
-        \param bus I2C bus number
+        \param bus I2C bus number (eg: 0, 4)
         \param impedance Current value
         \param max Maximum posible impedance
     */

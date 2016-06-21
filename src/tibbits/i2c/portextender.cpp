@@ -19,19 +19,19 @@ Portextender::~Portextender()
 
 }
 
-void Portextender::getData(const char *socket, int pin, ExtenderData &extender)
+void Portextender::getData(const char *socket, int pin, PortexData &pextender)
 {
     int busn = Lutils::getI2CBusNum(socket);
 
     if (busn == -1)
         printf("I2C bus for socket %s not found\n", socket);
     else
-        getData(busn, pin, extender);
+        getData(busn, pin, pextender);
 }
 
-void Portextender::getData(int busn, int pin, ExtenderData &extender)
+void Portextender::getData(int busn, int pin, PortexData &pextender)
 {
-    memset(&extender, 0, sizeof extender);
+    memset(&pextender, 0, sizeof pextender);
 
     Ci2c_smbus i2c;
 
@@ -46,17 +46,17 @@ void Portextender::getData(int busn, int pin, ExtenderData &extender)
     uint8_t data = 0;
 
     res = i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
-    extender.direction = (data >> (pin - 1)) & 1;
+    pextender.direction = (data >> (pin - 1)) & 1;
 
     data = 0;
 
     res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
-    extender.pullup = (data >> (pin - 1)) & 1;
+    pextender.pullup = (data >> (pin - 1)) & 1;
 
     data = 0;
 
     res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
-    extender.value = (data >> (pin - 1)) & 1;
+    pextender.value = (data >> (pin - 1)) & 1;
 
     if (res != 3)
     {
@@ -65,17 +65,17 @@ void Portextender::getData(int busn, int pin, ExtenderData &extender)
     }
 }
 
-void Portextender::setData(const char *socket, int pin, ExtenderData &extender)
+void Portextender::setData(const char *socket, int pin, PortexData &pextender)
 {
     int busn = Lutils::getI2CBusNum(socket);
 
     if (busn == -1)
         printf("I2C bus for socket %s not found\n", socket);
     else
-        setData(busn, pin, extender);
+        setData(busn, pin, pextender);
 }
 
-void Portextender::setData(int busn, int pin, ExtenderData &extender)
+void Portextender::setData(int busn, int pin, PortexData &pextender)
 {
     Ci2c_smbus i2c;
 
@@ -91,7 +91,7 @@ void Portextender::setData(int busn, int pin, ExtenderData &extender)
 
     res = i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
 
-    if (extender.direction)
+    if (pextender.direction)
         data |= (1 << (pin - 1));
     else
         data &= ~(1 << (pin - 1));
@@ -102,11 +102,11 @@ void Portextender::setData(int busn, int pin, ExtenderData &extender)
 
     usleep(10000);
 
-    if (extender.direction) //< input
+    if (pextender.direction) //< input
     {
         res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
 
-        if (extender.pullup)
+        if (pextender.pullup)
             data |= (1 << (pin - 1));
         else
             data &= ~(1 << (pin - 1));
@@ -117,7 +117,7 @@ void Portextender::setData(int busn, int pin, ExtenderData &extender)
     {
         res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
 
-        if (extender.value)
+        if (pextender.value)
             data |= (1 << (pin - 1));
         else
             data &= ~(1 << (pin - 1));

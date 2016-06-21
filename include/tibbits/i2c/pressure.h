@@ -13,8 +13,11 @@
 
 struct PresData
 {
-    float temperature; //< °C
-    float pressure; //< mm Hg
+    /// Temperature in degrees Celsius
+    float temperature;
+
+    /// Pressure in mm Hg
+    float pressure;
 };
 
 /*!
@@ -32,15 +35,15 @@ public:
 
     /// Get current pressure/temperature
     /*!
-        \param socket I2C bus name
-        \return pres PresData data struct
+        \param socket I2C bus name (eg: s1, s15)
+        \param pres PresData data struct
     */
     void getData(const char *socket, PresData &pres);
 
     /// Get current pressure/temperature
     /*!
-        \param bus I2C bus number
-        \return pres PresData data struct
+        \param bus I2C bus number (eg: 0, 4)
+        \param pres PresData data struct
     */
     void getData(int bus, PresData &pres);
 };

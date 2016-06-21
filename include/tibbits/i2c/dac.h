@@ -7,7 +7,7 @@
 #define __LDAC_H__
 
 /*!
-    \class DAC
+    \class Dac
     \brief Class for DAC (Tibbit #14)
 */
 
@@ -21,7 +21,7 @@ public:
 
     /// Set voltage for channel
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param channel Integer number of DAC channel (1...4)
         \param voltage Value in millivolts (-10000...10000)
     */
@@ -29,7 +29,7 @@ public:
 
     /// Set voltage for channel
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param gpin_c GPIO C-pin bus number
         \param gpin_d GPIO D-pin bus number
         \param channel Integer number of DAC channel (1...4)

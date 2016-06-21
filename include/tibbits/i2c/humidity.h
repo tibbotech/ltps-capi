@@ -13,8 +13,13 @@
 
 struct HumData
 {
-    float humidity; //< % RH
-    float temperature; //< °C
+    /// RH in percents
+    float humidity;
+
+    /// Temperature in degrees Celsius
+    float temperature;
+
+    /// Meter measurement status
     int status;
 };
 
@@ -33,15 +38,15 @@ public:
 
     /// Get current humidity/temperature
     /*!
-        \param socket I2C bus name
-        \return hum HumData data struct
+        \param socket I2C bus name (eg: s1, s15)
+        \param hum HumData data struct
     */
     void getData(const char* socket, HumData &hum);
 
     /// Get current humidity/temperature
     /*!
-        \param busn I2C bus number
-        \return hum HumData data struct
+        \param busn I2C bus number (eg: 0, 4)
+        \param hum HumData data struct
     */
     void getData(int busn, HumData &hum);
 };

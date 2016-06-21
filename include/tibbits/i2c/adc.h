@@ -7,7 +7,7 @@
 #define __LADC_H__
 
 /*!
-    \class ADC
+    \class Adc
     \brief Class for ADC (Tibbit #13)
 */
 
@@ -21,7 +21,7 @@ public:
 
     /// Get voltage value for channel
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param channel ADC channel (1...4)
         \return Value in millivolts
     */
@@ -29,7 +29,7 @@ public:
 
     /// Get voltage value for channel
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param channel ADC channel (1...4)
         \return Value in millivolts
     */

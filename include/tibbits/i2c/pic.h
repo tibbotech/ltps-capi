@@ -19,7 +19,7 @@ enum PicFreq
 };
 
 /*!
-    \class PIC
+    \class Pic
     \brief Class for PWM/ADC PIC16F1824 tibbit control (Tibbit #16, Tibbit #17 and Tibbit #31)
 */
 
@@ -33,14 +33,14 @@ public:
 
     /// PIC initialization (call before PIC first usage)
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param freq Frequency of internal oscillator for PWM
     */
     void initPic(const char* socket, PicFreq freq);
 
     /// PIC initialization (call before PIC first usage)
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param gpin GPIO C-pin bus number
         \param freq Frequency of internal oscillator for PWM
     */
@@ -48,35 +48,35 @@ public:
 
     /// Configure PIC as PWM (supported by Tibbit's #16, #17 and #31)
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param channel 1, 2 or 3
     */
     void configurePwm(const char* socket, int channel);
 
     /// Configure PIC as PWM (supported by Tibbit's #16, #17 and #31)
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param channel 1, 2 or 3
     */
     void configurePwm(int busn, int channel);
 
     /// Configure PIC as ADC (supported by Tibbit #31)
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param channel 1, 2, 3 or 4
     */
     void configureAdc(const char *socket, int channel);
 
     /// Configure PIC as ADC (supported by Tibbit #31)
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param channel 1, 2, 3 or 4
     */
     void configureAdc(int busn, int channel);
 
     /// Start PWM (configurePwm must called before)
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param channel Channel number (1, 2 or 3)
         \param pusle PWM pulse width is defined as the base frequency clock count (0, 1, 2...1023)
         \param period PWM period is defined as the base frequency clock count (0, 4, 8...1023)
@@ -86,7 +86,7 @@ public:
 
     /// Start PWM (configurePwm must called before)
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param channel Channel number (1, 2 or 3)
         \param pusle PWM pulse width is defined as the base frequency clock count (0, 1, 2...1023)
         \param period PWM period is defined as the base frequency clock count (0, 4, 8...1023)
@@ -96,21 +96,21 @@ public:
 
     /// Stop PWM (initPic or configurePwm must called before)
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param channel Channel number (1, 2 or 3)
     */
     void stopPwm(const char* socket, int channel);
 
     /// Stop PWM (initPic or configurePwm must called before)
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param channel Channel number (1, 2 or 3)
     */
     void stopPwm(int busn, int channel);
 
     /// Get ADC voltage (0...4000 mV) (configureAdc must called before)
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \param channel Channel number (1, 2, 3 or 4)
         \return Voltage in mV
     */
@@ -118,7 +118,7 @@ public:
 
     /// Get ADC voltage (0...4000 mV) (configureAdc must called before)
     /*!
-        \param busn I2C bus number
+        \param busn I2C bus number (eg: 0, 4)
         \param channel Channel number (1, 2, 3 or 4)
         \return Voltage in mV
     */

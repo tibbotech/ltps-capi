@@ -21,14 +21,14 @@ public:
 
     /// Get current illumination in lx
     /*!
-        \param socket I2C bus name
+        \param socket I2C bus name (eg: s1, s15)
         \return Illumination in lx
     */
     int getIllumination(const char *socket);
 
     /// Get current illumination in lx
     /*!
-        \param bus I2C bus number
+        \param bus I2C bus number (eg: 0, 4)
         \return Illumination in lx
     */
     int getIllumination(int bus);

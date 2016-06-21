@@ -13,9 +13,14 @@
 
 struct AccelData
 {
-    int lx; //< mG
-    int ly; //< mG
-    int lz; //< mG
+    /// Acceleration for X-axis im mG
+    int lx;
+
+    /// Acceleration for Y-axis im mG
+    int ly;
+
+    /// Acceleration for Z-axis im mG
+    int lz;
 };
 
 /*!
@@ -33,15 +38,15 @@ public:
 
     /// Get current data for accelerometer axises
     /*!
-        \param socket I2C bus name
-        \return accel AccelData data struct
+        \param socket I2C bus name (eg: s1, s15)
+        \param accel AccelData data struct
     */
     void getData(const char* socket, AccelData &accel);
 
     /// Get current data for accelerometer axises
     /*!
-        \param busn I2C bus number
-        \return accel AccelData data struct
+        \param busn I2C bus number (eg: 0, 4)
+        \param accel AccelData data struct
     */
     void getData(int busn, AccelData &accel);
 };

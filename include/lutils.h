@@ -15,8 +15,8 @@ namespace Lutils
 {
     /// Get I2C bus number by socket
     /*!
-        \param socket I2C bus name (eg: s1)
-        \return I2C bus number (eg: 4)
+        \param socket I2C bus name (eg: s1, s15)
+        \return I2C bus number (eg: 0, 4)
     */
     int getI2CBusNum(const char* socket);
 
