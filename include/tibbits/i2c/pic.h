@@ -41,7 +41,7 @@ public:
     /// PIC initialization (call before PIC first usage)
     /*!
         \param busn I2C bus number (eg: 0, 4)
-        \param gpin GPIO C-pin bus number
+        \param gpin_c GPIO C-pin bus number
         \param freq Frequency of internal oscillator for PWM
     */
     void initPic(int busn, int gpin_c, PicFreq freq);
@@ -78,7 +78,7 @@ public:
     /*!
         \param socket I2C bus name (eg: s1, s15)
         \param channel Channel number (1, 2 or 3)
-        \param pusle PWM pulse width is defined as the base frequency clock count (0, 1, 2...1023)
+        \param pulse PWM pulse width is defined as the base frequency clock count (0, 1, 2...1023)
         \param period PWM period is defined as the base frequency clock count (0, 4, 8...1023)
         \param prescaler Prescaler affects the base frequency (the period is multiplied to the prescaler) (1, 4, 16 or 64)
     */
@@ -88,7 +88,7 @@ public:
     /*!
         \param busn I2C bus number (eg: 0, 4)
         \param channel Channel number (1, 2 or 3)
-        \param pusle PWM pulse width is defined as the base frequency clock count (0, 1, 2...1023)
+        \param pulse PWM pulse width is defined as the base frequency clock count (0, 1, 2...1023)
         \param period PWM period is defined as the base frequency clock count (0, 4, 8...1023)
         \param prescaler Prescaler affects the base frequency (the period is multiplied to the prescaler) (1, 4, 16 or 64)
     */

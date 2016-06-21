@@ -8,7 +8,7 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -W -Wall -fdata-sections -ffuncti
 set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--gc-sections" )
 set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--gc-sections" )
 
-if( CMAKE_BUILD_TYPE MATCHES Debug)
+if( CMAKE_BUILD_TYPE MATCHES Debug )
 	set( CMAKE_BUILD_TYPE Debug )
 	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -rdynamic" )
 else()
@@ -16,6 +16,20 @@ else()
 	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2" )
 	set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--strip-all" )
 	set( CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Wl,--strip-all" )
+endif()
+
+find_package( Doxygen )
+
+if( DOXYGEN_FOUND )
+	set( doxyfile ${PROJECT_BINARY_DIR}/Doxyfile )
+	configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY )
+  	add_custom_target ( doc
+    ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating doxygen documentation" VERBATIM
+	)
+else( DOXYGEN_FOUND )
+	message( FATAL_ERROR "Doxygen not found" )
 endif()
 
 set ( SOURCES
@@ -54,16 +68,23 @@ set ( SOURCES
 
 include_directories( include )
 
+add_custom_target ( Docs ALL DEPENDS doc )
+
 #add_executable( ltps ${SOURCES} )
 
-add_library (Ltps SHARED ${SOURCES} )
-add_library (LtpsStatic STATIC ${SOURCES} )
+add_library ( Ltps SHARED ${SOURCES} )
+add_library ( LtpsStatic STATIC ${SOURCES} )
 
-set_target_properties(Ltps PROPERTIES SOVERSION "0.1")
+set_target_properties( Ltps PROPERTIES SOVERSION "0.1" )
 
-install( TARGETS Ltps DESTINATION lib )
-install( TARGETS LtpsStatic DESTINATION lib )   
+install( TARGETS Ltps DESTINATION /usr/lib )
+install( TARGETS LtpsStatic DESTINATION /usr/lib )
  
-install( DIRECTORY include/tibbits/i2c/ DESTINATION include/ltps )
-install( DIRECTORY include/drivers/ DESTINATION include/ltps )
+install( DIRECTORY include/tibbits/i2c/ DESTINATION /usr/include/ltps )
+install( DIRECTORY include/drivers/ DESTINATION /usr/include/ltps )
+
+install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/man/man3 DESTINATION /usr/share/man )
+install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html DESTINATION /usr/share/docs/ltps )
+
+install( FILES LICENSE DESTINATION /usr/share/docs/ltps )
 
