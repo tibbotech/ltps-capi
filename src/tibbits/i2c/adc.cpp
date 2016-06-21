@@ -7,6 +7,7 @@
 #include "tibbits/i2c/adc.h"
 
 #include "global.h"
+#include "lutils.h"
 
 Adc::Adc()
 {
@@ -18,11 +19,24 @@ Adc::~Adc()
 
 }
 
-int Adc::getVoltage(int bus, unsigned int channel)
+int Adc::getVoltage(const char* socket, unsigned int channel)
+{
+    int busn = Lutils::getI2CBusNum(socket);
+
+    if (busn == -1)
+    {
+        printf("I2C bus for socket %s not found\n", socket);
+        return 0;
+    }
+    else
+        return getVoltage(busn, channel);
+}
+
+int Adc::getVoltage(int busn, unsigned int channel)
 {
     Ci2c_smbus i2c;
 
-    int res = i2c.set_bus(bus);
+    int res = i2c.set_bus(busn);
 
     if (res != 1)
     {

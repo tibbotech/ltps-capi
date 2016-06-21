@@ -5,6 +5,9 @@
 
 #include "ltps.h"
 
+#include "string"
+#include "global.h"
+
 #if !defined(_GNU_SOURCE)
     #define _GNU_SOURCE
 #endif

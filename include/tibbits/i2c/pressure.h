@@ -7,11 +7,11 @@
 #define __LPRESSURE_H__
 
 /*!
-    \struct Mpl115a2
+    \struct PresData
     \brief Struct with data output for MPL115A2
 */
 
-struct Mpl115a2
+struct PresData
 {
     float temperature; //< °C
     float pressure; //< mm Hg
@@ -32,10 +32,17 @@ public:
 
     /// Get current pressure/temperature
     /*!
-        \param bus I2C bus number
-        \return Mpl115a2 data struct
+        \param socket I2C bus name
+        \return pres PresData data struct
     */
-    Mpl115a2 getData(int bus);
+    void getData(const char *socket, PresData &pres);
+
+    /// Get current pressure/temperature
+    /*!
+        \param bus I2C bus number
+        \return pres PresData data struct
+    */
+    void getData(int bus, PresData &pres);
 };
 
 #endif

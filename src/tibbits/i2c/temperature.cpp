@@ -7,6 +7,7 @@
 #include "tibbits/i2c/temperature.h"
 
 #include "global.h"
+#include "lutils.h"
 
 Temperature::Temperature()
 {
@@ -16,6 +17,19 @@ Temperature::Temperature()
 Temperature::~Temperature()
 {
 
+}
+
+float Temperature::getTemperature(const char *socket)
+{
+    int busn = Lutils::getI2CBusNum(socket);
+
+    if (busn == -1)
+    {
+        printf("I2C bus for socket %s not found\n", socket);
+        return 0.00f;
+    }
+    else
+        return getTemperature(busn);
 }
 
 float Temperature::getTemperature(int bus)

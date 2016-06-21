@@ -7,6 +7,7 @@
 #include "tibbits/i2c/accelerometer.h"
 
 #include "global.h"
+#include "lutils.h"
 
 Accelerometer::Accelerometer()
 {
@@ -18,19 +19,28 @@ Accelerometer::~Accelerometer()
 
 }
 
-Adxl312 Accelerometer::getData(int bus)
+void Accelerometer::getData(const char* socket, AccelData &accel)
 {
-    Adxl312 accel;
+    int busn = Lutils::getI2CBusNum(socket);
+
+    if (busn == -1)
+        printf("I2C bus for socket %s not found\n", socket);
+    else
+        getData(busn, accel);
+}
+
+void Accelerometer::getData(int busn, AccelData &accel)
+{
     memset(&accel, 0, sizeof accel);
 
     Ci2c_smbus i2c;
 
-    int res = i2c.set_bus(bus);
+    int res = i2c.set_bus(busn);
 
     if (res != 1)
     {
         printf("Accelerometer set I2C bus errno: %i\n", res);
-        return accel;
+        return;
     }
 
     res = i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::STANDBY_MODE); //< Go into standby mode to configure the device
@@ -99,7 +109,7 @@ Adxl312 Accelerometer::getData(int bus)
     if (res != 14)
     {
         printf("Error while get data for 3-axis accelerometer\n");
-        return accel;
+        return;
     }
 
     // Conversions
@@ -140,6 +150,4 @@ Adxl312 Accelerometer::getData(int bus)
     accel.lx = x_value;
     accel.ly = y_value;
     accel.lz = z_value;
-
-    return accel;
 }

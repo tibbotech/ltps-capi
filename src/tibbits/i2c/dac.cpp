@@ -8,6 +8,10 @@
 #include "tibbits/i2c/dac.h"
 
 #include "global.h"
+#include "lutils.h"
+
+#include <string>
+#include <algorithm>
 
 Dac::Dac()
 {
@@ -19,11 +23,35 @@ Dac::~Dac()
 
 }
 
-void Dac::setVoltage(int bus, int gpin_c, int gpin_d, unsigned int channel, int voltage)
+void Dac::setVoltage(const char* socket, unsigned int channel, int voltage)
+{
+    std::string sock(socket);
+    std::transform(sock.begin(), sock.end(), sock.begin(), ::toupper);
+
+    int busn = Lutils::getI2CBusNum(socket);
+    int gpin_c = Lutils::readInteger(PINS_FILE, "CPU", std::string(sock + "C").c_str());
+    int gpin_d = Lutils::readInteger(PINS_FILE, "CPU", std::string(sock + "D").c_str());
+
+    if (busn == -1)
+    {
+        printf("I2C bus for socket %s not found\n", socket);
+        return;
+    }
+
+    if ((gpin_c == 0) || (gpin_d == 0))
+    {
+        printf("GPIO pins for socket %s not found\n", socket);
+        return;
+    }
+
+    setVoltage(busn, gpin_c, gpin_d, channel, voltage);
+}
+
+void Dac::setVoltage(int busn, int gpin_c, int gpin_d, unsigned int channel, int voltage)
 {
     Ci2c_smbus i2c;
 
-    int res = i2c.set_bus(bus);
+    int res = i2c.set_bus(busn);
 
     if (res != 1)
     {

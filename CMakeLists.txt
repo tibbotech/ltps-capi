@@ -21,6 +21,7 @@ endif()
 set ( SOURCES
 #		include/ltps.h
 		include/global.h
+		include/lutils.h
 		include/drivers/cpin.h
 		include/drivers/ci2c.h
 		include/drivers/ci2c_smbus.h
@@ -35,6 +36,7 @@ set ( SOURCES
 		include/tibbits/i2c/potentiometer.h
 		include/tibbits/i2c/portextender.h
 #		src/main.cpp
+		src/lutils.cpp
 		src/drivers/cpin.cpp
 		src/drivers/ci2c.cpp
 		src/drivers/ci2c_smbus.cpp
@@ -62,6 +64,6 @@ set_target_properties(Ltps PROPERTIES SOVERSION "0.1")
 install( TARGETS Ltps DESTINATION lib )
 install( TARGETS LtpsStatic DESTINATION lib )   
  
-install( DIRECTORY include/tibbits/i2c/ DESTINATION include )
-install( DIRECTORY include/drivers/ DESTINATION include )
+install( DIRECTORY include/tibbits/i2c/ DESTINATION include/ltps )
+install( DIRECTORY include/drivers/ DESTINATION include/ltps )
 

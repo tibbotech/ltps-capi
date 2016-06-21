@@ -7,6 +7,7 @@
 #include "tibbits/i2c/portextender.h"
 
 #include "global.h"
+#include "lutils.h"
 
 Portextender::Portextender()
 {
@@ -18,51 +19,67 @@ Portextender::~Portextender()
 
 }
 
-Mcp23008 Portextender::getData(int bus, int pin)
+void Portextender::getData(const char *socket, int pin, ExtenderData &extender)
 {
-    Mcp23008 params;
-    memset(&params, 0, sizeof params);
+    int busn = Lutils::getI2CBusNum(socket);
+
+    if (busn == -1)
+        printf("I2C bus for socket %s not found\n", socket);
+    else
+        getData(busn, pin, extender);
+}
+
+void Portextender::getData(int busn, int pin, ExtenderData &extender)
+{
+    memset(&extender, 0, sizeof extender);
 
     Ci2c_smbus i2c;
 
-    int res = i2c.set_bus(bus);
+    int res = i2c.set_bus(busn);
 
     if (res != 1)
     {
         printf("8-bit port extender set I2C bus errno: %i\n", res);
-        return params;
+        return;
     }
 
     uint8_t data = 0;
 
     res = i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
-    params.direction = (data >> (pin - 1)) & 1;
+    extender.direction = (data >> (pin - 1)) & 1;
 
     data = 0;
 
     res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
-    params.pullup = (data >> (pin - 1)) & 1;
+    extender.pullup = (data >> (pin - 1)) & 1;
 
     data = 0;
 
     res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
-    params.value = (data >> (pin - 1)) & 1;
-
+    extender.value = (data >> (pin - 1)) & 1;
 
     if (res != 3)
     {
         printf("Error while get data for 8-bit port extender\n");
-        return params;
+        return;
     }
-
-    return params;
 }
 
-void Portextender::setData(int bus, int pin, Mcp23008 params)
+void Portextender::setData(const char *socket, int pin, ExtenderData &extender)
+{
+    int busn = Lutils::getI2CBusNum(socket);
+
+    if (busn == -1)
+        printf("I2C bus for socket %s not found\n", socket);
+    else
+        setData(busn, pin, extender);
+}
+
+void Portextender::setData(int busn, int pin, ExtenderData &extender)
 {
     Ci2c_smbus i2c;
 
-    int res = i2c.set_bus(bus);
+    int res = i2c.set_bus(busn);
 
     if (res != 1)
     {
@@ -74,7 +91,7 @@ void Portextender::setData(int bus, int pin, Mcp23008 params)
 
     res = i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
 
-    if (params.direction)
+    if (extender.direction)
         data |= (1 << (pin - 1));
     else
         data &= ~(1 << (pin - 1));
@@ -85,11 +102,11 @@ void Portextender::setData(int bus, int pin, Mcp23008 params)
 
     usleep(10000);
 
-    if (params.direction) //< input
+    if (extender.direction) //< input
     {
         res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
 
-        if (params.pullup)
+        if (extender.pullup)
             data |= (1 << (pin - 1));
         else
             data &= ~(1 << (pin - 1));
@@ -100,7 +117,7 @@ void Portextender::setData(int bus, int pin, Mcp23008 params)
     {
         res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
 
-        if (params.value)
+        if (extender.value)
             data |= (1 << (pin - 1));
         else
             data &= ~(1 << (pin - 1));

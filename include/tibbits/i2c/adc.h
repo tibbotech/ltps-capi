@@ -21,11 +21,19 @@ public:
 
     /// Get voltage value for channel
     /*!
-        \param bus I2C bus number
+        \param socket I2C bus name
         \param channel ADC channel (1...4)
         \return Value in millivolts
     */
-    int getVoltage(int bus, unsigned int channel);
+    int getVoltage(const char* socket, unsigned int channel);
+
+    /// Get voltage value for channel
+    /*!
+        \param busn I2C bus number
+        \param channel ADC channel (1...4)
+        \return Value in millivolts
+    */
+    int getVoltage(int busn, unsigned int channel);
 };
 
 #endif

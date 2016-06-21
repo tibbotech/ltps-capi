@@ -34,19 +34,19 @@ public:
 
     /// Set current impedance and saves the value into the ICs EEPROM
     /*!
+        \param socket I2C bus name
+        \param impedance Current value
+        \param max Maximum posible impedance
+    */
+    void setImpedance(const char *socket, unsigned int impedance, Imps max);
+
+    /// Set current impedance and saves the value into the ICs EEPROM
+    /*!
         \param bus I2C bus number
         \param impedance Current value
         \param max Maximum posible impedance
     */
     void setImpedance(int bus, unsigned int impedance, Imps max);
-
-private:
-
-    unsigned int convertImpToOhm(unsigned int impedance, unsigned int max);
-
-    bool writeData(int bus, char addr, unsigned int value);
-
-    unsigned int readData(int bus, char addr);
 };
 
 #endif

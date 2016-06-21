@@ -21,6 +21,13 @@ public:
 
     /// Get current temperature in Celsius degrees
     /*!
+        \param socket I2C bus name
+        \return Temperature in C degrees
+    */
+    float getTemperature(const char *socket);
+
+    /// Get current temperature in Celsius degrees
+    /*!
         \param bus I2C bus number
         \return Temperature in C degrees
     */

@@ -7,11 +7,11 @@
 #define __LHUMIDITY_H__
 
 /*!
-    \struct Hih6130
+    \struct HumData
     \brief Struct with data output for HIH6130
 */
 
-struct Hih6130
+struct HumData
 {
     float humidity; //< % RH
     float temperature; //< °C
@@ -33,10 +33,17 @@ public:
 
     /// Get current humidity/temperature
     /*!
-        \param bus I2C bus number
-        \return Hih6130 data struct
+        \param socket I2C bus name
+        \return hum HumData data struct
     */
-    Hih6130 getData(int bus);
+    void getData(const char* socket, HumData &hum);
+
+    /// Get current humidity/temperature
+    /*!
+        \param busn I2C bus number
+        \return hum HumData data struct
+    */
+    void getData(int busn, HumData &hum);
 };
 
 #endif

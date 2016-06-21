@@ -7,6 +7,7 @@
 #include "tibbits/i2c/pressure.h"
 
 #include "global.h"
+#include "lutils.h"
 
 Pressure::Pressure()
 {
@@ -18,10 +19,19 @@ Pressure::~Pressure()
 
 }
 
-Mpl115a2 Pressure::getData(int bus)
+void Pressure::getData(const char *socket, PresData &pres)
 {
-    Mpl115a2 data;
-    memset(&data, 0, sizeof data);
+    int busn = Lutils::getI2CBusNum(socket);
+
+    if (busn == -1)
+        printf("I2C bus for socket %s not found\n", socket);
+    else
+        getData(busn, pres);
+}
+
+void Pressure::getData(int bus, PresData &pres)
+{
+    memset(&pres, 0, sizeof pres);
 
     Ci2c_smbus i2c;
 
@@ -30,7 +40,7 @@ Mpl115a2 Pressure::getData(int bus)
     if (res != 1)
     {
         printf("Barometric pressure sensor set I2C bus errno: %i\n", res);
-        return data;
+        return;
     }
 
     uint8_t a0_msb, a0_lsb, b1_msb, b1_lsb, b2_msb, b2_lsb, c12_msb, c12_lsb;
@@ -82,7 +92,7 @@ Mpl115a2 Pressure::getData(int bus)
     if (res != 13)
     {
         printf("Error while get data for Barometric pressure sensor\n");
-        return data;
+        return;
     }
 
     uint8_t pressure_msb, pressure_lsb, temperature_msb, temperature_lsb;
@@ -104,8 +114,6 @@ Mpl115a2 Pressure::getData(int bus)
     pressure =  ((pressure_comp / 15.737f) + 50.0f) * 7.50062;
     temperature = ((float) raw_temperature) * -0.1707f + 112.27f;
 
-    data.pressure = pressure;
-    data.temperature = temperature;
-
-    return data;
+    pres.pressure = pressure;
+    pres.temperature = temperature;
 }

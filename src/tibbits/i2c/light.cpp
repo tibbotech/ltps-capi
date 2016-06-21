@@ -7,6 +7,7 @@
 #include "tibbits/i2c/light.h"
 
 #include "global.h"
+#include "lutils.h"
 
 Light::Light()
 {
@@ -16,6 +17,19 @@ Light::Light()
 Light::~Light()
 {
 
+}
+
+int Light::getIllumination(const char *socket)
+{
+    int busn = Lutils::getI2CBusNum(socket);
+
+    if (busn == -1)
+    {
+        printf("I2C bus for socket %s not found\n", socket);
+        return 0;
+    }
+    else
+        return getIllumination(busn);
 }
 
 int Light::getIllumination(int bus)

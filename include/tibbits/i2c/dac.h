@@ -21,13 +21,21 @@ public:
 
     /// Set voltage for channel
     /*!
-        \param bus I2C bus number
+        \param socket I2C bus name
+        \param channel Integer number of DAC channel (1...4)
+        \param voltage Value in millivolts (-10000...10000)
+    */
+    void setVoltage(const char* socket, unsigned int channel, int voltage);
+
+    /// Set voltage for channel
+    /*!
+        \param busn I2C bus number
         \param gpin_c GPIO C-pin bus number
         \param gpin_d GPIO D-pin bus number
         \param channel Integer number of DAC channel (1...4)
         \param voltage Value in millivolts (-10000...10000)
     */
-    void setVoltage(int bus, int gpin_c, int gpin_d, unsigned int channel, int voltage);
+    void setVoltage(int busn, int gpin_c, int gpin_d, unsigned int channel, int voltage);
 };
 
 #endif

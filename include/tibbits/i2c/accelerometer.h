@@ -7,11 +7,11 @@
 #define __LACCELEROMETER_H__
 
 /*!
-    \struct Adxl312
+    \struct AccelData
     \brief Struct with data output for ADXL312
 */
 
-struct Adxl312
+struct AccelData
 {
     int lx; //< mG
     int ly; //< mG
@@ -33,10 +33,17 @@ public:
 
     /// Get current data for accelerometer axises
     /*!
-        \param bus I2C bus number
-        \return Adxl312 data struct
+        \param socket I2C bus name
+        \return accel AccelData data struct
     */
-    Adxl312 getData(int bus);
+    void getData(const char* socket, AccelData &accel);
+
+    /// Get current data for accelerometer axises
+    /*!
+        \param busn I2C bus number
+        \return accel AccelData data struct
+    */
+    void getData(int busn, AccelData &accel);
 };
 
 #endif
