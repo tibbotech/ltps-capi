@@ -12,7 +12,7 @@ int main()
     PortexData data;
 
     data.direction = false;
-    data.pullup = false; //< It does not matter for output mode (see PortexData struct definition)
+    data.pullup = false; // It does not matter for output mode (see PortexData struct definition)
 
     for (int i = 1; i < 9; i++)
     {

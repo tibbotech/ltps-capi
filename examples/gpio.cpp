@@ -10,7 +10,7 @@
 int main()
 {
     CPin gpio;
-    if (!gpio.init(Lutils::readInteger(PINS_INI_FILE, "CPU", "S1A"))) //< Successful initialization
+    if (!gpio.init(Lutils::readInteger(PINS_INI_FILE, "CPU", "S1A"))) // Successful initialization
     {
         if (gpio.dir_get() == PIN_DIR_I)
             gpio.dir_set(PIN_DIR_O);

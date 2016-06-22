@@ -10,6 +10,6 @@ int main()
 {
     Potentiometer potent;
 
-    printf("Set impedance to 30 kOhm of 50 kOhm\n"); //< Tibbit 40_3
+    printf("Set impedance to 30 kOhm of 50 kOhm\n"); // Tibbit 40_3
     potent.setImpedance("s1", 30000, _50kOhm);
 }
