@@ -6,6 +6,8 @@
 #ifndef __LUTILS_H__
 #define __LUTILS_H__
 
+#define PINS_INI_FILE           "/opt/tps-shared/hwini/pins.ini"
+
 /*!
     \namespace Lutils
     \brief Help functions for LTPS API

@@ -82,6 +82,7 @@ install( TARGETS LtpsStatic DESTINATION /usr/lib )
  
 install( DIRECTORY include/tibbits/i2c/ DESTINATION /usr/include/ltps )
 install( DIRECTORY include/drivers/ DESTINATION /usr/include/ltps )
+install( FILES include/lutils.h DESTINATION /usr/include/ltps )
 
 install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/man/man3 DESTINATION /usr/share/man )
 install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html DESTINATION /usr/share/docs/ltps )

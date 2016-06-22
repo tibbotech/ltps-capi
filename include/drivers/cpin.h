@@ -8,6 +8,9 @@
 #include <string.h>
 #include <dirent.h>
 
+#define PIN_DIR_I                   0
+#define PIN_DIR_O                   1
+
 class CPin {
 
 protected:

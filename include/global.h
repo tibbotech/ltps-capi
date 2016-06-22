@@ -8,9 +8,6 @@
 
 #define PINS_FILE                   "/opt/tps-shared/hwini/pins.ini"
 
-#define PIN_DIR_I                   0
-#define PIN_DIR_O                   1
-
 #define SYS_GPIO_PFX                "/sys/class/gpio/"
 
 #define SYS_I2C_PFX                 "/dev/i2c-"

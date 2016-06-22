@@ -2,6 +2,8 @@
     \example tibbit30.cpp
 */
 
+#include <stdio.h> // printf
+
 #include "ltps/humidity.h"
 
 int main()
