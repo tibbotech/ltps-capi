@@ -5,7 +5,7 @@
 #include <stdio.h> // printf
 #include <unistd.h> // sleep
 
-#include "ltps/pic.h"
+#include "ltps/capi/pic.h"
 
 int main()
 {
@@ -27,4 +27,6 @@ int main()
         printf("Stop PWM at channel %i\n", i);
         pic.stopPwm("s1", i);
     }
+
+    return 0;
 }

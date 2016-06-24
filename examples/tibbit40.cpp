@@ -4,7 +4,7 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/potentiometer.h"
+#include "ltps/capi/potentiometer.h"
 
 int main()
 {
@@ -12,4 +12,6 @@ int main()
 
     printf("Set impedance to 30 kOhm of 50 kOhm\n"); // Tibbit 40_3
     potent.setImpedance("s1", 30000, _50kOhm);
+
+    return 0;
 }

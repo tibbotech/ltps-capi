@@ -4,7 +4,7 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/accelerometer.h"
+#include "ltps/capi/accelerometer.h"
 
 int main()
 {
@@ -16,4 +16,6 @@ int main()
     printf("Acceleration X-axis = %i mG\n", data.lx);
     printf("Acceleration Y-axis = %i mG\n", data.ly);
     printf("Acceleration Z-axis = %i mG\n", data.lz);
+
+    return 0;
 }

@@ -4,7 +4,7 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/portextender.h"
+#include "ltps/capi/portextender.h"
 
 int main()
 {
@@ -20,4 +20,6 @@ int main()
         data.value = i % 2;
         pext.setData("s1", i, data);
     }
+
+    return 0;
 }

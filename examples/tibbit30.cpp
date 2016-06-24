@@ -4,7 +4,7 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/humidity.h"
+#include "ltps/capi/humidity.h"
 
 int main()
 {
@@ -16,4 +16,6 @@ int main()
     printf("RH = %f percents\n", data.humidity);
     printf("Temperature = %f degrees Celsius\n", data.temperature);
     printf("Status = %i\n", data.status);
+
+    return 0;
 }

@@ -4,7 +4,7 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/pressure.h"
+#include "ltps/capi/pressure.h"
 
 int main()
 {
@@ -15,4 +15,6 @@ int main()
 
     printf("Pressure = %f mm Hg\n", data.pressure);
     printf("Temperature = %f degrees Celsius\n", data.temperature);
+
+    return 0;
 }

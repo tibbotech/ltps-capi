@@ -4,8 +4,8 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/cpin.h"
-#include "ltps/lutils.h"
+#include "ltps/capi/cpin.h"
+#include "ltps/capi/lutils.h"
 
 int main()
 {
@@ -19,5 +19,9 @@ int main()
         gpio.W(1);
 
         printf("PIN value = %i\n", gpio.R());
+
+        return 0;
     }
+    else
+        return 1;
 }

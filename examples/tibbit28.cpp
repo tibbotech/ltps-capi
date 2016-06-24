@@ -4,11 +4,13 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/light.h"
+#include "ltps/capi/light.h"
 
 int main()
 {
     Light lt;
 
     printf("Illumination = %i lx\n", lt.getIllumination("s1"));
+
+    return 0;
 }

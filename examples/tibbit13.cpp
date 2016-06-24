@@ -4,7 +4,7 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/adc.h"
+#include "ltps/capi/adc.h"
 
 int main()
 {
@@ -14,4 +14,6 @@ int main()
     printf("Voltage for channel 2 = %i mV\n", adc.getVoltage("s1", 2));
     printf("Voltage for channel 3 = %i mV\n", adc.getVoltage("s1", 3));
     printf("Voltage for channel 4 = %i mV\n", adc.getVoltage("s1" ,4));
+
+    return 0;
 }

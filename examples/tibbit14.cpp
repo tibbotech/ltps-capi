@@ -4,7 +4,7 @@
 
 #include <stdio.h> // printf
 
-#include "ltps/dac.h"
+#include "ltps/capi/dac.h"
 
 int main()
 {
@@ -21,4 +21,6 @@ int main()
 
     printf("Set 10000 mV for channel 4\n");
     dac.setVoltage("s1", 4, 10000);
+
+    return 0;
 }

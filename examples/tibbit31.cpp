@@ -5,7 +5,7 @@
 #include <stdio.h> // printf
 #include <unistd.h> // sleep
 
-#include "ltps/pic.h"
+#include "ltps/capi/pic.h"
 
 int main()
 {
@@ -38,4 +38,6 @@ int main()
 
         printf("Channel %i = %i mV\n", i, pic.getAdcVoltage("s1", i));
     }
+
+    return 0;
 }
