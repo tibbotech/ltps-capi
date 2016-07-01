@@ -2,26 +2,16 @@
     \example gpio.cpp
 */
 
-#include <stdio.h> // printf
+#include "ltps/capi/gpio.h"
 
-#include "ltps/capi/cpin.h"
-#include "ltps/capi/lutils.h"
 
 int main()
 {
-    CPin gpio;
-    if (!gpio.init(Lutils::readInteger(PINS_INI_FILE, "CPU", "S1A"))) // Successful initialization
-    {
-        if (gpio.dir_get() == PIN_DIR_I)
-            gpio.dir_set(PIN_DIR_O);
+    Gpio gpio;
 
-        printf("Set PIN value to 1\n");
-        gpio.W(1);
+    if (gpio.getDirection("S1A") == input)
+        gpio.setDirection("S1A", output);
 
-        printf("PIN value = %i\n", gpio.R());
-
-        return 0;
-    }
-    else
-        return 1;
+    if (gpio.getValue("S1A") == 0)
+        gpio.setValue("S1A", 1);
 }
