@@ -9,6 +9,11 @@
 #include "global.h"
 #include "lutils.h"
 
+namespace PortextenderPrivate
+{
+    Ci2c_smbus i2c;
+}
+
 Portextender::Portextender()
 {
 
@@ -21,7 +26,7 @@ Portextender::~Portextender()
 
 void Portextender::getData(const char *socket, int pin, PortexData &pextender)
 {
-    int busn = Lutils::getI2CBusNum(socket);
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
 
     if (busn == -1)
         printf("I2C bus for socket %s not found\n", socket);
@@ -33,9 +38,7 @@ void Portextender::getData(int busn, int pin, PortexData &pextender)
 {
     memset(&pextender, 0, sizeof pextender);
 
-    Ci2c_smbus i2c;
-
-    int res = i2c.set_bus(busn);
+    int res = PortextenderPrivate::i2c.set_bus(busn);
 
     if (res != 1)
     {
@@ -45,17 +48,17 @@ void Portextender::getData(int busn, int pin, PortexData &pextender)
 
     uint8_t data = 0;
 
-    res = i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
+    res = PortextenderPrivate::i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
     pextender.direction = (data >> (pin - 1)) & 1;
 
     data = 0;
 
-    res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
+    res += PortextenderPrivate::i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
     pextender.pullup = (data >> (pin - 1)) & 1;
 
     data = 0;
 
-    res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
+    res += PortextenderPrivate::i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
     pextender.value = (data >> (pin - 1)) & 1;
 
     if (res != 3)
@@ -67,7 +70,7 @@ void Portextender::getData(int busn, int pin, PortexData &pextender)
 
 void Portextender::setData(const char *socket, int pin, PortexData &pextender)
 {
-    int busn = Lutils::getI2CBusNum(socket);
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
 
     if (busn == -1)
         printf("I2C bus for socket %s not found\n", socket);
@@ -77,9 +80,7 @@ void Portextender::setData(const char *socket, int pin, PortexData &pextender)
 
 void Portextender::setData(int busn, int pin, PortexData &pextender)
 {
-    Ci2c_smbus i2c;
-
-    int res = i2c.set_bus(busn);
+    int res = PortextenderPrivate::i2c.set_bus(busn);
 
     if (res != 1)
     {
@@ -89,14 +90,14 @@ void Portextender::setData(int busn, int pin, PortexData &pextender)
 
     uint8_t data = 0;
 
-    res = i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
+    res = PortextenderPrivate::i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
 
     if (pextender.direction)
         data |= (1 << (pin - 1));
     else
         data &= ~(1 << (pin - 1));
 
-    res += i2c.W1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
+    res += PortextenderPrivate::i2c.W1b(MCP23008::I2C_ADDRESS, MCP23008::IODIR, data);
 
     data = 0;
 
@@ -104,25 +105,25 @@ void Portextender::setData(int busn, int pin, PortexData &pextender)
 
     if (pextender.direction) //< input
     {
-        res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
+        res += PortextenderPrivate::i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
 
         if (pextender.pullup)
             data |= (1 << (pin - 1));
         else
             data &= ~(1 << (pin - 1));
 
-        res += i2c.W1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
+        res += PortextenderPrivate::i2c.W1b(MCP23008::I2C_ADDRESS, MCP23008::GPPU, data);
     }
     else //< output
     {
-        res += i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
+        res += PortextenderPrivate::i2c.R1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
 
         if (pextender.value)
             data |= (1 << (pin - 1));
         else
             data &= ~(1 << (pin - 1));
 
-        res += i2c.W1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
+        res += PortextenderPrivate::i2c.W1b(MCP23008::I2C_ADDRESS, MCP23008::GPIO, data);
     }
 
     if (res != 4)

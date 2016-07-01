@@ -59,6 +59,13 @@ public:
         \return Pin value (0 or 1)
     */
     unsigned int getValue(const char *pin);
+
+    /// Get CPU pin number
+    /*!
+        \param pin String name of pin (eg: S1A, S9D)
+        \return CPU pin number
+    */
+    unsigned int getPinNumber(const char* pin);
 };
 
 #endif

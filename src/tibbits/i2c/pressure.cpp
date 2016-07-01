@@ -9,6 +9,11 @@
 #include "global.h"
 #include "lutils.h"
 
+namespace PressurePrivate
+{
+    Ci2c_smbus i2c;
+}
+
 Pressure::Pressure()
 {
 
@@ -21,7 +26,7 @@ Pressure::~Pressure()
 
 void Pressure::getData(const char *socket, PresData &pres)
 {
-    int busn = Lutils::getI2CBusNum(socket);
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
 
     if (busn == -1)
         printf("I2C bus for socket %s not found\n", socket);
@@ -33,9 +38,7 @@ void Pressure::getData(int bus, PresData &pres)
 {
     memset(&pres, 0, sizeof pres);
 
-    Ci2c_smbus i2c;
-
-    int res = i2c.set_bus(bus);
+    int res = PressurePrivate::i2c.set_bus(bus);
 
     if (res != 1)
     {
@@ -46,21 +49,21 @@ void Pressure::getData(int bus, PresData &pres)
     uint8_t a0_msb, a0_lsb, b1_msb, b1_lsb, b2_msb, b2_lsb, c12_msb, c12_lsb;
 
     // Reads the calibration coefficients
-    res = i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_A0_MSB, a0_msb);
+    res = PressurePrivate::i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_A0_MSB, a0_msb);
 
-    res += i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_A0_MSB + 1, a0_lsb);
+    res += PressurePrivate::i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_A0_MSB + 1, a0_lsb);
 
-    res += i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_B1_MSB, b1_msb);
+    res += PressurePrivate::i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_B1_MSB, b1_msb);
 
-    res += i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_B1_MSB + 1, b1_lsb);
+    res += PressurePrivate::i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_B1_MSB + 1, b1_lsb);
 
-    res += i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_B2_MSB, b2_msb);
+    res += PressurePrivate::i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_B2_MSB, b2_msb);
 
-    res += i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_B2_MSB + 1, b2_lsb);
+    res += PressurePrivate::i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_B2_MSB + 1, b2_lsb);
 
-    res += i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_C12_MSB, c12_msb);
+    res += PressurePrivate::i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_C12_MSB, c12_msb);
 
-    res += i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_C12_MSB + 1, c12_lsb);
+    res += PressurePrivate::i2c.R1b(MPL115A2::I2C_ADDRESS, MPL115A2::REG_C12_MSB + 1, c12_lsb);
 
     // Signs of the coeffs (are correct because we use int16_t ints)
     int16_t a0_, b1_, b2_, c12_;
@@ -79,15 +82,15 @@ void Pressure::getData(int bus, PresData &pres)
     b2 = b2_ / 16384.0f; //< 2^-14
     c12 = c12_ / 16777216.0f; //< 2^-24
 
-    res += i2c.W1b(MPL115A2::I2C_ADDRESS, MPL115A2::CMD_CONVERSION, 0x00);
+    res += PressurePrivate::i2c.W1b(MPL115A2::I2C_ADDRESS, MPL115A2::CMD_CONVERSION, 0x00);
 
     usleep(5000);
 
     uint16_t temperature_word, pressure_word;
 
-    res += i2c.R2b(MPL115A2::I2C_ADDRESS, MPL115A2::TEMPERATURE_MSB, temperature_word);
+    res += PressurePrivate::i2c.R2b(MPL115A2::I2C_ADDRESS, MPL115A2::TEMPERATURE_MSB, temperature_word);
 
-    res += i2c.R2b(MPL115A2::I2C_ADDRESS, MPL115A2::PRESSURE_MSB, pressure_word);
+    res += PressurePrivate::i2c.R2b(MPL115A2::I2C_ADDRESS, MPL115A2::PRESSURE_MSB, pressure_word);
 
     if (res != 13)
     {

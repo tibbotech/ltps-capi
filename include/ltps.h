@@ -9,6 +9,7 @@
 #include "drivers/cpin.h"
 #include "drivers/ci2c.h"
 #include "drivers/ci2c_smbus.h"
+#include "drivers/gpio.h"
 
 #include "lutils.h"
 

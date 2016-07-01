@@ -11,6 +11,11 @@
 
 #include <math.h>
 
+namespace HumidityPrivate
+{
+    Ci2c_smbus i2c;
+}
+
 Humidity::Humidity()
 {
 
@@ -23,7 +28,7 @@ Humidity::~Humidity()
 
 void Humidity::getData(const char* socket, HumData &hum)
 {
-    int busn = Lutils::getI2CBusNum(socket);
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
 
     if (busn == -1)
         printf("I2C bus for socket %s not found\n", socket);
@@ -35,9 +40,7 @@ void Humidity::getData(int busn, HumData &hum)
 {
     memset(&hum, 0, sizeof hum);
 
-    Ci2c_smbus i2c;
-
-    int res = i2c.set_bus(busn);
+    int res = HumidityPrivate::i2c.set_bus(busn);
 
     if (res != 1)
     {
@@ -48,10 +51,10 @@ void Humidity::getData(int busn, HumData &hum)
     uint8_t data[4];
     memset(&data, 0, 4);
 
-    i2c.Rbb(HIH6130::I2C_ADDRESS, 0x00, data, 4);
+    HumidityPrivate::i2c.Rbb(HIH6130::I2C_ADDRESS, 0x00, data, 4);
     memset(&data, 0, 4);
 
-    res = i2c.Rbb(HIH6130::I2C_ADDRESS, 0x00, data, 4);
+    res = HumidityPrivate::i2c.Rbb(HIH6130::I2C_ADDRESS, 0x00, data, 4);
 
     if (res != 4)
     {

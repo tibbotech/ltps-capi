@@ -9,6 +9,11 @@
 #include "global.h"
 #include "lutils.h"
 
+namespace AdcPrivate
+{
+    Ci2c_smbus i2c;
+}
+
 Adc::Adc()
 {
 
@@ -21,7 +26,7 @@ Adc::~Adc()
 
 int Adc::getVoltage(const char* socket, unsigned int channel)
 {
-    int busn = Lutils::getI2CBusNum(socket);
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
 
     if (busn == -1)
     {
@@ -34,9 +39,7 @@ int Adc::getVoltage(const char* socket, unsigned int channel)
 
 int Adc::getVoltage(int busn, unsigned int channel)
 {
-    Ci2c_smbus i2c;
-
-    int res = i2c.set_bus(busn);
+    int res = AdcPrivate::i2c.set_bus(busn);
 
     if (res != 1)
     {
@@ -56,10 +59,10 @@ int Adc::getVoltage(int busn, unsigned int channel)
     uint8_t data[2];
     memset(&data, 0, 2);
 
-    i2c.Rbb(LTC2309::I2C_ADDRESS, addr, data, 2); //< Throws out last reading
+    AdcPrivate::i2c.Rbb(LTC2309::I2C_ADDRESS, addr, data, 2); //< Throws out last reading
     memset(&data, 0, 2); // Clear last reading result
 
-    res = i2c.Rbb(LTC2309::I2C_ADDRESS, addr, data, 2); //< Obtains the current reading and stores to data variable
+    res = AdcPrivate::i2c.Rbb(LTC2309::I2C_ADDRESS, addr, data, 2); //< Obtains the current reading and stores to data variable
 
     if (res != 2)
     {

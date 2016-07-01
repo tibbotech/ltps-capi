@@ -9,6 +9,11 @@
 #include "global.h"
 #include "lutils.h"
 
+namespace LightPrivate
+{
+    Ci2c_smbus i2c;
+}
+
 Light::Light()
 {
 
@@ -21,7 +26,7 @@ Light::~Light()
 
 int Light::getIllumination(const char *socket)
 {
-    int busn = Lutils::getI2CBusNum(socket);
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
 
     if (busn == -1)
     {
@@ -34,9 +39,7 @@ int Light::getIllumination(const char *socket)
 
 int Light::getIllumination(int bus)
 {
-    Ci2c_smbus i2c;
-
-    int res = i2c.set_bus(bus);
+    int res = LightPrivate::i2c.set_bus(bus);
 
     if (res != 1)
     {
@@ -47,15 +50,15 @@ int Light::getIllumination(int bus)
     uint8_t data[2];
     memset(&data, 0, 2);
 
-    res = i2c.Wbb(BH1721FVC::I2C_ADDRESS, BH1721FVC::POWEROFF, data, 0);
+    res = LightPrivate::i2c.Wbb(BH1721FVC::I2C_ADDRESS, BH1721FVC::POWEROFF, data, 0);
 
-    res += i2c.Wbb(BH1721FVC::I2C_ADDRESS, BH1721FVC::POWERON, data, 0);
+    res += LightPrivate::i2c.Wbb(BH1721FVC::I2C_ADDRESS, BH1721FVC::POWERON, data, 0);
 
-    res += i2c.Wbb(BH1721FVC::I2C_ADDRESS, BH1721FVC::HIGHRES, data, 0);
+    res += LightPrivate::i2c.Wbb(BH1721FVC::I2C_ADDRESS, BH1721FVC::HIGHRES, data, 0);
 
     usleep(180000);
 
-    res += i2c.Rbb(BH1721FVC::I2C_ADDRESS, 0x00, data, 2);
+    res += LightPrivate::i2c.Rbb(BH1721FVC::I2C_ADDRESS, 0x00, data, 2);
 
     if (res != 2)
     {

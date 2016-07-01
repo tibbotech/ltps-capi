@@ -12,22 +12,48 @@
 
 #include <string>
 #include <iostream>
-#include <fstream>
 #include <algorithm>
 
 #include "lutils.h"
 #include "global.h"
 
-#define MAX_BUF_SIZE        255
+#define MAX_BUF_SIZE            255
+//#define PINS_INI_FILE           "/opt/tps-shared/hwini/pins.ini"
+#define PINS_INI_FILE              "/home/vitaliy/src/tps-agent/etc/pins.ini"
+
+Lutils::Lutils()
+{
+    m_fl.open(PINS_INI_FILE);
+}
+
+Lutils::~Lutils()
+{
+    if (m_fl.is_open())
+        m_fl.close();
+}
+
+Lutils &Lutils::getInstance()
+{
+    static Lutils lutils;
+
+    return lutils;
+}
 
 int Lutils::getI2CBusNum(const char* socket)
 {
+    if (m_i2c.find(socket) != m_i2c.end())
+        return m_i2c.at(socket);
+
     std::string sock(socket);
 
     std::transform(sock.begin(), sock.end(), sock.begin(), ::toupper);
 
-    if (Lutils::readString(PINS_FILE, "I2C", sock.c_str()) && strlen(Lutils::readString(PINS_FILE, "I2C", sock.c_str())) > 0)
-        return Lutils::readInteger(PINS_FILE, "I2C", sock.c_str()); //< HW I2C
+    if (Lutils::readString("I2C", sock.c_str()) && strlen(Lutils::readString("I2C", sock.c_str())) > 0)
+    {
+        int ret = Lutils::readInteger("I2C", sock.c_str()); //< HW I2C;
+        m_i2c[socket] = ret;
+        return ret;
+    }
 
     std::transform(sock.begin(), sock.end(), sock.begin(), ::tolower);
 
@@ -82,6 +108,8 @@ int Lutils::getI2CBusNum(const char* socket)
         if (busn < 0)
             continue;
 
+        m_i2c[socket] = busn;
+
         return busn;
         break;
     }
@@ -91,17 +119,44 @@ int Lutils::getI2CBusNum(const char* socket)
     return -1;
 }
 
-const char *Lutils::readString(const char* file, const char* section, const char* param)
+int Lutils::readInteger(const char* section, const char* param)
 {
-    std::ifstream fl;
-    fl.open(file);
+    if (strcmp(section, "CPU") == 0)
+    {
+        if (m_gpio.find(param) != m_gpio.end())
+            return m_gpio.at(param);
+    }
 
-    if (fl.is_open())
+    std::string value = Lutils::readString(section, param);
+
+    try
+    {
+        if (!value.empty())
+        {
+            int ret = atoi(value.c_str());
+            m_gpio[param] = ret;
+
+            return ret;
+        }
+        else
+            return 0;
+    }
+    catch(...) {}
+
+    return 0;
+}
+
+const char* Lutils::readString(const char* section, const char* param)
+{
+    if (m_fl.is_open())
     {
         char buf[MAX_BUF_SIZE];
         bool sect = false;
 
-        while(fl.getline(buf, sizeof buf))
+        m_fl.clear();
+        m_fl.seekg(0);
+
+        while(m_fl.getline(buf, sizeof buf))
         {
             std::string rdStr(buf);
 
@@ -151,30 +206,10 @@ const char *Lutils::readString(const char* file, const char* section, const char
                 val.erase(std::remove(val.begin(), val.end(), '\n'), val.end());
                 val.erase(std::remove(val.begin(), val.end(), '\t'), val.end());
 
-                fl.close();
                 return val.c_str();
             }
         }
     }
 
-    if (fl.is_open())
-        fl.close();
-
     return "";
-}
-
-int Lutils::readInteger(const char *file, const char* section, const char* param)
-{
-    std::string value = Lutils::readString(file, section, param);
-
-    try
-    {
-        if (!value.empty())
-            return atoi(value.c_str());
-        else
-            return 0;
-    }
-    catch(...) {}
-
-    return 0;
 }

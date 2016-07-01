@@ -9,6 +9,11 @@
 #include "global.h"
 #include "lutils.h"
 
+namespace TemperaturePrivate
+{
+    Ci2c_smbus i2c;
+}
+
 Temperature::Temperature()
 {
 
@@ -21,7 +26,7 @@ Temperature::~Temperature()
 
 float Temperature::getTemperature(const char *socket)
 {
-    int busn = Lutils::getI2CBusNum(socket);
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
 
     if (busn == -1)
     {
@@ -34,9 +39,7 @@ float Temperature::getTemperature(const char *socket)
 
 float Temperature::getTemperature(int bus)
 {
-    Ci2c_smbus i2c;
-
-    int res = i2c.set_bus(bus);
+    int res = TemperaturePrivate::i2c.set_bus(bus);
 
     if (res != 1)
     {
@@ -44,13 +47,13 @@ float Temperature::getTemperature(int bus)
         return 0;
     }
 
-    res = i2c.W1b(MCP9808::I2C_ADDRESS, MCP9808::RESOLUTION, MCP9808::RESOLUSIONMODE); //< 0.25C resolution
+    res = TemperaturePrivate::i2c.W1b(MCP9808::I2C_ADDRESS, MCP9808::RESOLUTION, MCP9808::RESOLUSIONMODE); //< 0.25C resolution
 
     usleep(65000);
 
     uint16_t data;
 
-    res += i2c.R2b(MCP9808::I2C_ADDRESS, MCP9808::TA, data);
+    res += TemperaturePrivate::i2c.R2b(MCP9808::I2C_ADDRESS, MCP9808::TA, data);
 
     if (res != 3)
     {

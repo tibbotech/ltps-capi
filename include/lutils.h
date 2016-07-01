@@ -6,39 +6,52 @@
 #ifndef __LUTILS_H__
 #define __LUTILS_H__
 
-#define PINS_INI_FILE           "/opt/tps-shared/hwini/pins.ini"
+#include <fstream>
+#include <map>
 
 /*!
-    \namespace Lutils
+    \class Lutils
     \brief Help functions for LTPS API
 */
 
-namespace Lutils
+class Lutils
 {
-    /// Get I2C bus number by socket
+public:
+
+    Lutils();
+
+    virtual ~Lutils();
+
+    /// Get singleton instance
+    /*!
+        \return Lutils reference
+    */
+    static Lutils &getInstance();
+
+    /// Get I2C bus number by LTPS socket
     /*!
         \param socket I2C bus name (eg: s1, s15)
         \return I2C bus number (eg: 0, 4)
     */
     int getI2CBusNum(const char* socket);
 
-    /// Read string from INI-file
+    /// Read integer value from from LTPS pins.ini file
     /*!
-        \param file File name including full path
-        \param section Section
-        \param param Parameter
-        \return String value
-    */
-    const char* readString(const char* file, const char* section, const char* param);
-
-    /// Read integer from INI-file
-    /*!
-        \param file File name including full path
         \param section Section
         \param param Parameter
         \return Integer value
     */
-    int readInteger(const char* file, const char* section, const char* param);
-}
+    int readInteger(const char* section, const char* param);
+
+private:
+
+    std::ifstream m_fl;
+
+    std::map<const char*, int> m_i2c;
+    std::map<const char*, int> m_gpio;
+
+    const char* readString(const char* section, const char* param);
+
+};
 
 #endif

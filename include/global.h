@@ -6,8 +6,6 @@
 #ifndef __LGLOBAL_H__
 #define __LGLOBAL_H__
 
-#define PINS_FILE                   "/opt/tps-shared/hwini/pins.ini"
-
 #define SYS_GPIO_PFX                "/sys/class/gpio/"
 
 #define SYS_I2C_PFX                 "/dev/i2c-"

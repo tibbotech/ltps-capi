@@ -9,6 +9,11 @@
 #include "global.h"
 #include "lutils.h"
 
+namespace AccelerometerPrivate
+{
+    Ci2c_smbus i2c;
+}
+
 Accelerometer::Accelerometer()
 {
 
@@ -21,7 +26,7 @@ Accelerometer::~Accelerometer()
 
 void Accelerometer::getData(const char* socket, AccelData &accel)
 {
-    int busn = Lutils::getI2CBusNum(socket);
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
 
     if (busn == -1)
         printf("I2C bus for socket %s not found\n", socket);
@@ -33,9 +38,7 @@ void Accelerometer::getData(int busn, AccelData &accel)
 {
     memset(&accel, 0, sizeof accel);
 
-    Ci2c_smbus i2c;
-
-    int res = i2c.set_bus(busn);
+    int res = AccelerometerPrivate::i2c.set_bus(busn);
 
     if (res != 1)
     {
@@ -43,15 +46,15 @@ void Accelerometer::getData(int busn, AccelData &accel)
         return;
     }
 
-    res = i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::STANDBY_MODE); //< Go into standby mode to configure the device
+    res = AccelerometerPrivate::i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::STANDBY_MODE); //< Go into standby mode to configure the device
 
-    res += i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_FORMAT, ADXL312::FULL_RES_12G); //< Full resolution, +/-16g, 4mg/LSB
+    res += AccelerometerPrivate::i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_FORMAT, ADXL312::FULL_RES_12G); //< Full resolution, +/-16g, 4mg/LSB
 
-    res += i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::MEASUREMENT_MODE); //< Measurement mode
+    res += AccelerometerPrivate::i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::MEASUREMENT_MODE); //< Measurement mode
 
-    res += i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::FIFO_CTL, ADXL312::BYPASS_MODE); //< Set bypass mode
+    res += AccelerometerPrivate::i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::FIFO_CTL, ADXL312::BYPASS_MODE); //< Set bypass mode
 
-    res += i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::MEASUREMENT_MODE); //< Measurement mode
+    res += AccelerometerPrivate::i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::MEASUREMENT_MODE); //< Measurement mode
 
     usleep(8000);
 
@@ -60,51 +63,51 @@ void Accelerometer::getData(int busn, AccelData &accel)
 
     // Read X axis value
 
-    res += i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_X1, 0x00, 0);
+    res += AccelerometerPrivate::i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_X1, 0x00, 0);
 
-    res += i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_X1, hi_byte);
+    res += AccelerometerPrivate::i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_X1, hi_byte);
 
-    res += i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_X0, 0x00, 0);
+    res += AccelerometerPrivate::i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_X0, 0x00, 0);
 
-    res += i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_X0, lo_byte);
+    res += AccelerometerPrivate::i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_X0, lo_byte);
 
     x = hi_byte * 256 + lo_byte;
 
     // Read Y axis value
 
-    res += i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_Y1, 0x00, 0);
+    res += AccelerometerPrivate::i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_Y1, 0x00, 0);
 
-    res += i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_Y1, hi_byte);
+    res += AccelerometerPrivate::i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_Y1, hi_byte);
 
-    res += i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_Y0, 0x00, 0);
+    res += AccelerometerPrivate::i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_Y0, 0x00, 0);
 
-    res += i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_Y0, lo_byte);
+    res += AccelerometerPrivate::i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_Y0, lo_byte);
 
     y = hi_byte * 256 + lo_byte;
 
     // Read Z axis value
 
-    res += i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_Z1, 0x00, 0);
+    res += AccelerometerPrivate::i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_Z1, 0x00, 0);
 
-    res += i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_Z1, hi_byte);
+    res += AccelerometerPrivate::i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_Z1, hi_byte);
 
-    res += i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_Z0, 0x00, 0);
+    res += AccelerometerPrivate::i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::DATA_Z0, 0x00, 0);
 
-    res += i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_Z0, lo_byte);
+    res += AccelerometerPrivate::i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::DATA_Z0, lo_byte);
 
     z = hi_byte * 256 + lo_byte;
 
     // In bypass mode the overrun bit is set when new data replaces unread data in the DATAX, DATAY, and DATAZ registers
 
-    res += i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::INT_ENABLE, 0x00, 0);
+    res += AccelerometerPrivate::i2c.Wbb(ADXL312::I2C_ADDRESS, ADXL312::INT_ENABLE, 0x00, 0);
 
-    res += i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::INT_ENABLE, tmp);
+    res += AccelerometerPrivate::i2c.R1b(ADXL312::I2C_ADDRESS, ADXL312::INT_ENABLE, tmp);
 
     tmp = tmp & ADXL312::INT_FLAG;
 
-    res += i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::INT_ENABLE, tmp);
+    res += AccelerometerPrivate::i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::INT_ENABLE, tmp);
 
-    res += i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::STANDBY_MODE);
+    res += AccelerometerPrivate::i2c.W1b(ADXL312::I2C_ADDRESS, ADXL312::POWER_CTL, ADXL312::STANDBY_MODE);
 
     if (res != 14)
     {

@@ -28,9 +28,9 @@ void Dac::setVoltage(const char* socket, unsigned int channel, int voltage)
     std::string sock(socket);
     std::transform(sock.begin(), sock.end(), sock.begin(), ::toupper);
 
-    int busn = Lutils::getI2CBusNum(socket);
-    int gpin_c = Lutils::readInteger(PINS_FILE, "CPU", std::string(sock + "C").c_str());
-    int gpin_d = Lutils::readInteger(PINS_FILE, "CPU", std::string(sock + "D").c_str());
+    int busn = Lutils::getInstance().getI2CBusNum(socket);
+    int gpin_c = Lutils::getInstance().readInteger("CPU", std::string(sock + "C").c_str());
+    int gpin_d = Lutils::getInstance().readInteger("CPU", std::string(sock + "D").c_str());
 
     if (busn == -1)
     {
@@ -49,7 +49,7 @@ void Dac::setVoltage(const char* socket, unsigned int channel, int voltage)
 
 void Dac::setVoltage(int busn, int gpin_c, int gpin_d, unsigned int channel, int voltage)
 {
-    Ci2c_smbus i2c;
+    Ci2c_smbus i2c; // Don't move to global (else voltage applyed only one time)
 
     int res = i2c.set_bus(busn);
 

@@ -11,6 +11,11 @@
 
 #include "drivers/gpio.h"
 
+namespace GpioPrivate
+{
+    CPin gpio;
+}
+
 Gpio::Gpio()
 {
 
@@ -26,13 +31,12 @@ int Gpio::setDirection(const char *pin, GpioDir direction)
     std::string spin(pin);
     std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
 
-    CPin gpio;
-    if (!gpio.init(Lutils::readInteger(PINS_INI_FILE, "CPU", spin.c_str())))
+    if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
     {
         if (direction == input)
-            return gpio.dir_set(PIN_DIR_I);
+            return GpioPrivate::gpio.dir_set(PIN_DIR_I);
         else
-            return gpio.dir_set(PIN_DIR_O);
+            return GpioPrivate::gpio.dir_set(PIN_DIR_O);
     }
     else
         printf("GPIO PIN initialization error\n");
@@ -45,10 +49,9 @@ GpioDir Gpio::getDirection(const char *pin)
     std::string spin(pin);
     std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
 
-    CPin gpio;
-    if (!gpio.init(Lutils::readInteger(PINS_INI_FILE, "CPU", spin.c_str())))
+    if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
     {
-        int dir = gpio.dir_get();
+        int dir = GpioPrivate::gpio.dir_get();
         if (dir == PIN_DIR_I)
             return input;
         else
@@ -65,13 +68,12 @@ int Gpio::setValue(const char* pin, unsigned int value)
     std::string spin(pin);
     std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
 
-    CPin gpio;
-    if (!gpio.init(Lutils::readInteger(PINS_INI_FILE, "CPU", spin.c_str())))
+    if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
     {
         if (value == 0)
-            return gpio.W(0);
+            return GpioPrivate::gpio.W(0);
         else
-            return gpio.W(1);
+            return GpioPrivate::gpio.W(1);
     }
     else
         printf("GPIO PIN initialization error\n");
@@ -84,10 +86,9 @@ unsigned int Gpio::getValue(const char *pin)
     std::string spin(pin);
     std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
 
-    CPin gpio;
-    if (!gpio.init(Lutils::readInteger(PINS_INI_FILE, "CPU", spin.c_str())))
+    if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
     {
-        int value = gpio.R();
+        int value = GpioPrivate::gpio.R();
         if (value == 0)
             return 0;
         else
@@ -97,4 +98,12 @@ unsigned int Gpio::getValue(const char *pin)
         printf("GPIO PIN initialization error\n");
 
     return 0;
+}
+
+unsigned int Gpio::getPinNumber(const char *pin)
+{
+    std::string spin(pin);
+    std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
+
+    return Lutils::getInstance().readInteger("CPU", spin.c_str());
 }
