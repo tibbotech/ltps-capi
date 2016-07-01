@@ -419,7 +419,7 @@ int Pic::getAdcVoltage(int busn, int channel)
     {
         val = readPic(busn, PIC16F1824::ADCON0);
 
-        if ((val && 0x02) != 0x1)
+        if ((val & 0x02) != 0x1)
             break; //< Conversion done
 
         usleep(5000);
