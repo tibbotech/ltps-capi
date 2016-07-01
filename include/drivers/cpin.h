@@ -18,14 +18,15 @@ protected:
  int pin;
  FILE *fp_rw;
  
- FILE *open_x( int _pin, const char *_what);
+ FILE *x_open( int _pin, const char *_what);
+ void x_close( void) {
+   if ( this->fp_rw) fclose( this->fp_rw);
+   this->fp_rw = NULL;  }
  
 public:
 
  CPin( void) {  this->pin = 0;  this->fp_rw = NULL;  }
- ~CPin( void) {
-   if ( this->fp_rw) fclose( this->fp_rw);
- }
+ ~CPin( void) {  this->x_close();  }
  
  // call once
  // ret: 0 - OK, -1 - err
