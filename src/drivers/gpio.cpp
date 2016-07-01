@@ -26,41 +26,30 @@ Gpio::~Gpio()
 
 }
 
-int Gpio::setDirection(const char *pin, GpioDir direction)
+int Gpio::setDirection(const char *pin, int direction)
 {
     std::string spin(pin);
     std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
 
     if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
-    {
-        if (direction == input)
-            return GpioPrivate::gpio.dir_set(PIN_DIR_I);
-        else
-            return GpioPrivate::gpio.dir_set(PIN_DIR_O);
-    }
+        return GpioPrivate::gpio.dir_set(direction);
     else
         printf("GPIO PIN initialization error\n");
 
     return -1;
 }
 
-GpioDir Gpio::getDirection(const char *pin)
+int Gpio::getDirection(const char *pin)
 {
     std::string spin(pin);
     std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
 
     if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
-    {
-        int dir = GpioPrivate::gpio.dir_get();
-        if (dir == PIN_DIR_I)
-            return input;
-        else
-            return output;
-    }
+        return GpioPrivate::gpio.dir_get();
     else
         printf("GPIO PIN initialization error\n");
 
-    return input;
+    return PIN_DIR_I;
 }
 
 int Gpio::setValue(const char* pin, unsigned int value)
@@ -69,12 +58,7 @@ int Gpio::setValue(const char* pin, unsigned int value)
     std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
 
     if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
-    {
-        if (value == 0)
-            return GpioPrivate::gpio.W(0);
-        else
-            return GpioPrivate::gpio.W(1);
-    }
+        return GpioPrivate::gpio.W(value);
     else
         printf("GPIO PIN initialization error\n");
 
@@ -87,13 +71,7 @@ unsigned int Gpio::getValue(const char *pin)
     std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
 
     if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
-    {
-        int value = GpioPrivate::gpio.R();
-        if (value == 0)
-            return 0;
-        else
-            return 1;
-    }
+        return GpioPrivate::gpio.R();
     else
         printf("GPIO PIN initialization error\n");
 

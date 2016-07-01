@@ -7,17 +7,6 @@
 #define __LGPIO_H__
 
 /*!
-    \enum GpioDir
-    \brief Possible GPIO pin's directions
-*/
-
-enum GpioDir
-{
-    input,
-    output
-};
-
-/*!
     \class Gpio
     \brief Class for GPIO manipulations
 */
@@ -33,17 +22,17 @@ public:
     /// Set direction
     /*!
         \param pin String name of pin (eg: S1A, S9D)
-        \param direction Pin direction
+        \param direction Pin direction (0 for input, 1 for output)
         \return Result (0 on success)
     */
-    int setDirection(const char *pin, GpioDir direction);
+    int setDirection(const char *pin, int direction);
 
     /// Get direction
     /*!
         \param pin String name of pin (eg: S1A, S9D)
-        \return Pin direction
+        \return Pin direction (0 for input, 1 for output)
     */
-    GpioDir getDirection(const char *pin);
+    int getDirection(const char *pin);
 
     /// Set value
     /*!

@@ -12,12 +12,7 @@ int main()
 {
     Ci2c_smbus i2c;
 
-    int busn = Lutils::getI2CBusNum("s1");
-
-    if (busn == -1)
-        return 1;
-
-    int res = i2c.set_bus(busn);
+    int res = i2c.set_bus("-s01");
 
     if (res != 1)
         return 1;
