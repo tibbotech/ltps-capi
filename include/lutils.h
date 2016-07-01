@@ -6,8 +6,9 @@
 #ifndef __LUTILS_H__
 #define __LUTILS_H__
 
-#include <fstream>
+#include <string>
 #include <map>
+#include <fstream>
 
 /*!
     \class Lutils
@@ -47,8 +48,8 @@ private:
 
     std::ifstream m_fl;
 
-    std::map<const char*, int> m_i2c;
-    std::map<const char*, int> m_gpio;
+    std::map<std::string, int> m_i2c;
+    std::map<std::string, int> m_gpio;
 
     const char* readString(const char* section, const char* param);
 

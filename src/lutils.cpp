@@ -10,7 +10,6 @@
 #include <string.h>
 #include <fcntl.h>
 
-#include <string>
 #include <iostream>
 #include <algorithm>
 
@@ -18,8 +17,7 @@
 #include "global.h"
 
 #define MAX_BUF_SIZE            255
-//#define PINS_INI_FILE           "/opt/tps-shared/hwini/pins.ini"
-#define PINS_INI_FILE              "/home/vitaliy/src/tps-agent/etc/pins.ini"
+#define PINS_INI_FILE           "/opt/tps-shared/hwini/pins.ini"
 
 Lutils::Lutils()
 {
