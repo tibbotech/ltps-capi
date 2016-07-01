@@ -164,7 +164,6 @@ FULL_PATH_NAMES        = YES
 
 STRIP_FROM_PATH        = @CMAKE_CURRENT_SOURCE_DIR@/include/tibbits/i2c \
                          @CMAKE_CURRENT_SOURCE_DIR@/include/drivers \
-                         @CMAKE_CURRENT_SOURCE_DIR@/include/ \
                          @CMAKE_CURRENT_SOURCE_DIR@/examples/
                          @CMAKE_CURRENT_SOURCE_DIR@
 
@@ -781,7 +780,6 @@ WARN_LOGFILE           =
 
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/include/tibbits \
                          @CMAKE_CURRENT_SOURCE_DIR@/include/drivers \
-                         @CMAKE_CURRENT_SOURCE_DIR@/include/lutils.h \
                          @CMAKE_CURRENT_SOURCE_DIR@/mainpage.dox \
                          @CMAKE_CURRENT_SOURCE_DIR@/examples
 

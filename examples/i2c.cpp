@@ -1,5 +1,5 @@
 /*!
-    \example gpio.cpp
+    \example i2c.cpp
 */
 
 #include <string.h> // memset
