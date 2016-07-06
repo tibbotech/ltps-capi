@@ -1,6 +1,6 @@
 
 //! \copyright Tibbo Technology Inc.
-//! \auth Dvorkin Dmitry <dvorkin@tibbo.com>
+//! \author Dvorkin Dmitry <dvorkin@tibbo.com>
 //! \date 06.07.2016
 
 #ifndef __CI2C_H__
@@ -24,7 +24,6 @@ struct i2cmap_t {
 
 //! \brief Base Virtual I2C I/O class
 //! \details Virtual I2C I/O functions have to be declared in child class
-
 class Ci2c {
 
 private:
@@ -54,7 +53,7 @@ public:
  int cur_bus( void) {  return( this->busn);  }
  //! \}
 
- //! \name I/O methods
+ //! \name Virtual I/O methods
  /// It may take too long time to read/write i2c device
  /// so make this functions non-blockable
  //! \retval >0 Number of bytes R/W

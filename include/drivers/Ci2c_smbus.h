@@ -1,5 +1,5 @@
 //! \copyright Tibbo Technology Inc.
-//! \auth Dvorkin Dmitry <dvorkin@tibbo.com>
+//! \author Dvorkin Dmitry <dvorkin@tibbo.com>
 //! \date 06.07.2016
 
 #ifndef __CI2C_SMBUS_H__
@@ -28,7 +28,7 @@ public:
  /// especially if there are alot of legs/registers
  /// so make this functions non-blockable
 
- //! \name I/O realization
+ //! \name I/O methods
  //! \retval >0 number of bytes R/W
  //! 0 Not opened (?)
  //! <0 Errno

@@ -59,17 +59,17 @@ int SPI::set_dev( const char *_sock, uint8_t _dev) {
 
 int SPI::settings_get( void) {
  if ( this->f_rw < 0) return( this->f_rw);
- if ( ioctl( this->f_rw, SPI_IOC_RD_MODE32, &( this->mode)) == -1) return( -1);
- if ( ioctl( this->f_rw, SPI_IOC_RD_BITS_PER_WORD, &( this->bits)) == -1) return( -1);
- if ( ioctl( this->f_rw, SPI_IOC_RD_MAX_SPEED_HZ, &( this->speed)) == -1) return( -1);
- return( 0);  }
+ if ( ioctl( this->f_rw, SPI_IOC_RD_MODE32, &( this->mode)) < 0) return( -errno);
+ if ( ioctl( this->f_rw, SPI_IOC_RD_BITS_PER_WORD, &( this->bits)) < 0) return( -errno);
+ if ( ioctl( this->f_rw, SPI_IOC_RD_MAX_SPEED_HZ, &( this->speed)) < 0) return( -errno);
+ return( 1);  }
 
 int SPI::settings_set( void) {
  if ( this->f_rw < 0) return( this->f_rw);
- if ( ioctl( this->f_rw, SPI_IOC_WR_MODE32, &( this->mode)) == -1) return( -1);
- if ( ioctl( this->f_rw, SPI_IOC_WR_BITS_PER_WORD, &( this->bits)) == -1) return( -1);
- if ( ioctl( this->f_rw, SPI_IOC_WR_MAX_SPEED_HZ, &( this->speed)) == -1) return( -1);
- return( 0);  }
+ if ( ioctl( this->f_rw, SPI_IOC_WR_MODE32, &( this->mode)) < 0) return( -errno);
+ if ( ioctl( this->f_rw, SPI_IOC_WR_BITS_PER_WORD, &( this->bits)) < 0) return( -errno);
+ if ( ioctl( this->f_rw, SPI_IOC_WR_MAX_SPEED_HZ, &( this->speed)) < 0) return( -errno);
+ return( 1);  }
 
 int SPI::WR( uint8_t const *_w, uint8_t const *_r, uint32_t _l) {
  int r;
