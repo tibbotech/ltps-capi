@@ -22,6 +22,7 @@ HEADERS			+= \
 			include/drivers/Ci2c.h \
 			include/drivers/Ci2c_smbus.h \
 			include/drivers/gpio.h \
+			include/drivers/Cspi.h \
 			include/tibbits/i2c/adc.h \
 			include/tibbits/i2c/dac.h \
 			include/tibbits/i2c/pic.h \
@@ -40,6 +41,7 @@ SOURCES			+= \
 			src/drivers/Ci2c.cpp \
 			src/drivers/Ci2c_smbus.cpp \
 			src/drivers/gpio.cpp \
+			src/drivers/Cspi.cpp \
 			src/tibbits/i2c/adc.cpp \
 			src/tibbits/i2c/dac.cpp \
 			src/tibbits/i2c/pic.cpp \
