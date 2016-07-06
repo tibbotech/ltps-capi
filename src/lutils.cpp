@@ -37,6 +37,7 @@ Lutils &Lutils::getInstance()
     return lutils;
 }
 
+// Vitaly, FIX this! use static Ci2c::find_bus( _sock)
 int Lutils::getI2CBusNum(const char* socket)
 {
     if (m_i2c.find(socket) != m_i2c.end())

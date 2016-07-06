@@ -1,3 +1,7 @@
+//
+// This I Love
+// (C) Dvorkin Dmitry <dvorkin@tibbo.com>
+//
 #include "Ci2c.h"
 
 #include <stdlib.h>
@@ -21,24 +25,16 @@ int Ci2c::find_bus( const char *_sock) {
  while ( ( ep = readdir( dp))) {
    if ( strcmp( ep->d_name, ".") == 0) continue;
    if ( strcmp( ep->d_name, "..") == 0) continue;
-//   printf( "D:%s:%d\n", ep->d_name, ep->d_type);
-// ??? tmps0, tmps1
    memset( tmps0, 0, NAME_MAX);
    sprintf( tmps0, "%s%s/name", SCS_I2C_PFX, ep->d_name);
-//   printf( "D0:%s\n", tmps0);
    if ( ( f = open( tmps0, O_RDONLY)) < 0) continue;
    memset( tmps0, 0, NAME_MAX);
    cnt = read( f, tmps1, NAME_MAX - 1);
    close( f);
-//   printf( "D1:%s (%d)\n", tmps1, cnt);
-//   for ( i = 0; i < cnt; i++) printf( "%02X", tmps1[ i]);
-//   printf( "\n");
    if ( cnt < 4) continue;
    if ( tmps1[ cnt - 1] == 0x0A) tmps1[ --cnt] = '\0';
-//   printf( "DZ:%s ? %s == %d\n", tmps1 + sizeof( char)*3, _sock, strcasecmp( tmps1 + sizeof( char)*3, _sock));
    if ( strcasecmp( tmps1 + sizeof( char)*3, _sock) != 0) continue;
    xbusn = atoi( ep->d_name + sizeof( char)*4);
-//   printf( "busn:%d\n", busn);
    if ( xbusn < 0) continue;
    break;  }
  closedir( dp);
@@ -89,10 +85,10 @@ int Ci2c::set_bus( const char *_buss, i2cmap_t *_map) {
  return( ret);  }
 
 int Ci2c::set_slave( uint16_t _addr) {
- long addr = _addr, r;
+ long addr = _addr;
  if ( this->f_rw < 0) return( 0);
  if ( this->addr == ( long)_addr) return( 1);
  this->addr = -1;
- if ( ( r = ioctl( this->f_rw, I2C_SLAVE_FORCE, addr)) < 0) return( -errno);
+ if ( ioctl( this->f_rw, I2C_SLAVE_FORCE, addr) < 0) return( -errno);
  this->addr = _addr;
  return( 1);  }

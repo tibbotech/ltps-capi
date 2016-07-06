@@ -1,6 +1,7 @@
-//
-// This I Love
-// (C) dvorkin@tibbo.com, 2016
+
+//! \copyright Tibbo Technology Inc.
+//! \auth Dvorkin Dmitry <dvorkin@tibbo.com>
+//! \date 06.07.2016
 
 #ifndef __CI2C_H__
 #define __CI2C_H__
@@ -11,10 +12,18 @@
 #include <sys/types.h>
 #include <stdint.h>
 
+//! \struct i2cmap_t
+//! \brief I2C bus name to # mapping structure
+//! \details simple structure for custom I2C bus name to bus # custom mapping
 struct i2cmap_t {
+ //! Bus name, "-tps" or "-s05" for example
  const char *name;
+ //! Real bus ID, 1 for example
  uint8_t id;
 };
+
+//! \brief Base Virtual I2C I/O class
+//! \details Virtual I2C I/O functions have to be declared in child class
 
 class Ci2c {
 
@@ -36,16 +45,22 @@ public:
    if ( this->f_rw >= 0) close( this->f_rw);
  }
  
- // ret: 1 - OK, <0 - errno
+ //! \name Bus methods
+ //! \retval 1 OK
+ //! \retval <0 Errno
+ //! \{
  int set_bus( uint16_t _busn);
  int set_bus( const char *_buss, i2cmap_t *_map = NULL);
  int cur_bus( void) {  return( this->busn);  }
+ //! \}
 
- // NOTE: it may take too long time to read/write i2c device
- // especially if there are alot of legs/registers
- // so make this functions non-blockable
-
- // ret: > 0 number of bytes R/W, 0 - not opened (?), < 0 - errno
+ //! \name I/O methods
+ /// It may take too long time to read/write i2c device
+ /// so make this functions non-blockable
+ //! \retval >0 Number of bytes R/W
+ //! \retval 0 Not opened (?)
+ //! \retval <0 Errno
+ //! \{
  virtual int R1b( uint16_t _addr, uint8_t _reg, uint8_t  &_b) = 0;
  virtual int W1b( uint16_t _addr, uint8_t _reg, uint8_t   _b) = 0;
  virtual int R2b( uint16_t _addr, uint8_t _reg, uint16_t &_b) = 0;
@@ -56,17 +71,22 @@ public:
  // quick type R/W (command-reg is data also)
  virtual int Rqb( uint16_t _addr, uint8_t _reg, uint8_t *_b, uint8_t _blen) = 0;
  virtual int Wqb( uint16_t _addr, uint8_t _reg, uint8_t *_b, uint8_t _blen) = 0;
+ //! \}
 
- // ret: 1 - OK, 0 - not opened, < 0 - errno
- // don't really need to call explicitely.
- // call only for test if device exists or not
- // BUT currently it does not guaranteed it will give an error "no such device"
- // due to SMBUS i2c driver realization. R* or W* functions may give it later
- // so it's better to probe device with R1b( _addr, 0x00, b)
+ //! \brief Set slave device to work with.
+ /// No need to call it obviously. Call it only for test if device exists.
+ /// BUT nowtime result is not guaranteed if it can return an error "no such device"
+ /// due to SMBUS i2c driver realization.
+ ///
+ /// Better to use R* or W* functions to probe the devices on a bus,
+ /// for example R1b( _addr, 0x00, b);
  // _addr may be 7 or 10 bits
+ //! \retval 1 OK
+ //! \retval 0 Not opened
+ //! \retval <0 Errno
  int set_slave( uint16_t _addr);
 
- // -1 = not found
+ //! \retval -1 Not found
  static int find_bus( const char *_sock);
 
 }; // class /

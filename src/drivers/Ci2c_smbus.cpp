@@ -1,3 +1,7 @@
+//
+// This I Love
+// (C) Dvorkin Dmitry <dvorkin@tibbo.com>
+//
 #include "Ci2c_smbus.h"
 
 #include <sys/ioctl.h>
