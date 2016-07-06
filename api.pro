@@ -10,7 +10,7 @@ QMAKE_LFLAGS_RELEASE	+= -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--gc-sections -
 
 CONFIG(debug, release|debug):DEFINES += _DEBUG
 
-INCLUDEPATH		+= include
+INCLUDEPATH		+= include include/drivers
 
 LIBS			+=
 
@@ -19,8 +19,8 @@ HEADERS			+= \
 			include/global.h \
 			include/lutils.h \
 			include/drivers/cpin.h \
-			include/drivers/ci2c.h \
-			include/drivers/ci2c_smbus.h \
+			include/drivers/Ci2c.h \
+			include/drivers/Ci2c_smbus.h \
 			include/drivers/gpio.h \
 			include/tibbits/i2c/adc.h \
 			include/tibbits/i2c/dac.h \
@@ -37,8 +37,8 @@ SOURCES			+= \
 			src/main.cpp \
 			src/lutils.cpp \
 			src/drivers/cpin.cpp \
-			src/drivers/ci2c.cpp \
-			src/drivers/ci2c_smbus.cpp \
+			src/drivers/Ci2c.cpp \
+			src/drivers/Ci2c_smbus.cpp \
 			src/drivers/gpio.cpp \
 			src/tibbits/i2c/adc.cpp \
 			src/tibbits/i2c/dac.cpp \

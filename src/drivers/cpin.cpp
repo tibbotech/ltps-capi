@@ -1,4 +1,4 @@
-#include "drivers/cpin.h"
+#include "cpin.h"
 
 #include "global.h"
 

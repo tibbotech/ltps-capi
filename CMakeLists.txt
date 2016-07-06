@@ -37,8 +37,8 @@ set ( SOURCES
 		include/global.h
 		include/lutils.h
 		include/drivers/cpin.h
-		include/drivers/ci2c.h
-		include/drivers/ci2c_smbus.h
+		include/drivers/Ci2c.h
+		include/drivers/Ci2c_smbus.h
 		include/drivers/gpio.h
 		include/tibbits/i2c/adc.h
 		include/tibbits/i2c/dac.h
@@ -53,8 +53,8 @@ set ( SOURCES
 #		src/main.cpp
 		src/lutils.cpp
 		src/drivers/cpin.cpp
-		src/drivers/ci2c.cpp
-		src/drivers/ci2c_smbus.cpp
+		src/drivers/Ci2c.cpp
+		src/drivers/Ci2c_smbus.cpp
 		src/drivers/gpio.cpp
 		src/tibbits/i2c/adc.cpp
 		src/tibbits/i2c/dac.cpp
@@ -68,7 +68,7 @@ set ( SOURCES
 		src/tibbits/i2c/portextender.cpp
     )
 
-include_directories( include )
+include_directories( include include/drivers )
 
 add_custom_target ( Docs ALL DEPENDS doc )
 

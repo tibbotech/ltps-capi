@@ -1,25 +1,15 @@
+//
 // This I Love
-// (C) dvorkin@tibbo.com, 2015
+// (C) dvorkin@tibbo.com, 2016
 
 #ifndef __CI2C_H__
 #define __CI2C_H__
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <dirent.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
 #include <stdint.h>
-#include <fcntl.h>
-#include <fcntl.h>
-
-#include <sys/ioctl.h>
-#include <linux/i2c.h>
-#include <linux/i2c-dev.h>
-
-#define I2C_DIR_R I2C_SMBUS_READ
-#define I2C_DIR_W I2C_SMBUS_WRITE
 
 struct i2cmap_t {
  const char *name;
@@ -76,6 +66,9 @@ public:
  // _addr may be 7 or 10 bits
  int set_slave( uint16_t _addr);
 
-};
+ // -1 = not found
+ static int find_bus( const char *_sock);
+
+}; // class /
 
 #endif

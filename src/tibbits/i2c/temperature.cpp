@@ -3,7 +3,7 @@
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
 */
 
-#include "drivers/ci2c_smbus.h"
+#include "Ci2c_smbus.h"
 #include "tibbits/i2c/temperature.h"
 
 #include "global.h"

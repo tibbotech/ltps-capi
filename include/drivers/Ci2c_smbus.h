@@ -1,10 +1,13 @@
+//
 // This I Love
-// (C) dvorkin@tibbo.com, 2015
+// (C) dvorkin@tibbo.com, 2016
 
 #ifndef __CI2C_SMBUS_H__
 #define __CI2C_SMBUS_H__
 
-#include "drivers/ci2c.h"
+#include <linux/i2c.h>
+
+#include "Ci2c.h"
 
 class Ci2c_smbus : public Ci2c {
 
@@ -37,6 +40,6 @@ public:
  int Rqb( uint16_t _addr, uint8_t _reg, uint8_t *_b, uint8_t _blen);
  int Wqb( uint16_t _addr, uint8_t _reg, uint8_t *_b, uint8_t _blen);
 
-};
+}; // class /
 
 #endif

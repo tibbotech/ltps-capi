@@ -1,35 +1,42 @@
-#include "drivers/ci2c_smbus.h"
+#include "Ci2c_smbus.h"
+
+#include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
 
 int Ci2c_smbus::R1b( uint16_t _addr, uint8_t _reg, uint8_t  &_b) {
+ int ret = 0;
  i2c_smbus_data d;
  if ( this->f_rw < 0) return( 0);
  if ( this->set_slave( _addr) != 1) return( -errno);
- if ( ( this->do_smbus( _reg, I2C_SMBUS_READ,  I2C_SMBUS_BYTE_DATA, d)) <= 0) return( -errno);
+ if ( ( ret = this->do_smbus( _reg, I2C_SMBUS_READ,  I2C_SMBUS_BYTE_DATA, d)) <= 0) return( -errno);
  _b = d.byte;
  return( 1);  }
 
 int Ci2c_smbus::W1b( uint16_t _addr, uint8_t _reg, uint8_t   _b) {
+ int ret = 0;
  i2c_smbus_data d;
  if ( this->f_rw < 0) return( 0);
  if ( this->set_slave( _addr) != 1) return( -errno);
  d.byte = _b;
- if ( ( this->do_smbus( _reg, I2C_SMBUS_WRITE, I2C_SMBUS_BYTE_DATA, d)) <= 0) return( -errno);
+ if ( ( ret = this->do_smbus( _reg, I2C_SMBUS_WRITE, I2C_SMBUS_BYTE_DATA, d)) <= 0) return( -errno);
  return( 1);  }
 
 int Ci2c_smbus::R2b( uint16_t _addr, uint8_t _reg, uint16_t &_b) {
+ int ret = 0;
  i2c_smbus_data d;
  if ( this->f_rw < 0) return( 0);
  if ( this->set_slave( _addr) != 1) return( -errno);
- if ( ( this->do_smbus( _reg, I2C_SMBUS_READ,  I2C_SMBUS_WORD_DATA, d)) <= 0) return( -errno);
+ if ( ( ret = this->do_smbus( _reg, I2C_SMBUS_READ,  I2C_SMBUS_WORD_DATA, d)) <= 0) return( -errno);
  _b = d.word;
  return( 2);  }
 
 int Ci2c_smbus::W2b( uint16_t _addr, uint8_t _reg, uint16_t  _b) {
+ int ret = 0;
  i2c_smbus_data d;
  if ( this->f_rw < 0) return( 0);
  if ( this->set_slave( _addr) != 1) return( -errno);
  d.word = _b;
- if ( ( this->do_smbus( _reg, I2C_SMBUS_WRITE, I2C_SMBUS_WORD_DATA, d)) <= 0) return( -errno);
+ if ( ( ret = this->do_smbus( _reg, I2C_SMBUS_WRITE, I2C_SMBUS_WORD_DATA, d)) <= 0) return( -errno);
  return( 2);  }
 
 int Ci2c_smbus::Rbb( uint16_t _addr, uint8_t _reg, uint8_t *_b, uint8_t _blen) {
@@ -85,12 +92,14 @@ int Ci2c_smbus::Wqb( uint16_t _addr, uint8_t _reg, uint8_t *_b, uint8_t _blen) {
  return( ret);  }
 
 int Ci2c_smbus::do_smbus( uint16_t _addr, uint8_t _rw, uint32_t _dlen, union i2c_smbus_data &_data) {
+ int r;
  i2c_smbus_ioctl_data d;
  d.read_write = _rw;
- // FIXME: potential problem - _addr may be 10bit.
+ // FIX: potential problem. _addr may be 10bit.
  d.command = _addr;
  d.size = _dlen;
  d.data = &_data;
  if ( this->f_rw < 0) return( 0);
- if ( ( ioctl( this->f_rw, I2C_SMBUS, &d)) < 0) return( -errno);
+ if ( ( r = ioctl( this->f_rw, I2C_SMBUS, &d)) < 0) return( -errno);
  return( 1);  }
+

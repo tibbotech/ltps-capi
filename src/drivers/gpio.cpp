@@ -6,10 +6,10 @@
 #include <string>
 #include <algorithm>
 
-#include "drivers/cpin.h"
+#include "cpin.h"
 #include "lutils.h"
 
-#include "drivers/gpio.h"
+#include "gpio.h"
 
 namespace GpioPrivate
 {
