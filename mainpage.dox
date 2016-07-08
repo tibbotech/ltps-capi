@@ -1,5 +1,27 @@
 /*!
-	\mainpage LTPS C++ API Guide
+ \mainpage LTPS C++ API Guide
 
-	Please refer to this documentation for information on using the LTPS C++ API.
+ LTPS C++ API is included:
+ \li into LTPS image as the shared library at /usr/lib/libLtps.so* ;
+ \li into SDK as include files at SDKPFX/usr/include/ltps/capi/*.h and
+ static (SDKPFX/usr/lib/libLtpsStatic.a) and shared (SDKPFX/usr/lib/libLtps.so*)
+ libs.
+
+ Linking your code with the static library:
+ \code
+ $GCC -lLtpsStatic -Iltps/capi/
+ \endcode
+ With the shared library:
+ \code
+ $GCC -lLtps -Iltps/capi/
+ \endcode
+
+ \warning LTPS C++ API is under active development so please note
+ \warning that some classes and methods can be changed.
+
+ \date 07.07.2016
+ \copyright Tibbo Technology Inc.
+
+ Please refer to this documentation for information on using the LTPS C++ API.
+ 
 */
