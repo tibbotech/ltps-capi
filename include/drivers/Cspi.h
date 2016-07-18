@@ -44,8 +44,11 @@ public:
  ~SPI( void) {  this->x_close();  }
  
  //! \retval <0 Errno
+ //! Access by TPS bus number
+ //! second parameter is device number on a bus (usually 0)
  int set_dev( uint16_t _busn, uint8_t _dev);
- //! Access by TPS socket name, ex: "-sXX" + device number (usually 0)
+ //! Access by TPS socket name, ex: "-sXX"
+ //! second parameter is device number on a bus (usually 0)
  //! \retval <0 Errno
  int set_dev( const char *_sock, uint8_t _dev = 0);
 
