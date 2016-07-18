@@ -13,7 +13,7 @@
 #include <linux/spi/spidev.h>
 
 //! \brief General perpose SPI I/O class
-class SPI {
+class Cspi {
 
 private:
 
@@ -36,19 +36,16 @@ protected:
 
 public:
 
- SPI( void) {
+ Cspi( void) {
    this->busn = this->addr = this->f_rw = -1;
    this->bits = 8;  this->speed = 500000;  this->delay = 0;
  }
- SPI( SPI &_o) {  this->busn = _o.busn;  this->addr = this->f_rw = -1;  }
- ~SPI( void) {  this->x_close();  }
+ Cspi( Cspi &_o) {  this->busn = _o.busn;  this->addr = this->f_rw = -1;  }
+ ~Cspi( void) {  this->x_close();  }
  
  //! \retval <0 Errno
- //! Access by TPS bus number
- //! second parameter is device number on a bus (usually 0)
  int set_dev( uint16_t _busn, uint8_t _dev);
- //! Access by TPS socket name, ex: "-sXX"
- //! second parameter is device number on a bus (usually 0)
+ //! Access by TPS socket name, ex: "-sXX" + device number (usually 0)
  //! \retval <0 Errno
  int set_dev( const char *_sock, uint8_t _dev = 0);
 
@@ -77,10 +74,10 @@ public:
  inline uint32_t cur_mode( void) {  return( this->mode);  }
  //! \}
 
- //! \return Current SPI bus number
+ //! \return Current Cspi bus number
  //! \retval <0 Not associated
  int cur_bus( void) {  return( this->busn);  }
- //! \return Current device number on SPI bus
+ //! \return Current device number on Cspi bus
  //! \retval <0 Not associated
  int cur_dev( void) {  return( this->addr);  }
 

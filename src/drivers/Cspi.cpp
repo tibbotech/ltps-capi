@@ -14,7 +14,7 @@
 #define SYS_SPI_PFX "/sys/devices/platform/spi"
 
 // by socket name
-int SPI::find_bus( const char *_sock) {
+int Cspi::find_bus( const char *_sock) {
  DIR *d;
  struct dirent *dent;
  char dpath[ PATH_MAX];
@@ -29,7 +29,7 @@ int SPI::find_bus( const char *_sock) {
  closedir( d);
  return( xbusn);  }
 
-int SPI::x_open( uint16_t _busn, uint8_t _devn) {
+int Cspi::x_open( uint16_t _busn, uint8_t _devn) {
  int f;
  char fpath[ PATH_MAX];
  memset( fpath, 0, PATH_MAX);
@@ -38,7 +38,7 @@ int SPI::x_open( uint16_t _busn, uint8_t _devn) {
  memset( &( this->tr), 0, sizeof( this->tr));
  return( f);  }
 
-int SPI::set_dev( uint16_t _busn, uint8_t _dev) {
+int Cspi::set_dev( uint16_t _busn, uint8_t _dev) {
  int f;
  if ( this->busn == _busn && this->addr == _dev && this->f_rw >= 0) return( 1);
  if ( this->f_rw >= 0) close( this->f_rw);
@@ -50,28 +50,28 @@ int SPI::set_dev( uint16_t _busn, uint8_t _dev) {
  return( 1);  }
 
 // by name
-int SPI::set_dev( const char *_sock, uint8_t _dev) {
+int Cspi::set_dev( const char *_sock, uint8_t _dev) {
  int xbusn;
  if ( this->f_rw >= 0) close( this->f_rw);
- xbusn = SPI::find_bus( _sock);
+ xbusn = Cspi::find_bus( _sock);
  if ( xbusn < 0) return( -1);
  return( this->set_dev( xbusn, _dev));  }
 
-int SPI::settings_get( void) {
+int Cspi::settings_get( void) {
  if ( this->f_rw < 0) return( this->f_rw);
  if ( ioctl( this->f_rw, SPI_IOC_RD_MODE32, &( this->mode)) < 0) return( -errno);
  if ( ioctl( this->f_rw, SPI_IOC_RD_BITS_PER_WORD, &( this->bits)) < 0) return( -errno);
  if ( ioctl( this->f_rw, SPI_IOC_RD_MAX_SPEED_HZ, &( this->speed)) < 0) return( -errno);
  return( 1);  }
 
-int SPI::settings_set( void) {
+int Cspi::settings_set( void) {
  if ( this->f_rw < 0) return( this->f_rw);
  if ( ioctl( this->f_rw, SPI_IOC_WR_MODE32, &( this->mode)) < 0) return( -errno);
  if ( ioctl( this->f_rw, SPI_IOC_WR_BITS_PER_WORD, &( this->bits)) < 0) return( -errno);
  if ( ioctl( this->f_rw, SPI_IOC_WR_MAX_SPEED_HZ, &( this->speed)) < 0) return( -errno);
  return( 1);  }
 
-int SPI::WR( uint8_t const *_w, uint8_t const *_r, uint32_t _l) {
+int Cspi::WR( uint8_t const *_w, uint8_t const *_r, uint32_t _l) {
  int r;
  this->tr.tx_buf = ( unsigned long)_w;
  this->tr.rx_buf = ( unsigned long)_r;
