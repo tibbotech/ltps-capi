@@ -67,7 +67,12 @@ int Lutils::getI2CBusNum(const char* socket)
 
     busName.append(sockNum);
 
-    return Ci2c::find_bus(busName.c_str());
+    int res = Ci2c::find_bus(busName.c_str());
+
+    if (res != -1)
+        m_i2c[socket] = res;
+
+    return res;
 }
 
 int Lutils::readInteger(const char* section, const char* param)
