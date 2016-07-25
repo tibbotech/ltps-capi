@@ -24,7 +24,7 @@ Adc::~Adc()
 
 }
 
-int Adc::getVoltage(const char* socket, unsigned int channel)
+int Adc::getVoltage(const char* socket, unsigned int channel, bool prev)
 {
     int busn = Lutils::getInstance().getI2CBusNum(socket);
 
@@ -34,10 +34,10 @@ int Adc::getVoltage(const char* socket, unsigned int channel)
         return 0;
     }
     else
-        return getVoltage(busn, channel);
+        return getVoltage(busn, channel, prev);
 }
 
-int Adc::getVoltage(int busn, unsigned int channel)
+int Adc::getVoltage(int busn, unsigned int channel, bool prev)
 {
     int res = AdcPrivate::i2c.set_bus(busn);
 
@@ -59,8 +59,11 @@ int Adc::getVoltage(int busn, unsigned int channel)
     uint8_t data[2];
     memset(&data, 0, 2);
 
-    AdcPrivate::i2c.Rbb(LTC2309::I2C_ADDRESS, addr, data, 2); //< Throws out last reading
-    memset(&data, 0, 2); // Clear last reading result
+    if (!prev)
+    {
+        AdcPrivate::i2c.Rbb(LTC2309::I2C_ADDRESS, addr, data, 2); //< Throws out last reading
+        memset(&data, 0, 2); // Clear last reading result
+    }
 
     res = AdcPrivate::i2c.Rbb(LTC2309::I2C_ADDRESS, addr, data, 2); //< Obtains the current reading and stores to data variable
 
