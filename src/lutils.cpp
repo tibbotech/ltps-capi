@@ -10,6 +10,7 @@
 #include <string.h>
 #include <fcntl.h>
 
+#include <string>
 #include <iostream>
 #include <algorithm>
 

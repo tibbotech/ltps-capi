@@ -6,9 +6,22 @@
 #ifndef __LUTILS_H__
 #define __LUTILS_H__
 
-#include <string>
 #include <map>
 #include <fstream>
+#include <cstring>
+
+/*!
+    \struct CompareCStrings
+    \brief Comparator for C-strings
+*/
+
+struct CompareCStrings
+{
+    bool operator() (const char* lhs, const char* rhs) const
+    {
+        return std::strcmp(lhs, rhs) < 0;
+    }
+};
 
 /*!
     \class Lutils
@@ -46,10 +59,14 @@ private:
 
     virtual ~Lutils();
 
+    Lutils(const Lutils& );
+
+    Lutils &operator =(const Lutils &);
+
     std::ifstream m_fl;
 
-    std::map<std::string, int> m_i2c;
-    std::map<std::string, int> m_gpio;
+    std::map<const char*, int, CompareCStrings> m_i2c;
+    std::map<const char*, int, CompareCStrings> m_gpio;
 
     const char* readString(const char* section, const char* param);
 
