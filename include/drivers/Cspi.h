@@ -88,7 +88,7 @@ public:
  //! \{
  inline int R( uint8_t const *_b, size_t _l) {  return( this->WR( _b, NULL, _l));  }
  inline int W( uint8_t const *_b, size_t _l) {  return( this->WR( NULL, _b, _l));  }
- int WR( uint8_t const *_w, uint8_t const *_r, size_t _l);
+ int WR( uint8_t const *_w, uint8_t const *_r, uint32_t _l);
  //! \}
 
  //! \retval -1 Not found
