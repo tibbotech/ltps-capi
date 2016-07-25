@@ -19,10 +19,6 @@ class Lutils
 {
 public:
 
-    Lutils();
-
-    virtual ~Lutils();
-
     /// Get singleton instance
     /*!
         \return Lutils reference
@@ -45,6 +41,10 @@ public:
     int readInteger(const char* section, const char* param);
 
 private:
+
+    Lutils();
+
+    virtual ~Lutils();
 
     std::ifstream m_fl;
 

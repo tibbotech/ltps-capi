@@ -16,6 +16,8 @@
 #include "lutils.h"
 #include "global.h"
 
+#include "Ci2c.h"
+
 #define MAX_BUF_SIZE            255
 #define PINS_INI_FILE           "/opt/tps-shared/hwini/pins.ini"
 
@@ -37,7 +39,6 @@ Lutils &Lutils::getInstance()
     return lutils;
 }
 
-// Vitaly, FIX this! use static Ci2c::find_bus( _sock)
 int Lutils::getI2CBusNum(const char* socket)
 {
     if (m_i2c.find(socket) != m_i2c.end())
@@ -65,57 +66,7 @@ int Lutils::getI2CBusNum(const char* socket)
 
     busName.append(sockNum);
 
-    int file, cnt;
-    int busn;
-    DIR *dp;
-    struct dirent *ep;
-    char tmps0[NAME_MAX], tmps1[NAME_MAX];
-
-    if ((dp = opendir(SCS_I2C_PFX)) == NULL)
-        return -1;
-
-    while ((ep = readdir(dp)))
-    {
-        if (strcmp(ep->d_name, ".") == 0)
-            continue;
-
-        if (strcmp(ep->d_name, "..") == 0)
-            continue;
-
-        memset(tmps0, 0, NAME_MAX);
-        sprintf(tmps0, "%s%s/name", SCS_I2C_PFX, ep->d_name);
-
-        if ((file = open(tmps0, O_RDONLY)) < 0)
-            continue;
-
-        memset(tmps0, 0, NAME_MAX);
-        cnt = read(file, tmps1, NAME_MAX - 1);
-
-        close(file);
-
-        if (cnt < 4)
-            continue;
-
-        if (tmps1[cnt - 1] == 0x0A)
-            tmps1[--cnt] = '\0';
-
-        if (strcasecmp(tmps1 + sizeof(char) * 3, busName.c_str()) != 0)
-            continue;
-
-        busn = atoi(ep->d_name + sizeof(char) * 4);
-
-        if (busn < 0)
-            continue;
-
-        m_i2c[socket] = busn;
-
-        return busn;
-        break;
-    }
-
-    closedir( dp);
-
-    return -1;
+    return Ci2c::find_bus(busName.c_str());
 }
 
 int Lutils::readInteger(const char* section, const char* param)
