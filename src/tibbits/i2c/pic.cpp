@@ -17,6 +17,8 @@ namespace PicPrivate
 {
     Ci2c_smbus i2c;
 
+    CPin gpio;
+
     uint8_t readPic(int bus, uint16_t addr)
     {
         int res = i2c.set_bus(bus);
@@ -39,7 +41,7 @@ namespace PicPrivate
 
         res += i2c.R1b(PIC16F1824::I2C_ADDRESS, 0x00, ret);
 
-        if (ret != 3)
+        if (res != 3)
         {
             printf("Error while reading data for PIC\n");
             return 0;
@@ -107,19 +109,18 @@ void Pic::initPic(const char *socket, PicFreq freq)
 
 void Pic::initPic(int busn, int gpin_c, PicFreq freq)
 {
-    CPin gpio;
-    if (gpio.init(gpin_c))
+    if (PicPrivate::gpio.init(gpin_c))
     {
         printf("PIC GPIO initialization error\n");
         return;
     }
 
-    if (gpio.dir_get() == PIN_DIR_I)
-        gpio.dir_set(PIN_DIR_O);
+    if (PicPrivate::gpio.dir_get() == PIN_DIR_I)
+        PicPrivate::gpio.dir_set(PIN_DIR_O);
 
-    gpio.W(0);
+    PicPrivate::gpio.W(0);
     usleep(5000);
-    gpio.W(1);
+    PicPrivate::gpio.W(1);
 
     usleep(25000);
 

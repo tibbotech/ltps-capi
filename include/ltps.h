@@ -6,11 +6,6 @@
 #ifndef __LTPS_H__
 #define __LTPS_H__
 
-//#include "drivers/cpin.h"
-//#include "drivers/ci2c.h"
-//#include "drivers/ci2c_smbus.h"
-//#include "drivers/gpio.h"
-
 #include "lutils.h"
 
 #include "tibbits/i2c/adc.h"
