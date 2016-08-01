@@ -31,6 +31,12 @@ Lutils::~Lutils()
 {
     if (m_fl.is_open())
         m_fl.close();
+
+    for (std::map<const char*, int, CompareCStrings>::iterator it = m_i2c.begin(); it != m_i2c.end(); ++it)
+        delete (it->first);
+
+    for (std::map<const char*, int, CompareCStrings>::iterator it = m_gpio.begin(); it != m_gpio.end(); ++it)
+        delete (it->first);
 }
 
 Lutils &Lutils::getInstance()
@@ -51,8 +57,11 @@ int Lutils::getI2CBusNum(const char* socket)
 
     if (Lutils::readString("I2C", sock.c_str()) && strlen(Lutils::readString("I2C", sock.c_str())) > 0)
     {
+        char *data = new char(strlen(socket) + 1);
+        strcpy(data, socket);
+
         int ret = Lutils::readInteger("I2C", sock.c_str()); //< HW I2C;
-        m_i2c[socket] = ret;
+        m_i2c[data] = ret;
         return ret;
     }
 
@@ -70,7 +79,12 @@ int Lutils::getI2CBusNum(const char* socket)
     int res = Ci2c::find_bus(busName.c_str());
 
     if (res != -1)
-        m_i2c[socket] = res;
+    {
+        char *data = new char(strlen(socket) + 1);
+        strcpy(data, socket);
+
+        m_i2c[data] = res;
+    }
 
     return res;
 }
@@ -89,8 +103,11 @@ int Lutils::readInteger(const char* section, const char* param)
     {
         if (!value.empty())
         {
+            char *data = new char(strlen(param) + 1);
+            strcpy(data, param);
+
             int ret = atoi(value.c_str());
-            m_gpio[param] = ret;
+            m_gpio[data] = ret;
 
             return ret;
         }
