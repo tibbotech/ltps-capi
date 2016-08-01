@@ -3,8 +3,7 @@
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
 */
 
-#include <string>
-#include <algorithm>
+#include <map>
 
 #include "cpin.h"
 #include "lutils.h"
@@ -13,7 +12,25 @@
 
 namespace GpioPrivate
 {
-    CPin gpio;
+    std::map<const char*, CPin*, CompareCStrings> pins;
+
+    void checkGpioPin(const char* pin)
+    {
+        if (GpioPrivate::pins.find(pin) == GpioPrivate::pins.end())
+        {
+            CPin *cpin = new CPin();
+            int res = cpin->init(Lutils::getInstance().readInteger("CPU", pin));
+            if (!res)
+            {
+                char *data = new char(strlen(pin) + 1);
+                strcpy(data, pin);
+
+                GpioPrivate::pins[data] = cpin;
+            }
+            else
+                printf("GPIO PIN initialization error: %s\n", strerror(abs(res)));
+        }
+    }
 }
 
 Gpio::Gpio()
@@ -23,65 +40,62 @@ Gpio::Gpio()
 
 Gpio::~Gpio()
 {
-
+    for (std::map<const char*, CPin*, CompareCStrings>::iterator it = GpioPrivate::pins.begin(); it != GpioPrivate::pins.end(); ++it)
+    {
+        delete it->first;
+        delete it->second;
+    }
 }
 
 int Gpio::setDirection(const char *pin, int direction)
 {
-    std::string spin(pin);
-    std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
+    GpioPrivate::checkGpioPin(pin);
 
-    if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
-        return GpioPrivate::gpio.dir_set(direction);
+    if (GpioPrivate::pins.find(pin) != GpioPrivate::pins.end())
+        return GpioPrivate::pins.at(pin)->dir_set(direction);
     else
-        printf("GPIO PIN initialization error\n");
+        printf("GPIO set direction error for socket %s\n", pin);
 
     return -1;
 }
 
 int Gpio::getDirection(const char *pin)
 {
-    std::string spin(pin);
-    std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
+    GpioPrivate::checkGpioPin(pin);
 
-    if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
-        return GpioPrivate::gpio.dir_get();
+    if (GpioPrivate::pins.find(pin) != GpioPrivate::pins.end())
+        return GpioPrivate::pins.at(pin)->dir_get();
     else
-        printf("GPIO PIN initialization error\n");
+        printf("GPIO get direction error for socket %s\n", pin);
 
     return PIN_DIR_I;
 }
 
 int Gpio::setValue(const char* pin, unsigned int value)
 {
-    std::string spin(pin);
-    std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
+    GpioPrivate::checkGpioPin(pin);
 
-    if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
-        return GpioPrivate::gpio.W(value);
+    if (GpioPrivate::pins.find(pin) != GpioPrivate::pins.end())
+        return GpioPrivate::pins.at(pin)->W(value);
     else
-        printf("GPIO PIN initialization error\n");
+        printf("GPIO set value error for socket %s\n", pin);
 
     return - 1;
 }
 
 unsigned int Gpio::getValue(const char *pin)
 {
-    std::string spin(pin);
-    std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
+    GpioPrivate::checkGpioPin(pin);
 
-    if (!GpioPrivate::gpio.init(Lutils::getInstance().readInteger("CPU", spin.c_str())))
-        return GpioPrivate::gpio.R();
+    if (GpioPrivate::pins.find(pin) != GpioPrivate::pins.end())
+        return GpioPrivate::pins.at(pin)->R();
     else
-        printf("GPIO PIN initialization error\n");
+        printf("GPIO get value error for socket %s\n", pin);
 
     return 0;
 }
 
 unsigned int Gpio::getPinNumber(const char *pin)
 {
-    std::string spin(pin);
-    std::transform(spin.begin(), spin.end(), spin.begin(), ::toupper);
-
-    return Lutils::getInstance().readInteger("CPU", spin.c_str());
+    return Lutils::getInstance().readInteger("CPU", pin);
 }

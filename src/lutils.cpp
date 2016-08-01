@@ -33,10 +33,10 @@ Lutils::~Lutils()
         m_fl.close();
 
     for (std::map<const char*, int, CompareCStrings>::iterator it = m_i2c.begin(); it != m_i2c.end(); ++it)
-        delete (it->first);
+        delete it->first;
 
     for (std::map<const char*, int, CompareCStrings>::iterator it = m_gpio.begin(); it != m_gpio.end(); ++it)
-        delete (it->first);
+        delete it->first;
 }
 
 Lutils &Lutils::getInstance()
