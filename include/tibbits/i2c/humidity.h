@@ -42,13 +42,6 @@ public:
         \param hum HumData data struct
     */
     void getData(const char* socket, HumData &hum);
-
-    /// Get current humidity/temperature
-    /*!
-        \param busn I2C bus number (eg: 0, 4)
-        \param hum HumData data struct
-    */
-    void getData(int busn, HumData &hum);
 };
 
 #endif

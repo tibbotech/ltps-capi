@@ -27,15 +27,6 @@ public:
         \return Value in millivolts
     */
     int getVoltage(const char* socket, unsigned int channel, bool prev = false);
-
-    /// Get voltage value for channel
-    /*!
-        \param busn I2C bus number (eg: 0, 4)
-        \param channel ADC channel (1...4)
-        \param prev Get previous voltage conversion if true
-        \return Value in millivolts
-    */
-    int getVoltage(int busn, unsigned int channel, bool prev = false);
 };
 
 #endif

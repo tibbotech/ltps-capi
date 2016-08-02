@@ -25,13 +25,6 @@ public:
         \return Illumination in lx
     */
     int getIllumination(const char *socket);
-
-    /// Get current illumination in lx
-    /*!
-        \param bus I2C bus number (eg: 0, 4)
-        \return Illumination in lx
-    */
-    int getIllumination(int bus);
 };
 
 #endif

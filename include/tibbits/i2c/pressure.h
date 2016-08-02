@@ -39,13 +39,6 @@ public:
         \param pres PresData data struct
     */
     void getData(const char *socket, PresData &pres);
-
-    /// Get current pressure/temperature
-    /*!
-        \param bus I2C bus number (eg: 0, 4)
-        \param pres PresData data struct
-    */
-    void getData(int bus, PresData &pres);
 };
 
 #endif

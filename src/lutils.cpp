@@ -32,11 +32,23 @@ Lutils::~Lutils()
     if (m_fl.is_open())
         m_fl.close();
 
-    for (std::map<const char*, int, CompareCStrings>::iterator it = m_i2c.begin(); it != m_i2c.end(); ++it)
+    for (std::map<const char*, int, CompareCStrings>::iterator it = m_si2c.begin(); it != m_si2c.end(); ++it)
         delete it->first;
 
-    for (std::map<const char*, int, CompareCStrings>::iterator it = m_gpio.begin(); it != m_gpio.end(); ++it)
+    for (std::map<const char*, int, CompareCStrings>::iterator it = m_sgpio.begin(); it != m_sgpio.end(); ++it)
         delete it->first;
+
+    for (std::map<const char*, CPin*, CompareCStrings>::iterator it = m_pins.begin(); it != m_pins.end(); ++it)
+    {
+        delete it->first;
+        delete it->second;
+    }
+
+    for (std::map<const char*, Ci2c_smbus*, CompareCStrings>::iterator it = m_i2c.begin(); it != m_i2c.end(); ++it)
+    {
+        delete it->first;
+        delete it->second;
+    }
 }
 
 Lutils &Lutils::getInstance()
@@ -48,8 +60,8 @@ Lutils &Lutils::getInstance()
 
 int Lutils::getI2CBusNum(const char* socket)
 {
-    if (m_i2c.find(socket) != m_i2c.end())
-        return m_i2c.at(socket);
+    if (m_si2c.find(socket) != m_si2c.end())
+        return m_si2c.at(socket);
 
     std::string sock(socket);
 
@@ -61,7 +73,7 @@ int Lutils::getI2CBusNum(const char* socket)
         strcpy(data, socket);
 
         int ret = Lutils::readInteger("I2C", sock.c_str()); //< HW I2C;
-        m_i2c[data] = ret;
+        m_si2c[data] = ret;
         return ret;
     }
 
@@ -83,7 +95,7 @@ int Lutils::getI2CBusNum(const char* socket)
         char *data = new char(strlen(socket) + 1);
         strcpy(data, socket);
 
-        m_i2c[data] = res;
+        m_si2c[data] = res;
     }
 
     return res;
@@ -93,8 +105,8 @@ int Lutils::readInteger(const char* section, const char* param)
 {
     if (strcmp(section, "CPU") == 0)
     {
-        if (m_gpio.find(param) != m_gpio.end())
-            return m_gpio.at(param);
+        if (m_sgpio.find(param) != m_sgpio.end())
+            return m_sgpio.at(param);
     }
 
     std::string value = Lutils::readString(section, param);
@@ -107,7 +119,7 @@ int Lutils::readInteger(const char* section, const char* param)
             strcpy(data, param);
 
             int ret = atoi(value.c_str());
-            m_gpio[data] = ret;
+            m_sgpio[data] = ret;
 
             return ret;
         }
@@ -117,6 +129,69 @@ int Lutils::readInteger(const char* section, const char* param)
     catch(...) {}
 
     return 0;
+}
+
+CPin* Lutils::getGpioPointer(const char *pin)
+{
+    if (m_pins.find(pin) != m_pins.end())
+        return m_pins.at(pin);
+    else
+    {
+        CPin *cpin = new CPin();
+        int res = cpin->init(readInteger("CPU", pin));
+        if (!res)
+        {
+            char *data = new char(strlen(pin) + 1);
+            strcpy(data, pin);
+
+            m_pins[data] = cpin;
+
+            return cpin;
+        }
+        else
+        {
+            delete cpin;
+            printf("GPIO %s PIN initialization error: %s\n", pin, strerror(abs(res)));
+        }
+    }
+
+    return NULL;
+}
+
+Ci2c_smbus* Lutils::getI2CPointer(const char *socket)
+{
+    if (m_i2c.find(socket) != m_i2c.end())
+        return m_i2c.at(socket);
+    else
+    {
+        int busn = getI2CBusNum(socket);
+
+        if (busn > -1)
+        {
+            Ci2c_smbus *i2c = new Ci2c_smbus();
+            int res = i2c->set_bus(busn);
+
+            if (res == 1)
+            {
+                char *data = new char(strlen(socket) + 1);
+                strcpy(data, socket);
+
+                m_i2c[data] = i2c;
+
+                return i2c;
+            }
+            else
+            {
+                delete i2c;
+                printf("I2C set %s bus error: %s\n", socket, strerror(abs(res)));
+                return NULL;
+            }
+        }
+        else
+            printf("I2C bus for socket %s not found\n", socket);
+    }
+
+    return NULL;
 }
 
 const char* Lutils::readString(const char* section, const char* param)

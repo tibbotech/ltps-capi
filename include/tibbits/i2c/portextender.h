@@ -44,14 +44,6 @@ public:
     */
     void getData(const char *socket, int pin, PortexData &pextender);
 
-    /// Get current data for 8-bit port
-    /*!
-        \param busn I2C bus number (eg: 0, 4)
-        \param pin Current pin (1...8)
-        \param pextender Data in PortexData struct
-    */
-    void getData(int busn, int pin, PortexData &pextender);
-
     /// Set current data for 8-bit port
     /*!
         \param socket I2C bus name (eg: s1, s15)
@@ -59,14 +51,6 @@ public:
         \param pextender Data in PortexData struct
     */
     void setData(const char *socket, int pin, PortexData &pextender);
-
-    /// Set current data for 8-bit port
-    /*!
-        \param busn I2C bus number (eg: 0, 4)
-        \param pin Current pin (1...8)
-        \param pextender Data in PortexData struct
-    */
-    void setData(int busn, int pin, PortexData &pextender);
 };
 
 #endif

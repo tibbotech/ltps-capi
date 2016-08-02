@@ -40,7 +40,7 @@ public:
 
  Ci2c( void) {  this->busn = this->addr = this->f_rw = -1;  }
  Ci2c( Ci2c &_o) {  this->busn = _o.busn;  this->addr = this->f_rw = -1;  }
- ~Ci2c( void) {
+ virtual ~Ci2c( void) {
    if ( this->f_rw >= 0) close( this->f_rw);
  }
  

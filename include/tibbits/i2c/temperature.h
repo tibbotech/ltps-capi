@@ -25,13 +25,6 @@ public:
         \return Temperature in C degrees
     */
     float getTemperature(const char *socket);
-
-    /// Get current temperature in Celsius degrees
-    /*!
-        \param bus I2C bus number (eg: 0, 4)
-        \return Temperature in C degrees
-    */
-    float getTemperature(int bus);
 };
 
 #endif

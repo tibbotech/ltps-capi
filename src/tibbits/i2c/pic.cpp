@@ -3,8 +3,6 @@
     \author Vitaly Gribko (vitaliy.gribko@tibbo.com)
 */
 
-#include "cpin.h"
-#include "Ci2c_smbus.h"
 #include "tibbits/i2c/pic.h"
 
 #include "global.h"
@@ -15,62 +13,57 @@
 
 namespace PicPrivate
 {
-    Ci2c_smbus i2c;
-
-    CPin gpio;
-
-    uint8_t readPic(int bus, uint16_t addr)
+    uint8_t readPic(const char* socket, uint16_t addr)
     {
-        int res = i2c.set_bus(bus);
+        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
 
-        if (res != 1)
+        if (i2c)
         {
-            printf("PIC set I2C bus errno: %i\n", res);
-            return 0;
+            uint8_t data[2];
+            uint8_t ret = 0;
+
+            memset(&data, 0, 2);
+
+            data[0] = (addr >> 8) & 0xFF;
+            data[1] = addr & 0xFF;
+
+            int res = i2c->Wbb(PIC16F1824::I2C_ADDRESS, PIC16F1824::CMD_R, data, 2);
+
+            res += i2c->R1b(PIC16F1824::I2C_ADDRESS, 0x00, ret);
+
+            if (res != 3)
+            {
+                printf("Error while reading data for PIC\n");
+                return 0;
+            }
+
+            return ret;
         }
+        else
+            printf("Error while get I2C bus for PIC\n");
 
-        uint8_t data[2];
-        uint8_t ret = 0;
-
-        memset(&data, 0, 2);
-
-        data[0] = (addr >> 8) & 0xFF;
-        data[1] = addr & 0xFF;
-
-        res = i2c.Wbb(PIC16F1824::I2C_ADDRESS, PIC16F1824::CMD_R, data, 2);
-
-        res += i2c.R1b(PIC16F1824::I2C_ADDRESS, 0x00, ret);
-
-        if (res != 3)
-        {
-            printf("Error while reading data for PIC\n");
-            return 0;
-        }
-
-        return ret;
+        return 0;
     }
 
-    void writePic(int bus, uint16_t addr, uint8_t data)
+    void writePic(const char* socket, uint16_t addr, uint8_t data)
     {
-        int res = i2c.set_bus(bus);
+        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
 
-        if (res != 1)
+        if (i2c)
         {
-            printf("PIC set I2C bus errno: %i\n", res);
-            return;
+            uint8_t str[3];
+            memset(&str, 0, 3);
+
+            str[0] = (addr >> 8) & 0xFF;
+            str[1] = addr & 0xFF;
+            str[2] = data;
+
+            int res = i2c->Wbb(PIC16F1824::I2C_ADDRESS, PIC16F1824::CMD_W, str, 3);
+
+            if (res != 3)
+                printf("Error while writing data for PIC\n");
         }
-
-        uint8_t str[3];
-        memset(&str, 0, 3);
-
-        str[0] = (addr >> 8) & 0xFF;
-        str[1] = addr & 0xFF;
-        str[2] = data;
-
-        res = i2c.Wbb(PIC16F1824::I2C_ADDRESS, PIC16F1824::CMD_W, str, 3);
-
-        if (res != 3)
-            printf("Error while writing data for PIC\n");
+            printf("Error while get I2C bus for PIC\n");
     }
 }
 
@@ -89,189 +82,140 @@ void Pic::initPic(const char *socket, PicFreq freq)
     std::string sock(socket);
     std::transform(sock.begin(), sock.end(), sock.begin(), ::toupper);
 
-    int busn = Lutils::getInstance().getI2CBusNum(socket);
-    int gpin_c = Lutils::getInstance().readInteger("CPU", std::string(sock + "C").c_str());
+    CPin *gpio_c = Lutils::getInstance().getGpioPointer((sock + "C").c_str());
 
-    if (busn == -1)
+    if (gpio_c)
     {
-        printf("I2C bus for socket %s not found\n", socket);
-        return;
+        if (gpio_c->dir_get() == PIN_DIR_I)
+            gpio_c->dir_set(PIN_DIR_O);
+
+        gpio_c->W(0);
+        usleep(5000);
+        gpio_c->W(1);
+
+        usleep(25000);
+
+        PicPrivate::writePic(socket, PIC16F1824::APFCON0, 0x28);
+        PicPrivate::writePic(socket, PIC16F1824::APFCON1, 0x00);
+        PicPrivate::writePic(socket, PIC16F1824::CCPTMRS0, 0x24);
+
+        switch (freq)
+        {
+        case _32MHz:
+            PicPrivate::writePic(socket, PIC16F1824::OSCCON, 0xF0); //< 32 MHz
+            break;
+        case _16MHz:
+            PicPrivate::writePic(socket, PIC16F1824::OSCCON, 0x7A); //< 16 MHz
+            break;
+        case _8MHz:
+            PicPrivate::writePic(socket, PIC16F1824::OSCCON, 0x72); //< 8 MHz
+            break;
+        default:
+            PicPrivate::writePic(socket, PIC16F1824::OSCCON, 0xF0); //< 32 MHz
+            break;
+        }
+
+        PicPrivate::writePic(socket, PIC16F1824::ADCON1, 0xF0);
     }
-
-    if (gpin_c == 0)
-    {
-        printf("GPIO pins for socket %s not found\n", socket);
-        return;
-    }
-
-    initPic(busn, gpin_c, freq);
-}
-
-void Pic::initPic(int busn, int gpin_c, PicFreq freq)
-{
-    if (PicPrivate::gpio.init(gpin_c))
-    {
-        printf("PIC GPIO initialization error\n");
-        return;
-    }
-
-    if (PicPrivate::gpio.dir_get() == PIN_DIR_I)
-        PicPrivate::gpio.dir_set(PIN_DIR_O);
-
-    PicPrivate::gpio.W(0);
-    usleep(5000);
-    PicPrivate::gpio.W(1);
-
-    usleep(25000);
-
-    PicPrivate::writePic(busn, PIC16F1824::APFCON0, 0x28);
-    PicPrivate::writePic(busn, PIC16F1824::APFCON1, 0x00);
-    PicPrivate::writePic(busn, PIC16F1824::CCPTMRS0, 0x24);
-
-    switch (freq)
-    {
-    case _32MHz:
-        PicPrivate::writePic(busn, PIC16F1824::OSCCON, 0xF0); //< 32 MHz
-        break;
-    case _16MHz:
-        PicPrivate::writePic(busn, PIC16F1824::OSCCON, 0x7A); //< 16 MHz
-        break;
-    case _8MHz:
-        PicPrivate::writePic(busn, PIC16F1824::OSCCON, 0x72); //< 8 MHz
-        break;
-    default:
-        PicPrivate::writePic(busn, PIC16F1824::OSCCON, 0xF0); //< 32 MHz
-        break;
-    }
-
-    PicPrivate::writePic(busn, PIC16F1824::ADCON1, 0xF0);
+    else
+        printf("Error while get GPIO pin for PIC\n");
 }
 
 void Pic::configurePwm(const char *socket, int channel)
 {
-    int busn = Lutils::getInstance().getI2CBusNum(socket);
-
-    if (busn == -1)
-        printf("I2C bus for socket %s not found\n", socket);
-    else
-        configurePwm(busn, channel);
-}
-
-void Pic::configurePwm(int busn, int channel)
-{
     if (channel == 1)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::TRISC);
-        PicPrivate::writePic(busn, PIC16F1824::TRISC, val & 0xDF);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::TRISC);
+        PicPrivate::writePic(socket, PIC16F1824::TRISC, val & 0xDF);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::ANSELC);
-        PicPrivate::writePic(busn, PIC16F1824::ANSELC, val & 0xDF);
+        val = PicPrivate::readPic(socket, PIC16F1824::ANSELC);
+        PicPrivate::writePic(socket, PIC16F1824::ANSELC, val & 0xDF);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::TRISA);
-        PicPrivate::writePic(busn, PIC16F1824::TRISA, val | 0x10);
+        val = PicPrivate::readPic(socket, PIC16F1824::TRISA);
+        PicPrivate::writePic(socket, PIC16F1824::TRISA, val | 0x10);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::ANSELA);
-        PicPrivate::writePic(busn, PIC16F1824::ANSELA, val & 0xEF);
+        val = PicPrivate::readPic(socket, PIC16F1824::ANSELA);
+        PicPrivate::writePic(socket, PIC16F1824::ANSELA, val & 0xEF);
     }
 
     if (channel == 2)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::TRISC);
-        PicPrivate::writePic(busn, PIC16F1824::TRISC, (val & 0xF7) | 0x10);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::TRISC);
+        PicPrivate::writePic(socket, PIC16F1824::TRISC, (val & 0xF7) | 0x10);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::ANSELC);
-        PicPrivate::writePic(busn, PIC16F1824::ANSELC, val & 0xF7);
+        val = PicPrivate::readPic(socket, PIC16F1824::ANSELC);
+        PicPrivate::writePic(socket, PIC16F1824::ANSELC, val & 0xF7);
     }
 
     if (channel == 3)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::TRISA);
-        PicPrivate::writePic(busn, PIC16F1824::TRISA, val & 0xFB);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::TRISA);
+        PicPrivate::writePic(socket, PIC16F1824::TRISA, val & 0xFB);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::ANSELA);
-        PicPrivate::writePic(busn, PIC16F1824::ANSELA, val & 0xFB);
+        val = PicPrivate::readPic(socket, PIC16F1824::ANSELA);
+        PicPrivate::writePic(socket, PIC16F1824::ANSELA, val & 0xFB);
     }
 }
 
 void Pic::configureAdc(const char *socket, int channel)
 {
-    int busn = Lutils::getInstance().getI2CBusNum(socket);
-
-    if (busn == -1)
-        printf("I2C bus for socket %s not found\n", socket);
-    else
-        configureAdc(busn, channel);
-}
-
-void Pic::configureAdc(int busn, int channel)
-{
     if (channel == 1)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::TRISA);
-        PicPrivate::writePic(busn, PIC16F1824::TRISA, val | 0x10);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::TRISA);
+        PicPrivate::writePic(socket, PIC16F1824::TRISA, val | 0x10);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::ANSELA);
-        PicPrivate::writePic(busn, PIC16F1824::ANSELA, val | 0x10);
+        val = PicPrivate::readPic(socket, PIC16F1824::ANSELA);
+        PicPrivate::writePic(socket, PIC16F1824::ANSELA, val | 0x10);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::TRISC);
-        PicPrivate::writePic(busn, PIC16F1824::TRISC, val | 0x20);
+        val = PicPrivate::readPic(socket, PIC16F1824::TRISC);
+        PicPrivate::writePic(socket, PIC16F1824::TRISC, val | 0x20);
     }
 
     if (channel == 2)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::TRISC);
-        PicPrivate::writePic(busn, PIC16F1824::TRISC, val | 0x18);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::TRISC);
+        PicPrivate::writePic(socket, PIC16F1824::TRISC, val | 0x18);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::ANSELC);
-        PicPrivate::writePic(busn, PIC16F1824::ANSELC, val | 0x08);
+        val = PicPrivate::readPic(socket, PIC16F1824::ANSELC);
+        PicPrivate::writePic(socket, PIC16F1824::ANSELC, val | 0x08);
     }
 
     if (channel == 3)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::TRISA);
-        PicPrivate::writePic(busn, PIC16F1824::TRISA, val | 0x04);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::TRISA);
+        PicPrivate::writePic(socket, PIC16F1824::TRISA, val | 0x04);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::ANSELA);
-        PicPrivate::writePic(busn, PIC16F1824::ANSELA, val | 0x04);
+        val = PicPrivate::readPic(socket, PIC16F1824::ANSELA);
+        PicPrivate::writePic(socket, PIC16F1824::ANSELA, val | 0x04);
     }
 
     if (channel == 4)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::TRISC);
-        PicPrivate::writePic(busn, PIC16F1824::TRISC, val | 0x04);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::TRISC);
+        PicPrivate::writePic(socket, PIC16F1824::TRISC, val | 0x04);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::ANSELC);
-        PicPrivate::writePic(busn, PIC16F1824::ANSELC, val | 0x04);
+        val = PicPrivate::readPic(socket, PIC16F1824::ANSELC);
+        PicPrivate::writePic(socket, PIC16F1824::ANSELC, val | 0x04);
     }
 
-    uint8_t valAd = PicPrivate::readPic(busn, PIC16F1824::ADCON1);
+    uint8_t valAd = PicPrivate::readPic(socket, PIC16F1824::ADCON1);
 
     valAd |= 0x03;
     valAd &= 0xFB;
 
-    PicPrivate::writePic(busn, PIC16F1824::ADCON1, valAd);
+    PicPrivate::writePic(socket, PIC16F1824::ADCON1, valAd);
 
-    uint8_t valFvr = PicPrivate::readPic(busn, PIC16F1824::FVRCON);
+    uint8_t valFvr = PicPrivate::readPic(socket, PIC16F1824::FVRCON);
 
     valFvr &= 0xFC;
     valFvr |= 0x83;
 
-    PicPrivate::writePic(busn, PIC16F1824::FVRCON, valFvr);
+    PicPrivate::writePic(socket, PIC16F1824::FVRCON, valFvr);
 }
 
 void Pic::startPwm(const char *socket, int channel, int pulse, int period, int prescaler)
 {
-    int busn = Lutils::getInstance().getI2CBusNum(socket);
-
-    if (busn == -1)
-        printf("I2C bus for socket %s not found\n", socket);
-    else
-        startPwm(busn, channel, pulse, period, prescaler);
-}
-
-void Pic::startPwm(int busn, int channel, int pulse, int period, int prescaler)
-{
-    stopPwm(busn, channel);
+    stopPwm(socket, channel);
 
     uint8_t value, rCCPxN, rCCPRxL, rTxCON, rPRx;
 
@@ -314,89 +258,66 @@ void Pic::startPwm(int busn, int channel, int pulse, int period, int prescaler)
 
     if (channel == 1)
     {
-        PicPrivate::writePic(busn, PIC16F1824::PR2, rPRx); // Load the PRx register with the PWM period value
-        PicPrivate::writePic(busn, PIC16F1824::CCPR1L, rCCPRxL); // Load the CCPRxL register and the DCxBx bits of the CCPxCON register, with the PWM duty cycle value
-        PicPrivate::writePic(busn, PIC16F1824::CCP1CON, rCCPxN); // Load DCxBx value and configure CCP1
-        PicPrivate::writePic(busn, PIC16F1824::T2CON, rTxCON | 0x04); // Set Timer
+        PicPrivate::writePic(socket, PIC16F1824::PR2, rPRx); // Load the PRx register with the PWM period value
+        PicPrivate::writePic(socket, PIC16F1824::CCPR1L, rCCPRxL); // Load the CCPRxL register and the DCxBx bits of the CCPxCON register, with the PWM duty cycle value
+        PicPrivate::writePic(socket, PIC16F1824::CCP1CON, rCCPxN); // Load DCxBx value and configure CCP1
+        PicPrivate::writePic(socket, PIC16F1824::T2CON, rTxCON | 0x04); // Set Timer
     }
 
     if (channel == 2)
     {
-        PicPrivate::writePic(busn, PIC16F1824::PR4, rPRx); // Load the PRx register with the PWM period value
-        PicPrivate::writePic(busn, PIC16F1824::CCPR2L, rCCPRxL); // Load the CCPRxL register and the DCxBx bits of the CCPxCON register, with the PWM duty cycle value
-        PicPrivate::writePic(busn, PIC16F1824::CCP2CON, rCCPxN); // Load DCxBx value and configure CCP1
-        PicPrivate::writePic(busn, PIC16F1824::T4CON, rTxCON | 0x04); // Set Timer
+        PicPrivate::writePic(socket, PIC16F1824::PR4, rPRx); // Load the PRx register with the PWM period value
+        PicPrivate::writePic(socket, PIC16F1824::CCPR2L, rCCPRxL); // Load the CCPRxL register and the DCxBx bits of the CCPxCON register, with the PWM duty cycle value
+        PicPrivate::writePic(socket, PIC16F1824::CCP2CON, rCCPxN); // Load DCxBx value and configure CCP1
+        PicPrivate::writePic(socket, PIC16F1824::T4CON, rTxCON | 0x04); // Set Timer
     }
 
     if (channel == 3)
     {
-        PicPrivate::writePic(busn, PIC16F1824::PR6, rPRx); // Load the PRx register with the PWM period value
-        PicPrivate::writePic(busn, PIC16F1824::CCPR3L, rCCPRxL); // Load the CCPRxL register and the DCxBx bits of the CCPxCON register, with the PWM duty cycle value
-        PicPrivate::writePic(busn, PIC16F1824::CCP3CON, rCCPxN); // Load DCxBx value and configure CCP1
-        PicPrivate::writePic(busn, PIC16F1824::T6CON, rTxCON | 0x04); // Set Timer
+        PicPrivate::writePic(socket, PIC16F1824::PR6, rPRx); // Load the PRx register with the PWM period value
+        PicPrivate::writePic(socket, PIC16F1824::CCPR3L, rCCPRxL); // Load the CCPRxL register and the DCxBx bits of the CCPxCON register, with the PWM duty cycle value
+        PicPrivate::writePic(socket, PIC16F1824::CCP3CON, rCCPxN); // Load DCxBx value and configure CCP1
+        PicPrivate::writePic(socket, PIC16F1824::T6CON, rTxCON | 0x04); // Set Timer
     }
 }
 
 void Pic::stopPwm(const char *socket, int channel)
 {
-    int busn = Lutils::getInstance().getI2CBusNum(socket);
-
-    if (busn == -1)
-        printf("I2C bus for socket %s not found\n", socket);
-    else
-        stopPwm(busn, channel);
-}
-
-void Pic::stopPwm(int busn, int channel)
-{
     if (channel == 1)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::LATC);
-        PicPrivate::writePic(busn, PIC16F1824::LATC, val & 0xDF);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::LATC);
+        PicPrivate::writePic(socket, PIC16F1824::LATC, val & 0xDF);
 
-        PicPrivate::writePic(busn, PIC16F1824::CCP1CON, 0x00);
+        PicPrivate::writePic(socket, PIC16F1824::CCP1CON, 0x00);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::T2CON);
-        PicPrivate::writePic(busn, PIC16F1824::T2CON, val & 0xFB);
+        val = PicPrivate::readPic(socket, PIC16F1824::T2CON);
+        PicPrivate::writePic(socket, PIC16F1824::T2CON, val & 0xFB);
     }
 
     if (channel == 2)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::LATC);
-        PicPrivate::writePic(busn, PIC16F1824::LATC, val & 0xF7);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::LATC);
+        PicPrivate::writePic(socket, PIC16F1824::LATC, val & 0xF7);
 
-        PicPrivate::writePic(busn, PIC16F1824::CCP2CON, 0x00);
+        PicPrivate::writePic(socket, PIC16F1824::CCP2CON, 0x00);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::T4CON);
-        PicPrivate::writePic(busn, PIC16F1824::T4CON, val & 0xFB);
+        val = PicPrivate::readPic(socket, PIC16F1824::T4CON);
+        PicPrivate::writePic(socket, PIC16F1824::T4CON, val & 0xFB);
     }
 
     if (channel == 3)
     {
-        uint8_t val = PicPrivate::readPic(busn, PIC16F1824::LATC);
-        PicPrivate::writePic(busn, PIC16F1824::LATC, val & 0xFB);
+        uint8_t val = PicPrivate::readPic(socket, PIC16F1824::LATC);
+        PicPrivate::writePic(socket, PIC16F1824::LATC, val & 0xFB);
 
-        PicPrivate::writePic(busn, PIC16F1824::CCP3CON, 0x00);
+        PicPrivate::writePic(socket, PIC16F1824::CCP3CON, 0x00);
 
-        val = PicPrivate::readPic(busn, PIC16F1824::T6CON);
-        PicPrivate::writePic(busn, PIC16F1824::T6CON, val & 0xFB);
+        val = PicPrivate::readPic(socket, PIC16F1824::T6CON);
+        PicPrivate::writePic(socket, PIC16F1824::T6CON, val & 0xFB);
     }
 }
 
 int Pic::getAdcVoltage(const char *socket, int channel)
-{
-    int busn = Lutils::getInstance().getI2CBusNum(socket);
-
-    if (busn == -1)
-    {
-        printf("I2C bus for socket %s not found\n", socket);
-        return 0;
-    }
-    else
-        return getAdcVoltage(busn, channel);
-}
-
-int Pic::getAdcVoltage(int busn, int channel)
 {
     uint8_t value, adcl, adch;
 
@@ -412,14 +333,14 @@ int Pic::getAdcVoltage(int busn, int channel)
     if (channel == 3)
         value = 0x19;
 
-    PicPrivate::writePic(busn, PIC16F1824::ADCON0, value);
+    PicPrivate::writePic(socket, PIC16F1824::ADCON0, value);
 
     /// Start conversion
-    PicPrivate::writePic(busn, PIC16F1824::ADCON0, value | 0x03);
+    PicPrivate::writePic(socket, PIC16F1824::ADCON0, value | 0x03);
     uint8_t val = 0;
     while (true)
     {
-        val = PicPrivate::readPic(busn, PIC16F1824::ADCON0);
+        val = PicPrivate::readPic(socket, PIC16F1824::ADCON0);
 
         if ((val & 0x02) != 0x1)
             break; //< Conversion done
@@ -427,8 +348,8 @@ int Pic::getAdcVoltage(int busn, int channel)
         usleep(5000);
     }
 
-    adch = PicPrivate::readPic(busn, PIC16F1824::ADRESH);
-    adcl = PicPrivate::readPic(busn, PIC16F1824::ADRESL);
+    adch = PicPrivate::readPic(socket, PIC16F1824::ADRESH);
+    adcl = PicPrivate::readPic(socket, PIC16F1824::ADRESL);
 
     return (adch * 256 + adcl) * 400000 / 100000;
 }

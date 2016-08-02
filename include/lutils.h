@@ -10,6 +10,9 @@
 #include <fstream>
 #include <cstring>
 
+#include "Ci2c_smbus.h"
+#include "cpin.h"
+
 /*!
     \struct CompareCStrings
     \brief Comparator for C-strings
@@ -53,20 +56,39 @@ public:
     */
     int readInteger(const char* section, const char* param);
 
+    /// Get CPin pointer
+    /*!
+        \param pin Pin name (eg: S1A, S15B)
+        \return CPin pointer
+    */
+    CPin* getGpioPointer(const char* pin);
+
+    /// Get Ci2c_smbus pointer
+    /*!
+        \param socket I2C bus name (eg: s1, s15)
+        \return Ci2c_smbus pointer
+    */
+    Ci2c_smbus* getI2CPointer(const char* socket);
+
 private:
 
     Lutils();
 
     virtual ~Lutils();
 
-    Lutils(const Lutils& );
+    Lutils(const Lutils&);
 
     Lutils &operator =(const Lutils &);
 
     std::ifstream m_fl;
 
-    std::map<const char*, int, CompareCStrings> m_i2c;
-    std::map<const char*, int, CompareCStrings> m_gpio;
+    std::map<const char*, int, CompareCStrings> m_si2c;
+
+    std::map<const char*, int, CompareCStrings> m_sgpio;
+
+    std::map<const char*, CPin*, CompareCStrings> m_pins;
+
+    std::map<const char*, Ci2c_smbus*, CompareCStrings> m_i2c;
 
     const char* readString(const char* section, const char* param);
 

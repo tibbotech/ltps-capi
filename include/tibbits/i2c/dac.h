@@ -26,16 +26,6 @@ public:
         \param voltage Value in millivolts (-10000...10000)
     */
     void setVoltage(const char* socket, unsigned int channel, int voltage);
-
-    /// Set voltage for channel
-    /*!
-        \param busn I2C bus number (eg: 0, 4)
-        \param gpin_c GPIO C-pin bus number
-        \param gpin_d GPIO D-pin bus number
-        \param channel Integer number of DAC channel (1...4)
-        \param voltage Value in millivolts (-10000...10000)
-    */
-    void setVoltage(int busn, int gpin_c, int gpin_d, unsigned int channel, int voltage);
 };
 
 #endif

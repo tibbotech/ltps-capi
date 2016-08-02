@@ -42,13 +42,6 @@ public:
         \param accel AccelData data struct
     */
     void getData(const char* socket, AccelData &accel);
-
-    /// Get current data for accelerometer axises
-    /*!
-        \param busn I2C bus number (eg: 0, 4)
-        \param accel AccelData data struct
-    */
-    void getData(int busn, AccelData &accel);
 };
 
 #endif
