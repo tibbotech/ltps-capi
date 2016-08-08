@@ -35,13 +35,13 @@ int main( int argc, char *argv[]) {
    printf( "Bits:%d\n", data.blen);
    printf( "Buff:");
    for ( i = 0; i < data.blen/8; i++) printf( "%02X", data.buff[ i]);
-   if ( data.blen % 8 != 0) printf( "%X", data.buff[ data.blen/8] >> data.blen % 8);
+   if ( data.blen % 8 != 0) printf( "%02X", data.buff[ data.blen/8]);
    printf( "\n");
  }
  printf( "set Out0=0 for 1 second...\n");
  twg.out0_set( 0);
- sleep( 0);
+ sleep( 1);
  printf( "set Out0=1 for 1 second...\n");
  twg.out0_set( 1);
- sleep( 0);
+ sleep( 1);
  return( 0);  }
