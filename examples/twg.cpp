@@ -33,6 +33,11 @@ int main( int argc, char *argv[]) {
  // return code <=0 - Wiegand have no data. (non-blocking call here!)
  if ( ret > 0) {
    printf( "Bits:%d\n", data.blen);
+   // Wiegand data size is in bits and usually 
+   // it's doesn't fit byte borders. So buffer may look like
+   // 10101010 101
+   // but there it will be printed as
+   // AA A0
    printf( "Buff:");
    for ( i = 0; i < data.blen/8; i++) printf( "%02X", data.buff[ i]);
    if ( data.blen % 8 != 0) printf( "%02X", data.buff[ data.blen/8]);
