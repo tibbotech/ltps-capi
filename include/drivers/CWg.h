@@ -39,7 +39,7 @@ protected:
  int f_rw;
  char sock[ 64];
  
- int x_open( const char *_sock, const char *_what);
+ int x_open( const char *_sock, const char *_what, int _flags);
  void x_close( void) {
    this->null_sock();
    if ( this->f_rw) close( this->f_rw);
