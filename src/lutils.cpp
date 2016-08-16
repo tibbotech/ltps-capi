@@ -131,7 +131,7 @@ int Lutils::readInteger(const char* section, const char* param)
     return 0;
 }
 
-CPin* Lutils::getGpioPointer(const char *pin)
+CPin* Lutils::getGpioPointer(const char* pin, char **error)
 {
     if (m_pins.find(pin) != m_pins.end())
         return m_pins.at(pin);
@@ -151,14 +151,14 @@ CPin* Lutils::getGpioPointer(const char *pin)
         else
         {
             delete cpin;
-            printf("GPIO %s PIN initialization error: %s\n", pin, strerror(abs(res)));
+            asprintf(error, "GPIO %s PIN initialization error: %s", pin, strerror(abs(res)));
         }
     }
 
     return NULL;
 }
 
-Ci2c_smbus* Lutils::getI2CPointer(const char *socket)
+Ci2c_smbus* Lutils::getI2CPointer(const char* socket, char **error)
 {
     if (m_i2c.find(socket) != m_i2c.end())
         return m_i2c.at(socket);
@@ -183,12 +183,12 @@ Ci2c_smbus* Lutils::getI2CPointer(const char *socket)
             else
             {
                 delete i2c;
-                printf("I2C set %s bus error: %s\n", socket, strerror(abs(res)));
+                asprintf(error, "I2C set %s bus error: %s", socket, strerror(abs(res)));
                 return NULL;
             }
         }
         else
-            printf("I2C bus for socket %s not found\n", socket);
+            asprintf(error, "I2C bus for socket %s not found", socket);
     }
 
     return NULL;

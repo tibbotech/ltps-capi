@@ -19,8 +19,11 @@ struct HumData
     /// Temperature in degrees Celsius
     float temperature;
 
-    /// Meter measurement status
+    /// Return status (EXIT_SUCCESS or EXIT_FAILURE)
     int status;
+
+    /// String error if something goes wrong (NULL for success)
+    const char* error;
 };
 
 /*!

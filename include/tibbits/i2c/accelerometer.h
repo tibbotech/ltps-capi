@@ -21,6 +21,12 @@ struct AccelData
 
     /// Acceleration for Z-axis im mG
     int lz;
+
+    /// Return status (EXIT_SUCCESS or EXIT_FAILURE)
+    int status;
+
+    /// String error if something goes wrong (NULL for success)
+    const char* error;
 };
 
 /*!

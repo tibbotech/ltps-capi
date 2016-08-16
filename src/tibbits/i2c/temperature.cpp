@@ -18,9 +18,12 @@ Temperature::~Temperature()
 
 }
 
-float Temperature::getTemperature(const char *socket)
+void Temperature::getTemperature(const char *socket, TempData &temp)
 {
-    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+    memset(&temp, 0, sizeof temp);
+
+    char* error;
+    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
     if (i2c)
     {
@@ -34,8 +37,9 @@ float Temperature::getTemperature(const char *socket)
 
         if (res != 3)
         {
-            printf("Error while get temperature for ambient temperature sensor\n");
-            return 0;
+            temp.status = EXIT_FAILURE;
+            temp.error = "Checksum error while get temperature for ambient temperature sensor";
+            return;
         }
 
         // Swap order of the msb and lsb bytes
@@ -46,10 +50,12 @@ float Temperature::getTemperature(const char *socket)
         if (raw_temperature & 0x1000) //< Check sign bit
             temperature -= 256.0;
 
-        return temperature;
+        temp.temp = temperature;
+        temp.status = EXIT_SUCCESS;
     }
     else
-        printf("Error while get I2C bus for ambient temperature sensor\n");
-
-    return 0.0f;
+    {
+        temp.status = EXIT_FAILURE;
+        temp.error = error;
+    }
 }

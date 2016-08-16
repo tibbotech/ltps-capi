@@ -18,9 +18,12 @@ Light::~Light()
 
 }
 
-int Light::getIllumination(const char *socket)
+void Light::getIllumination(const char *socket, LightData &ill)
 {
-    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+    memset(&ill, 0, sizeof ill);
+
+    char* error;
+    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
     if (i2c)
     {
@@ -39,14 +42,18 @@ int Light::getIllumination(const char *socket)
 
         if (res != 2)
         {
-            printf("Error while get illumination for ambient light sensor\n");
-            return 0;
+            ill.status = EXIT_FAILURE;
+            ill.error = "Checksum error while get illumination for ambient light sensor";
+            return;
         }
 
-        return (data[0] * 256 + data[1]) / 1.2;
+        ill.ill = (data[0] * 256 + data[1]) / 1.2;
+        ill.status = EXIT_SUCCESS;
     }
     else
-        printf("Error while get I2C bus for ambient light sensor\n");
+    {
+        ill.status = EXIT_FAILURE;
+        ill.error = error;
+    }
 
-    return 0;
 }

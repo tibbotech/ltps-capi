@@ -21,21 +21,37 @@ Dac::~Dac()
 
 }
 
-void Dac::setVoltage(const char* socket, unsigned int channel, int voltage)
+void Dac::setVoltage(const char* socket, unsigned int channel, int voltage, DacData &dac)
 {
+    memset(&dac, 0, sizeof dac);
+
     std::string sock(socket);
     std::transform(sock.begin(), sock.end(), sock.begin(), ::toupper);
 
-    CPin *gpio_c = Lutils::getInstance().getGpioPointer((sock + "C").c_str());
-    CPin *gpio_d = Lutils::getInstance().getGpioPointer((sock + "D").c_str());
+    char* error;
+    CPin *gpio_c = Lutils::getInstance().getGpioPointer((sock + "C").c_str(), &error);
+    if (!gpio_c)
+    {
+        dac.status = EXIT_FAILURE;
+        dac.error = error;
+        return;
+    }
 
-    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+    CPin *gpio_d = Lutils::getInstance().getGpioPointer((sock + "D").c_str(), &error);
+    if (!gpio_d)
+    {
+        dac.status = EXIT_FAILURE;
+        dac.error = error;
+        return;
+    }
 
-    if (gpio_c && gpio_d && i2c)
+    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
+    if (i2c)
     {
         if ((gpio_d->dir_get() == PIN_DIR_O) && (!gpio_d->R()))
         {
-            printf("Could't to set voltage: DAC is busy\n");
+            dac.status = EXIT_FAILURE;
+            dac.error = "Could't to set voltage: DAC is busy";
             return;
         }
 
@@ -63,8 +79,17 @@ void Dac::setVoltage(const char* socket, unsigned int channel, int voltage)
         gpio_c->W(1);
 
         if (res != 2) //< 2 bytes should be written
-            printf("Error while set voltage for DAC\n");
+        {
+            dac.status = EXIT_FAILURE;
+            dac.error = "Checksum error while set voltage for DAC";
+            return;
+        }
+
+        dac.status = EXIT_SUCCESS;
     }
     else
-        printf("Error while get I2C/GPIO bus/pins for DAC\n");
+    {
+        dac.status = EXIT_FAILURE;
+        dac.error = error;
+    }
 }

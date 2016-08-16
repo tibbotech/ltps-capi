@@ -46,7 +46,7 @@ public:
         \param socket I2C bus name (eg: s1, s15)
         \return I2C bus number (eg: 0, 4)
     */
-    int getI2CBusNum(const char* socket);
+    int getI2CBusNum(const char* ocket);
 
     /// Read integer value from from LTPS pins.ini file
     /*!
@@ -59,16 +59,18 @@ public:
     /// Get CPin pointer
     /*!
         \param pin Pin name (eg: S1A, S15B)
+        \param error Return string error if something goes wrong
         \return CPin pointer
     */
-    CPin* getGpioPointer(const char* pin);
+    CPin* getGpioPointer(const char* pin, char **error);
 
     /// Get Ci2c_smbus pointer
     /*!
         \param socket I2C bus name (eg: s1, s15)
+        \param error Return string error if something goes wrong
         \return Ci2c_smbus pointer
     */
-    Ci2c_smbus* getI2CPointer(const char* socket);
+    Ci2c_smbus* getI2CPointer(const char* socket, char **error);
 
 private:
 
@@ -91,7 +93,6 @@ private:
     std::map<const char*, Ci2c_smbus*, CompareCStrings> m_i2c;
 
     const char* readString(const char* section, const char* param);
-
 };
 
 #endif

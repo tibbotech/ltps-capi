@@ -18,6 +18,12 @@ struct PresData
 
     /// Pressure in mm Hg
     float pressure;
+
+    /// Return status (EXIT_SUCCESS or EXIT_FAILURE)
+    int status;
+
+    /// String error if something goes wrong (NULL for success)
+    const char* error;
 };
 
 /*!

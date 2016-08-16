@@ -22,7 +22,8 @@ void Pressure::getData(const char *socket, PresData &pres)
 {
     memset(&pres, 0, sizeof pres);
 
-    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+    char* error;
+    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
     if (i2c)
     {
@@ -74,7 +75,8 @@ void Pressure::getData(const char *socket, PresData &pres)
 
         if (res != 13)
         {
-            printf("Error while get data for barometric pressure sensor\n");
+            pres.status = EXIT_FAILURE;
+            pres.error = "Checksum error while get data for barometric pressure sensor";
             return;
         }
 
@@ -99,7 +101,12 @@ void Pressure::getData(const char *socket, PresData &pres)
 
         pres.pressure = pressure;
         pres.temperature = temperature;
+
+        pres.status = EXIT_SUCCESS;
     }
     else
-        printf("Error while get I2C bus for barometric pressure sensor\n");
+    {
+        pres.status = EXIT_FAILURE;
+        pres.error = error;
+    }
 }

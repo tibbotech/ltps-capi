@@ -20,7 +20,8 @@ namespace PotentiometerPrivate
 
     unsigned int readData(const char* socket, char addr)
     {
-        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+        char* error;
+        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
         if (i2c)
         {
@@ -39,14 +40,15 @@ namespace PotentiometerPrivate
             return (((unsigned int) highByte << 8) | lowByte) & 0x01FF;
         }
         else
-            printf("Error while get I2C bus for digital potentiometer\n");
+            printf("%s\n", error);
 
         return 0;
     }
 
     bool writeData(const char* socket, char addr, unsigned int value)
     {
-        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+        char* error;
+        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
         if (i2c)
         {
@@ -65,7 +67,7 @@ namespace PotentiometerPrivate
                 return false;
         }
         else
-            printf("Error while get I2C bus for digital potentiometer\n");
+            printf("%s\n", error);
 
         return false;
     }

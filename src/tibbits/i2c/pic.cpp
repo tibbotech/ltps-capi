@@ -15,7 +15,8 @@ namespace PicPrivate
 {
     uint8_t readPic(const char* socket, uint16_t addr)
     {
-        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+        char* error;
+        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
         if (i2c)
         {
@@ -33,21 +34,22 @@ namespace PicPrivate
 
             if (res != 3)
             {
-                printf("Error while reading data for PIC\n");
+                printf("Checksum error while reading data for PIC\n");
                 return 0;
             }
 
             return ret;
         }
         else
-            printf("Error while get I2C bus for PIC\n");
+            printf("%s\n", error);
 
         return 0;
     }
 
     void writePic(const char* socket, uint16_t addr, uint8_t data)
     {
-        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+        char* error;
+        Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
         if (i2c)
         {
@@ -61,9 +63,10 @@ namespace PicPrivate
             int res = i2c->Wbb(PIC16F1824::I2C_ADDRESS, PIC16F1824::CMD_W, str, 3);
 
             if (res != 3)
-                printf("Error while writing data for PIC\n");
+                printf("Checksum error while writing data for PIC\n");
         }
-            printf("Error while get I2C bus for PIC\n");
+        else
+            printf("%s\n", error);
     }
 }
 
@@ -82,7 +85,8 @@ void Pic::initPic(const char *socket, PicFreq freq)
     std::string sock(socket);
     std::transform(sock.begin(), sock.end(), sock.begin(), ::toupper);
 
-    CPin *gpio_c = Lutils::getInstance().getGpioPointer((sock + "C").c_str());
+    char* error;
+    CPin *gpio_c = Lutils::getInstance().getGpioPointer((sock + "C").c_str(), &error);
 
     if (gpio_c)
     {
@@ -118,7 +122,7 @@ void Pic::initPic(const char *socket, PicFreq freq)
         PicPrivate::writePic(socket, PIC16F1824::ADCON1, 0xF0);
     }
     else
-        printf("Error while get GPIO pin for PIC\n");
+        printf("%s\n", error);
 }
 
 void Pic::configurePwm(const char *socket, int channel)

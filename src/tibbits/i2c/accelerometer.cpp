@@ -22,7 +22,8 @@ void Accelerometer::getData(const char* socket, AccelData &accel)
 {
     memset(&accel, 0, sizeof accel);
 
-    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+    char* error;
+    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
     if (i2c)
     {
@@ -91,7 +92,8 @@ void Accelerometer::getData(const char* socket, AccelData &accel)
 
         if (res != 14)
         {
-            printf("Error while get data for 3-axis accelerometer\n");
+            accel.status = EXIT_FAILURE;
+            accel.error = "Checksum error while get data for 3-axis accelerometer";
             return;
         }
 
@@ -133,7 +135,12 @@ void Accelerometer::getData(const char* socket, AccelData &accel)
         accel.lx = x_value;
         accel.ly = y_value;
         accel.lz = z_value;
+
+        accel.status = EXIT_SUCCESS;
     }
     else
-        printf("Error while get I2C bus for 3-axis accelerometer\n");
+    {
+        accel.status = EXIT_FAILURE;
+        accel.error = error;
+    }
 }

@@ -22,7 +22,8 @@ void Portextender::getData(const char *socket, int pin, PortexData &pextender)
 {
     memset(&pextender, 0, sizeof pextender);
 
-    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+    char* error;
+    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
     if (i2c)
     {
@@ -43,17 +44,18 @@ void Portextender::getData(const char *socket, int pin, PortexData &pextender)
 
         if (res != 3)
         {
-            printf("Error while get data for 8-bit port extender\n");
+            printf("Checksum error while get data for 8-bit port extender\n");
             return;
         }
     }
     else
-        printf("Error while get I2C bus for 8-bit port extender\n");
+        printf("%s\n", error);
 }
 
 void Portextender::setData(const char *socket, int pin, PortexData &pextender)
 {
-    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+    char* error;
+    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
     if (i2c)
     {
@@ -97,10 +99,10 @@ void Portextender::setData(const char *socket, int pin, PortexData &pextender)
 
         if (res != 4)
         {
-            printf("Error while set data for 8-bit port extender\n");
+            printf("Checksum error while set data for 8-bit port extender\n");
             return;
         }
     }
     else
-        printf("Error while get I2C bus for 8-bit port extender\n");
+        printf("%s\n", error);
 }

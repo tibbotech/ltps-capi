@@ -18,9 +18,12 @@ Adc::~Adc()
 
 }
 
-int Adc::getVoltage(const char* socket, unsigned int channel, bool prev)
+void Adc::getVoltage(const char* socket, unsigned int channel, bool prev, AdcData &adc)
 {
-    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket);
+    memset(&adc, 0, sizeof adc);
+
+    char* error;
+    Ci2c_smbus *i2c = Lutils::getInstance().getI2CPointer(socket, &error);
 
     if (i2c)
     {
@@ -46,18 +49,22 @@ int Adc::getVoltage(const char* socket, unsigned int channel, bool prev)
 
         if (res != 2)
         {
-            printf("Error while get voltage for ADC\n");
-            return 0;
+            adc.status = EXIT_FAILURE;
+            adc.error = "Checksum error while get voltage for ADC";
+            return;
         }
 
         // Сonverting to mV
         int result = data[1] / 64 + data[0] * 4;
         result = (result * 1953223 - 1000000000) / 100000;
 
-        return result;
+        adc.voltage = result;
+
+        adc.status = EXIT_SUCCESS;
     }
     else
-        printf("Error while get I2C bus for ADC\n");
-
-    return 0;
+    {
+        adc.status = EXIT_FAILURE;
+        adc.error = error;
+    }
 }
