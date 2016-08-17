@@ -93,3 +93,11 @@ void Dac::setVoltage(const char* socket, unsigned int channel, int voltage, DacD
         dac.error = error;
     }
 }
+
+void Dac::setVoltage(const char *socket, unsigned int channel, int voltage)
+{
+    DacData data;
+    memset(&data, 0, sizeof data);
+
+    setVoltage(socket, channel, voltage);
+}
