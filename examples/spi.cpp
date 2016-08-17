@@ -11,7 +11,7 @@
 #define MAX_BUF 100
 
 int main( int argc, char *argv[]) {
- SPI x;
+ Cspi x;
  x.set_dev( "-s05", 0);
  x.set_mode( SPI_MODE_0);
  x.set_bits( 8);
