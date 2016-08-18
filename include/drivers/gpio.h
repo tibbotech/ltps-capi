@@ -69,8 +69,8 @@ public:
     /*!
         \param lsbPins Pins S1A...S15D (LSB bit 0 - S1A, bit 1 - S1B,.., MSB bit 31 - S15D)
         \param msbPins Pins S17A..S25C (LSB bit 0 - S17A, bit 1 - S17B,..., MSB bit 18 - S25D)
-        \param lsbValues Directions for pins S1A...S15D (0 for input, 1 for output)
-        \param msbValues Directions for pins S17A...S25D (0 for input, 1 for output)
+        \param lsbValues Values for pins S1A...S15D (0 or 1)
+        \param msbValues Values for pins S17A...S25D (0 or 1)
     */
     void setValue(int lsbPins, int msbPins, int lsbValues, int msbValues);
 
