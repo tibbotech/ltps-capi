@@ -41,10 +41,10 @@ public:
     */
     int setDirection(const char *pin, int direction);
 
-    /// Set directions for the pin group simultaneously (see bit arithmetic)
+    /// Set directions for all pins simultaneously (see bit arithmetic)
     /*!
-        \param lsbPins Pins S1A...S15D (LSB bit 0 - S1A, bit 1 - S1B,.., MSB bit 31 - S15D)
-        \param msbPins Pins S17A..S25C (LSB bit 0 - S17A, bit 1 - S17B,..., MSB bit 18 - S25D)
+        \param lsbPins Applicable bits: pins S1A...S15D (LSB bit 0 - pin S1A, bit 1 - pin S1B,.., MSB bit 31 - pin S15D)
+        \param msbPins Applicable bits: pins S17A..S25C (LSB bit 0 - pin S17A, bit 1 - pin S17B,..., MSB bit 18 - pin S25D)
         \param lsbDirs Directions for pins S1A...S15D (0 for input, 1 for output)
         \param msbDirs Directions for pins S17A...S25D (0 for input, 1 for output)
     */
@@ -65,10 +65,10 @@ public:
     */
     int setValue(const char* pin, unsigned int value);
 
-    /// Set values for the pin group simultaneously (see bit arithmetic)
+    /// Set values for all pins simultaneously (see bit arithmetic)
     /*!
-        \param lsbPins Pins S1A...S15D (LSB bit 0 - S1A, bit 1 - S1B,.., MSB bit 31 - S15D)
-        \param msbPins Pins S17A..S25C (LSB bit 0 - S17A, bit 1 - S17B,..., MSB bit 18 - S25D)
+        \param lsbPins Applicable bits: pins S1A...S15D (LSB bit 0 - pin S1A, bit 1 - pin S1B,.., MSB bit 31 - pin S15D)
+        \param msbPins Applicable bits: pins S17A..S25C (LSB bit 0 - pin S17A, bit 1 - pin S17B,..., MSB bit 18 - pin S25D)
         \param lsbValues Values for pins S1A...S15D (0 or 1)
         \param msbValues Values for pins S17A...S25D (0 or 1)
     */
