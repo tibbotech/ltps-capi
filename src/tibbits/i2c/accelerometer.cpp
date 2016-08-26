@@ -58,7 +58,6 @@ void Accelerometer::getData(const char* socket, AccelData &accel)
 
         // In bypass mode the overrun bit is set when new data replaces unread data in the DATAX, DATAY, and DATAZ registers
 
-        res += i2c->Wbb(ADXL312::I2C_ADDRESS, ADXL312::INT_ENABLE, 0x00, 0);
         res += i2c->R1b(ADXL312::I2C_ADDRESS, ADXL312::INT_ENABLE, tmp);
 
         tmp = tmp & ADXL312::INT_FLAG;

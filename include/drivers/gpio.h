@@ -24,7 +24,6 @@
     (data >> n) & 1
 */
 
-
 class Gpio
 {
 public:
@@ -45,10 +44,10 @@ public:
     /*!
         \param lsbPins Applicable bits: pins S1A...S15D (LSB bit 0 - pin S1A, bit 1 - pin S1B,.., MSB bit 31 - pin S15D)
         \param msbPins Applicable bits: pins S17A..S25C (LSB bit 0 - pin S17A, bit 1 - pin S17B,..., MSB bit 18 - pin S25D)
-        \param lsbDirs Directions for pins S1A...S15D (0 for input, 1 for output)
-        \param msbDirs Directions for pins S17A...S25D (0 for input, 1 for output)
+        \param lsbDirs Directions for first group: pins S1A...S15D (0 for input, 1 for output)
+        \param msbDirs Directions for second group: pins S17A...S25D (0 for input, 1 for output)
     */
-    void setDirection(int lsbPins, int msbPins, int lsbDirs, int msbDirs);
+    void setDirections(int lsbPins, int msbPins, int lsbDirs, int msbDirs);
 
     /// Get direction
     /*!
@@ -56,6 +55,13 @@ public:
         \return Pin direction (0 for input, 1 for output)
     */
     int getDirection(const char *pin);
+
+    /// Get directions for all pins simultaneously (see bit arithmetic)
+    /*!
+        \param lsbDirs Directions for first group: pins S1A...S15D (0 for input, 1 for output)
+        \param msbDirs Directions for second group: pins S17A...S25D (0 for input, 1 for output)
+    */
+    void getDirections(int &lsbDirs, int &msbDirs);
 
     /// Set value
     /*!
@@ -69,10 +75,10 @@ public:
     /*!
         \param lsbPins Applicable bits: pins S1A...S15D (LSB bit 0 - pin S1A, bit 1 - pin S1B,.., MSB bit 31 - pin S15D)
         \param msbPins Applicable bits: pins S17A..S25C (LSB bit 0 - pin S17A, bit 1 - pin S17B,..., MSB bit 18 - pin S25D)
-        \param lsbValues Values for pins S1A...S15D (0 or 1)
-        \param msbValues Values for pins S17A...S25D (0 or 1)
+        \param lsbValues Values for first group: pins S1A...S15D (0 or 1)
+        \param msbValues Values for second group: pins S17A...S25D (0 or 1)
     */
-    void setValue(int lsbPins, int msbPins, int lsbValues, int msbValues);
+    void setValues(int lsbPins, int msbPins, int lsbValues, int msbValues);
 
     /// Get value
     /*!
@@ -80,6 +86,13 @@ public:
         \return Pin value (0 or 1)
     */
     unsigned int getValue(const char *pin);
+
+    /// Get values for all pins simultaneously (see bit arithmetic)
+    /*!
+        \param lsbValues Values for first group: pins S1A...S15D (0 for input, 1 for output)
+        \param msbValues Values for second group: pins S17A...S25D (0 for input, 1 for output)
+    */
+    void getValues(int &lsbValues, int &msbValues);
 
     /// Get CPU pin number
     /*!

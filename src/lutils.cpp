@@ -221,7 +221,7 @@ const char* Lutils::readString(const char* section, const char* param)
             if (section && strlen(section) > 0)
                 sect = true;
 
-            std::string par = '[' + section + ']';
+            std::string par = "[" + std::string(section) + "]";
             if(rdStr.find(par) != std::string::npos)
                 sect = true;
 

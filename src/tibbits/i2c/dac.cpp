@@ -99,5 +99,5 @@ void Dac::setVoltage(const char *socket, unsigned int channel, int voltage)
     DacData data;
     memset(&data, 0, sizeof data);
 
-    setVoltage(socket, channel, voltage);
+    setVoltage(socket, channel, voltage, data);
 }

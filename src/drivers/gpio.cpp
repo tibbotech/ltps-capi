@@ -65,6 +65,35 @@ namespace GpioPrivate
             }
         }
     }
+
+    inline void getData(int lsbData, int msbData, bool direction)
+    {
+        lsbData = msbData = 0;
+
+        for (unsigned int n = 0; n < sizeof(GpioPrivate::lsb) / sizeof(const char*); n++)
+        {
+            char *error;
+            CPin* cpin = Lutils::getInstance().getGpioPointer(GpioPrivate::lsb[n], &error);
+
+            if (cpin)
+            {
+                if (direction) { if (cpin->dir_get()) lsbData |= (1 << n); }
+                else if (cpin->R()) lsbData |= (1 << n);
+            }
+        }
+
+        for (unsigned int n = 0; n < sizeof(GpioPrivate::msb) / sizeof(const char*); n++)
+        {
+            char *error;
+            CPin* cpin = Lutils::getInstance().getGpioPointer(GpioPrivate::msb[n], &error);
+
+            if (cpin)
+            {
+                if (direction) { if (cpin->dir_get()) msbData |= (1 << n); }
+                else if (cpin->R()) msbData |= (1 << n);
+            }
+        }
+    }
 }
 
 Gpio::Gpio()
@@ -90,7 +119,7 @@ int Gpio::setDirection(const char *pin, int direction)
     return -1;
 }
 
-void Gpio::setDirection(int lsbPins, int msbPins, int lsbDirs, int msbDirs)
+void Gpio::setDirections(int lsbPins, int msbPins, int lsbDirs, int msbDirs)
 {
     GpioPrivate::setData(lsbPins, msbPins, lsbDirs, msbDirs, true);
 }
@@ -108,6 +137,11 @@ int Gpio::getDirection(const char *pin)
     return PIN_DIR_I;
 }
 
+void Gpio::getDirections(int &lsbDirs, int &msbDirs)
+{
+    GpioPrivate::getData(lsbDirs, msbDirs, true);
+}
+
 int Gpio::setValue(const char* pin, unsigned int value)
 {
     char *error;
@@ -121,7 +155,7 @@ int Gpio::setValue(const char* pin, unsigned int value)
     return -1;
 }
 
-void Gpio::setValue(int lsbPins, int msbPins, int lsbValues, int msbValues)
+void Gpio::setValues(int lsbPins, int msbPins, int lsbValues, int msbValues)
 {
     GpioPrivate::setData(lsbPins, msbPins, lsbValues, msbValues, false);
 }
@@ -137,6 +171,11 @@ unsigned int Gpio::getValue(const char *pin)
         printf("GPIO set direction error for socket %s - %s\n", pin, error);
 
     return 0;
+}
+
+void Gpio::getValues(int &lsbValues, int &msbValues)
+{
+    GpioPrivate::getData(lsbValues, msbValues, false);
 }
 
 unsigned int Gpio::getPinNumber(const char *pin)

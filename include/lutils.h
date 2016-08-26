@@ -10,6 +10,8 @@
 #include <fstream>
 #include <cstring>
 
+#include <stdlib.h>
+
 #include "Ci2c_smbus.h"
 #include "cpin.h"
 
@@ -46,7 +48,7 @@ public:
         \param socket I2C bus name (eg: s1, s15)
         \return I2C bus number (eg: 0, 4)
     */
-    int getI2CBusNum(const char* ocket);
+    int getI2CBusNum(const char* socket);
 
     /// Read integer value from from LTPS pins.ini file
     /*!
