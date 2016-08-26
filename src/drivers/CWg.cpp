@@ -77,3 +77,24 @@ int CWg::out0_set( uint8_t _val) {
  if ( ret < 0) return( -1);
  return( 0);  }
 
+int CWg::conr_get( void) {
+ static char ss[ PATH_MAX];
+ int f = this->x_open( this->sock, "conr", O_RDONLY);
+ if ( !f) return( -1);
+ memset( ss, 0, PATH_MAX);
+ int ret = read( f, ss, PATH_MAX);
+ close( f);
+ if ( ret < 0) return( -1);
+ return( atoi( ss));  }
+
+int CWg::conr_set( uint8_t _val) {
+ static char ss[ PATH_MAX];
+ int f = this->x_open( this->sock, "conr", O_WRONLY);
+ if ( !f) return( -1);
+ memset( ss, 0, PATH_MAX);
+ sprintf( ss, "%d", _val);
+ int ret = write( f, ss, PATH_MAX);
+ close( f);
+ if ( ret < 0) return( -1);
+ return( 0);  }
+

@@ -81,6 +81,14 @@ public:
  //! \retval <0 failed (check errno value)
  int out0_set( uint8_t _val);
 
+ //! \brief Get/Set value of 'clear on read' flag
+ //! \retval 0 OK
+ //! \retval <0 failed (check errno value)
+ int conr_get( void);
+ //! \retval 0 OK
+ //! \retval <0 failed (check errno value)
+ int conr_set( uint8_t _val);
+
  //! \brief Read Wiegand buffer
  /// After this function call Wiegand device buffer gets empty
  /// This call is non-blocking, check return code to see if data exist
