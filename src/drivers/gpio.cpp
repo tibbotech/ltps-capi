@@ -66,7 +66,7 @@ namespace GpioPrivate
         }
     }
 
-    inline void getData(int lsbData, int msbData, bool direction)
+    inline void getData(int &lsbData, int &msbData, bool direction)
     {
         lsbData = msbData = 0;
 
