@@ -7,11 +7,6 @@
 #define __LGPIO_H__
 
 /*!
-    \class Gpio
-    \brief Class for GPIO manipulations
-*/
-
-/*!
     Bit arithmetic
 
     1. To disable n bit in data
@@ -22,6 +17,22 @@
     data ^= (1 << n)
     4. To get n nit in data
     (data >> n) & 1
+*/
+
+/*!
+    \struct GpioReturn
+    \brief Structure for return values
+*/
+
+struct GpioReturn
+{
+    int msb;
+    int lsb;
+};
+
+/*!
+    \class Gpio
+    \brief Class for GPIO manipulations
 */
 
 class Gpio
@@ -63,6 +74,12 @@ public:
     */
     void getDirections(int &lsbDirs, int &msbDirs);
 
+    /// Get directions for all pins simultaneously
+    /*!
+        \return GpioReturn structure
+    */
+    GpioReturn getDirections();
+
     /// Set value
     /*!
         \param pin String name of pin (eg: S1A, S9D)
@@ -93,6 +110,12 @@ public:
         \param msbValues Values for second group: pins S17A...S25D (0 for input, 1 for output)
     */
     void getValues(int &lsbValues, int &msbValues);
+
+    /// Get directions for all pins simultaneously
+    /*!
+        \return GpioReturn structure
+    */
+    GpioReturn getValues();
 
     /// Get CPU pin number
     /*!

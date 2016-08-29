@@ -142,6 +142,13 @@ void Gpio::getDirections(int &lsbDirs, int &msbDirs)
     GpioPrivate::getData(lsbDirs, msbDirs, true);
 }
 
+GpioReturn Gpio::getDirections()
+{
+    GpioReturn data;
+    GpioPrivate::getData(data.lsb, data.msb, true);
+    return data;
+}
+
 int Gpio::setValue(const char* pin, unsigned int value)
 {
     char *error;
@@ -176,6 +183,13 @@ unsigned int Gpio::getValue(const char *pin)
 void Gpio::getValues(int &lsbValues, int &msbValues)
 {
     GpioPrivate::getData(lsbValues, msbValues, false);
+}
+
+GpioReturn Gpio::getValues()
+{
+    GpioReturn data;
+    GpioPrivate::getData(data.lsb, data.msb, false);
+    return data;
 }
 
 unsigned int Gpio::getPinNumber(const char *pin)
