@@ -32,7 +32,7 @@ int CWg::R( wg_data_t &_rbuf) {
  if ( !this->f_rw) return( -1);
  ret = read( this->f_rw, &_rbuf, sizeof( wg_data_t));
  // temporary there: sysfs reopen
- if (  this->f_rw) {  close( this->f_rw);  this->f_rw = 0;  }
+ close( this->f_rw);  this->f_rw = 0;
  return( ( ret > 0 ? 1 : ret));  }
 
 int CWg::mode_get( void) {
