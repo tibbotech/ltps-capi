@@ -1,5 +1,5 @@
 /*!
-    \example tibbit41.cpp
+    \example tibbit42.cpp
 */
 
 #include <stdio.h> // printf
