@@ -9,6 +9,41 @@
 #include <stdint.h>
 
 /*!
+    \struct TimeStamp
+    \brief Struct with time for RTC Tibbit
+*/
+
+struct TimeStamp
+{
+    // Seconds (0...59)
+    uint8_t sec;
+
+    // Minutes (0...59)
+    uint8_t min;
+
+    // Hours (0...23)
+    uint8_t hour;
+
+    // Day of the week (1...7)
+    uint8_t wday;
+
+    // Day of the month (1...31)
+    uint8_t mday;
+
+    // Month (1...12)
+    uint8_t mon;
+
+    // Year
+    int year;
+
+    // Year in short notation (auto calculation)
+    uint8_t year_s;
+
+    // Saylight saving time (0...1)
+    uint8_t isdst;
+};
+
+/*!
     \struct RtcTemp
     \brief Struct with temperature for DS3234
 */
@@ -26,38 +61,20 @@ struct RtcTemp
 };
 
 /*!
-    \struct TimeStamp
-    \brief Struct with time for RTC Tibbit
+    \struct RtcClock
+    \brief Struct with time for DS3234
 */
 
-struct TimeStamp
+struct RtcClock
 {
-    // Seconds (0...59)
-    uint8_t sec;
+    /// Time
+    TimeStamp time;
 
-    // Minutes (0...59)
-    uint8_t min;
+    /// Return status (EXIT_SUCCESS or EXIT_FAILURE)
+    int status;
 
-    // Hours (0...23)
-    uint8_t hour;
-
-    // Day of the month (1...31)
-    uint8_t mday;
-
-    // Month (1...12)
-    uint8_t mon;
-
-    // Year
-    int year;
-
-    // Day of the week (1...7)
-    uint8_t wday;
-
-    // Saylight saving time (0...1)
-    uint8_t isdst;
-
-    // Year in short notation (auto calculation)
-    uint8_t year_s;
+    /// String error if something goes wrong (NULL for success)
+    const char* error;
 };
 
 /*!
@@ -79,6 +96,20 @@ public:
         \param temp RtcTemp data struct
     */
     void getTemperature(const char *socket, RtcTemp &temp);
+
+    /// Set current time
+    /*!
+        \param socket SPI bus name (eg: s1, s15)
+        \param time RtcClock data struct
+    */
+    void setTime(const char* socket, RtcClock &time);
+
+    /// Get current time
+    /*!
+        \param socket SPI bus name (eg: s1, s15)
+        \param time RtcClock data struct
+    */
+    void getTime(const char* socket, RtcClock &time);
 };
 
 #endif
