@@ -163,6 +163,7 @@ FULL_PATH_NAMES        = YES
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
 STRIP_FROM_PATH        = @CMAKE_CURRENT_SOURCE_DIR@/include/tibbits/i2c \
+                         @CMAKE_CURRENT_SOURCE_DIR@/include/tibbits/spi \
                          @CMAKE_CURRENT_SOURCE_DIR@/include/drivers \
                          @CMAKE_CURRENT_SOURCE_DIR@/examples/ \
                          @CMAKE_CURRENT_SOURCE_DIR@

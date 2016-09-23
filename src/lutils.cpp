@@ -35,6 +35,9 @@ Lutils::~Lutils()
     for (std::map<const char*, int, CompareCStrings>::iterator it = m_si2c.begin(); it != m_si2c.end(); ++it)
         delete it->first;
 
+    for (std::map<const char*, int, CompareCStrings>::iterator it = m_sspi.begin(); it != m_sspi.end(); ++it)
+        delete it->first;
+
     for (std::map<const char*, int, CompareCStrings>::iterator it = m_sgpio.begin(); it != m_sgpio.end(); ++it)
         delete it->first;
 
@@ -45,6 +48,12 @@ Lutils::~Lutils()
     }
 
     for (std::map<const char*, Ci2c_smbus*, CompareCStrings>::iterator it = m_i2c.begin(); it != m_i2c.end(); ++it)
+    {
+        delete it->first;
+        delete it->second;
+    }
+
+    for (std::map<const char*, Cspi*, CompareCStrings>::iterator it = m_spi.begin(); it != m_spi.end(); ++it)
     {
         delete it->first;
         delete it->second;
@@ -96,6 +105,37 @@ int Lutils::getI2CBusNum(const char* socket)
         strcpy(data, socket);
 
         m_si2c[data] = res;
+    }
+
+    return res;
+}
+
+int Lutils::getSpiBusNum(const char *socket)
+{
+    if (m_sspi.find(socket) != m_sspi.end())
+        return m_sspi.at(socket);
+
+    std::string sock(socket);
+
+    std::transform(sock.begin(), sock.end(), sock.begin(), ::tolower);
+
+    std::string busName = "-s";
+
+    std::string sockNum = sock.substr(sock.find("s") + 1, sock.length() - sock.find("s") + 1);
+
+    if (atoi(sockNum.c_str()) < 10)
+        busName.append("0");
+
+    busName.append(sockNum);
+
+    int res = Cspi::find_bus(busName.c_str());
+
+    if (res != -1)
+    {
+        char *data = new char(strlen(socket) + 1);
+        strcpy(data, socket);
+
+        m_sspi[data] = res;
     }
 
     return res;
@@ -189,6 +229,47 @@ Ci2c_smbus* Lutils::getI2CPointer(const char* socket, char **error)
         }
         else
             asprintf(error, "I2C bus for socket %s not found", socket);
+    }
+
+    return NULL;
+}
+
+Cspi* Lutils::getSpiPointer(const char* socket, char **error)
+{
+    if (m_spi.find(socket) != m_spi.end())
+        return m_spi.at(socket);
+    else
+    {
+        int busn = getSpiBusNum(socket);
+
+        if (busn > -1)
+        {
+            Cspi *spi = new Cspi();
+            int res = spi->set_dev(busn, 0);
+
+            if (res == 1)
+            {
+                spi->settings_get();
+                spi->set_mode(SPI_MODE_0);
+                spi->set_bits(8);
+                spi->settings_set();
+
+                char *data = new char(strlen(socket) + 1);
+                strcpy(data, socket);
+
+                m_spi[data] = spi;
+
+                return spi;
+            }
+            else
+            {
+                delete spi;
+                asprintf(error, "SPI set %s bus error: %s", socket, strerror(abs(res)));
+                return NULL;
+            }
+        }
+        else
+            asprintf(error, "SPI bus for socket %s not found", socket);
     }
 
     return NULL;

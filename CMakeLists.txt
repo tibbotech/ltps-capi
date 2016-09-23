@@ -53,6 +53,7 @@ set ( SOURCES
 		include/tibbits/i2c/accelerometer.h
 		include/tibbits/i2c/potentiometer.h
 		include/tibbits/i2c/portextender.h
+		include/tibbits/spi/rtc.h
 #		src/main.cpp
 		src/lutils.cpp
 		src/drivers/cpin.cpp
@@ -72,6 +73,7 @@ set ( SOURCES
 		src/tibbits/i2c/accelerometer.cpp
 		src/tibbits/i2c/potentiometer.cpp
 		src/tibbits/i2c/portextender.cpp
+		src/tibbits/spi/rtc.cpp
     )
 
 include_directories( include include/drivers )
@@ -89,6 +91,7 @@ install( TARGETS Ltps DESTINATION /usr/lib )
 install( TARGETS LtpsStatic DESTINATION /usr/lib )
  
 install( DIRECTORY include/tibbits/i2c/ DESTINATION /usr/include/ltps/capi )
+install( DIRECTORY include/tibbits/spi/ DESTINATION /usr/include/ltps/capi )
 install( DIRECTORY include/drivers/ DESTINATION /usr/include/ltps/capi )
 
 install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/man/man3 DESTINATION /usr/share/man )

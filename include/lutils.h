@@ -14,6 +14,7 @@
 
 #include "Ci2c_smbus.h"
 #include "cpin.h"
+#include "Cspi.h"
 
 /*!
     \struct CompareCStrings
@@ -50,6 +51,13 @@ public:
     */
     int getI2CBusNum(const char* socket);
 
+    /// Get SPI bus number by LTPS socket
+    /*!
+        \param socket SPI bus name (eg: s1, s15)
+        \return SPI bus number (eg: 0, 4)
+    */
+    int getSpiBusNum(const char* socket);
+
     /// Read integer value from from LTPS pins.ini file
     /*!
         \param section Section
@@ -74,6 +82,14 @@ public:
     */
     Ci2c_smbus* getI2CPointer(const char* socket, char **error);
 
+    /// Get Cspi pointer
+    /*!
+        \param socket Cspi bus name (eg: s1, s15)
+        \param error Return string error if something goes wrong
+        \return Cspi pointer
+    */
+    Cspi* getSpiPointer(const char* socket, char **error);
+
 private:
 
     Lutils();
@@ -88,11 +104,15 @@ private:
 
     std::map<const char*, int, CompareCStrings> m_si2c;
 
+    std::map<const char*, int, CompareCStrings> m_sspi;
+
     std::map<const char*, int, CompareCStrings> m_sgpio;
 
     std::map<const char*, CPin*, CompareCStrings> m_pins;
 
     std::map<const char*, Ci2c_smbus*, CompareCStrings> m_i2c;
+
+    std::map<const char*, Cspi*, CompareCStrings> m_spi;
 
     const char* readString(const char* section, const char* param);
 };
