@@ -19,4 +19,6 @@
 #include "tibbits/i2c/potentiometer.h"
 #include "tibbits/i2c/portextender.h"
 
+#include "tibbits/spi/rtc.h"
+
 #endif

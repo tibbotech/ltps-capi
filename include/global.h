@@ -210,4 +210,37 @@ namespace MCP23008
     static const unsigned int GPIO = 0x09;
 }
 
+/*!
+    \namespace DS3234
+    \brief DS3234 RTC SPI addresses
+*/
+
+namespace DS3234
+{
+    static const unsigned int TEMP_REG = 0x11;
+
+    static const unsigned int CLOCK_WRITE = 0x80;
+    static const unsigned int CLOCK_READ = 0x00;
+
+    static const unsigned int A1_WRITE = 0x87;
+    static const unsigned int A1_READ = 0x07;
+
+    static const unsigned int A2_WRITE = 0x8B;
+    static const unsigned int A2_READ = 0x0B;
+
+    static const unsigned int CONTROL_WRITE = 0x8E;
+    static const unsigned int CONTROL_READ = 0x0E;
+
+    static const unsigned int STATUS_WRITE = 0x8F;
+    static const unsigned int STATUS_READ = 0x0F;
+
+    static const unsigned int SRAM_ADDRESS = 0x98;
+
+    static const unsigned int SRAM_DATA_WRITE = 0x99;
+    static const unsigned int SRAM_DATA_READ = 0x19;
+
+    static const unsigned int ALARM1_FLAG = 0x1;
+    static const unsigned int ALARM2_FLAG = 0x2;
+}
+
 #endif
