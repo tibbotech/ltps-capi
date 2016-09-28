@@ -19,6 +19,104 @@ namespace RtcPrivate
     {
         return ((val / 16 * 10) + (val % 16));
     }
+
+    void stopAlarm(const char *socket, bool alarm1, RtcResult &result)
+    {
+        memset(&result, 0, sizeof result);
+
+        char* error;
+        Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+        if (spi)
+        {
+            uint8_t reg_val = 0;
+
+            int len = 2;
+
+            uint8_t w[len];
+            uint8_t r[len];
+
+            memset(&w, 0, sizeof w);
+            memset(&r, 0, sizeof r);
+
+            w[0] = DS3234::STATUS_READ;
+
+            int res = spi->WR(w, r, len);
+
+            if (alarm1)
+                reg_val = r[1] & ~DS3234::ALARM1_FLAG;
+            else
+                reg_val = r[1] & ~DS3234::ALARM2_FLAG;
+
+            memset(&w, 0, sizeof w);
+            memset(&r, 0, sizeof r);
+
+            w[0] = DS3234::STATUS_WRITE;
+            w[1] = reg_val;
+
+            res += spi->WR(w, r, len);
+
+            if (res != len * 2)
+            {
+                result.status = EXIT_FAILURE;
+
+                if (alarm1)
+                    result.error = "Checksum error while clear Alarm 1 triggered flag for RTC";
+                else
+                    result.error = "Checksum error while clear Alarm 2 triggered flag for RTC";
+            }
+
+            result.status = EXIT_SUCCESS;
+        }
+        else
+        {
+            result.status = EXIT_FAILURE;
+            result.error = error;
+        }
+    }
+
+    void isAlarmTriggered(const char *socket, bool alarm1, RtcAlarmsStatus &status)
+    {
+        char* error;
+        Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+        if (spi)
+        {
+            int len = 2;
+
+            uint8_t w[len];
+            uint8_t r[len];
+
+            memset(&w, 0, sizeof w);
+            memset(&r, 0, sizeof r);
+
+            w[0] = DS3234::STATUS_READ;
+
+            int res = spi->WR(w, r, len);
+
+            if (res != len)
+            {
+                status.status = EXIT_FAILURE;
+
+                if (alarm1)
+                    status.error = "Checksum error while get Alarm 1 triggered flag for RTC";
+                else
+                    status.error = "Checksum error while get Alarm 2 triggered flag for RTC";
+            }
+
+            if (alarm1)
+                status.triggered = r[1] & DS3234::ALARM1_FLAG;
+            else
+                status.triggered = r[1] & DS3234::ALARM2_FLAG;
+
+            status.status = EXIT_SUCCESS;
+        }
+        else
+        {
+            status.status = EXIT_FAILURE;
+            status.error = error;
+        }
+    }
 }
 
 Rtc::Rtc()
@@ -143,7 +241,7 @@ void Rtc::getTime(const char *socket, RtcClock &time)
 
         int len = 8;
 
-        TimeStamp t;
+        RtcTime t;
         uint8_t TimeDate[len];
         uint8_t w[len];
 
@@ -188,5 +286,352 @@ void Rtc::getTime(const char *socket, RtcClock &time)
     {
         time.status = EXIT_FAILURE;
         time.error = error;
+    }
+}
+
+void Rtc::setAlarm1(const char *socket, RtcAlarm &alarm, const uint8_t *flags, RtcResult &result)
+{
+    memset(&result, 0, sizeof result);
+
+    char* error;
+    Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+    if (spi)
+    {
+        int len = 5;
+
+        uint8_t t[len];
+        memset(&t, 0, sizeof t);
+
+        t[0] = DS3234::A1_WRITE;
+        t[1] = RtcPrivate::decToBcd(alarm.sec) | flags[0] << 7;
+        t[2] = RtcPrivate::decToBcd(alarm.min) | flags[1] << 7;
+        t[3] = RtcPrivate::decToBcd(alarm.hour) | flags[2] << 7;
+        t[4] = RtcPrivate::decToBcd(alarm.day) | flags[3] << 7 | flags[4] << 6;
+
+        int res = spi->WR(t, t, len);
+
+        if (res != len)
+        {
+            result.status = EXIT_FAILURE;
+            result.error = "Checksum error while set Alarm 1 time for RTC";
+            return;
+        }
+
+        result.status = EXIT_SUCCESS;
+    }
+    else
+    {
+        result.status = EXIT_FAILURE;
+        result.error = error;
+    }
+}
+
+void Rtc::setAlarm2(const char* socket, RtcAlarm& alarm, const uint8_t* flags, RtcResult& result)
+{
+    memset(&result, 0, sizeof result);
+
+    char* error;
+    Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+    if (spi)
+    {
+        int len = 4;
+
+        uint8_t t[len];
+        memset(&t, 0, sizeof t);
+
+        t[0] = DS3234::A2_WRITE;
+        t[1] = RtcPrivate::decToBcd(alarm.min) | flags[0] << 7;
+        t[2] = RtcPrivate::decToBcd(alarm.hour) | flags[1] << 7;
+        t[3] = RtcPrivate::decToBcd(alarm.day) | flags[2] << 7 | flags[3] << 6;
+
+        int res = spi->WR(t, t, len);
+
+        if (res != len)
+        {
+            result.status = EXIT_FAILURE;
+            result.error = "Checksum error while set Alarm 2 time for RTC";
+            return;
+        }
+
+        result.status = EXIT_SUCCESS;
+    }
+    else
+    {
+        result.status = EXIT_FAILURE;
+        result.error = error;
+    }
+}
+
+void Rtc::getAlarm1(const char *socket, RtcAlarm &alarm, uint8_t* flags, RtcResult &result)
+{
+    memset(&result, 0, sizeof result);
+
+    char* error;
+    Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+    if (spi)
+    {
+        int len = 5;
+
+        uint8_t n[len];
+        uint8_t w[len];
+        uint8_t t[len -1]; // second, minute, hour, (w)day
+
+        memset(&n, 0, sizeof n);
+        memset(&w, 0, sizeof w);
+        memset(&t, 0, sizeof t);
+
+        w[0] = DS3234::A1_READ;
+
+        int res = spi->WR(w, n, len);
+
+        if (res != len)
+        {
+            result.status = EXIT_FAILURE;
+            result.error = "Checksum error while get Alarm 1 time for RTC";
+            return;
+        }
+
+        for (int i = 0; i < len - 1; i++)
+        {
+            flags[i] = (n[i + 1] & 0x80) >> 7;
+            t[i] = RtcPrivate::bcdToDec(n[i + 1] & 0x7F);
+        }
+
+        flags[4] = (n[4] & 0x40) >> 6;
+        t[3] = RtcPrivate::bcdToDec(n[4] & 0x3F);
+
+        alarm.sec = t[0];
+        alarm.min = t[1];
+        alarm.hour = t[2];
+        alarm.day = t[3];
+
+        result.status = EXIT_SUCCESS;
+    }
+    else
+    {
+        result.status = EXIT_FAILURE;
+        result.error = error;
+    }
+}
+
+void Rtc::getAlarm2(const char *socket, RtcAlarm &alarm, uint8_t* flags, RtcResult &result)
+{
+    memset(&result, 0, sizeof result);
+
+    char* error;
+    Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+    if (spi)
+    {
+        int len = 4;
+
+        uint8_t n[len];
+        uint8_t w[len];
+        uint8_t t[len -1]; // second, minute, hour, (w)day
+
+        memset(&n, 0, sizeof n);
+        memset(&w, 0, sizeof w);
+        memset(&t, 0, sizeof t);
+
+        w[0] = DS3234::A2_READ;
+
+        int res = spi->WR(w, n, len);
+
+        if (res != len)
+        {
+            result.status = EXIT_FAILURE;
+            result.error = "Checksum error while get Alarm 2 time for RTC";
+            return;
+        }
+
+        for (int i = 0; i < len - 1; i++)
+        {
+            flags[i] = (n[i + 1] & 0x80) >> 7;
+            t[i] = RtcPrivate::bcdToDec(n[i + 1] & 0x7F);
+        }
+
+        flags[3] = (n[3] & 0x40) >> 6;
+        t[2] = RtcPrivate::bcdToDec(n[3] & 0x3F);
+
+        alarm.sec = 0;
+        alarm.min = t[0];
+        alarm.hour = t[1];
+        alarm.day = t[2];
+
+        result.status = EXIT_SUCCESS;
+    }
+    else
+    {
+        result.status = EXIT_FAILURE;
+        result.error = error;
+    }
+}
+
+void Rtc::enableAlarms(const char* socket, bool alarm1, bool alarm2, RtcResult &result)
+{
+    memset(&result, 0, sizeof result);
+
+    char* error;
+    Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+    if (spi)
+    {
+        int len = 2;
+
+        uint8_t w[len];
+        uint8_t r[len];
+
+        memset(&w, 0, sizeof w);
+        memset(&r, 0, sizeof r);
+
+        w[0] = DS3234::CONTROL_READ;
+
+        int res = spi->WR(w, r, len);
+
+        uint8_t reg_val = r[1];
+
+        if (!alarm1 && !alarm2)
+            reg_val = r[1] | 0x4;
+        if (alarm1 && alarm2)
+            reg_val = r[1] | 0x7;
+        if (alarm1 && !alarm2)
+            reg_val = r[1] | 0x5;
+        if (!alarm1 && alarm2)
+            reg_val = r[1] | 0x6;
+
+        memset(&w, 0, sizeof w);
+        memset(&r, 0, sizeof r);
+
+        w[0] = DS3234::CONTROL_WRITE;
+        w[1] = reg_val;
+
+        res += spi->WR(w, r, len);
+
+        if (res != len * 2)
+        {
+            result.status = EXIT_FAILURE;
+            result.error = "Checksum error while activate alarms for RTC";
+            return;
+        }
+
+        result.status = EXIT_SUCCESS;
+    }
+    else
+    {
+        result.status = EXIT_FAILURE;
+        result.error = error;
+    }
+}
+
+void Rtc::stopAlarm1(const char *socket, RtcResult &result)
+{
+    RtcPrivate::stopAlarm(socket, true, result);
+}
+
+void Rtc::stopAlarm2(const char *socket, RtcResult &result)
+{
+    RtcPrivate::stopAlarm(socket, false, result);
+}
+
+void Rtc::isAlarm1Triggered(const char *socket, RtcAlarmsStatus &status)
+{
+    RtcPrivate::isAlarmTriggered(socket, true, status);
+}
+
+void Rtc::isAlarm2Triggered(const char *socket, RtcAlarmsStatus &status)
+{
+    RtcPrivate::isAlarmTriggered(socket, false, status);
+}
+
+void Rtc::setSramValue(const char *socket, RtcSram &sram)
+{
+    char* error;
+    Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+    if (spi)
+    {
+        int len = 2;
+
+        uint8_t w[len];
+        uint8_t r[len];
+
+        memset(&w, 0, sizeof w);
+        memset(&r, 0, sizeof r);
+
+        w[0] = DS3234::SRAM_ADDRESS;
+        w[1] = sram.address;
+
+        int res = spi->WR(w, r, len);
+
+        memset(&w, 0, sizeof w);
+        memset(&r, 0, sizeof r);
+
+        w[0] = DS3234::SRAM_DATA_WRITE;
+        w[1] = sram.value;
+
+        res += spi->WR(w, r, len);
+
+        if (res != len * 2)
+        {
+            sram.status = EXIT_FAILURE;
+            sram.error = "Checksum error while write value to SRAM for RTC";
+            return;
+        }
+
+        sram.status = EXIT_SUCCESS;
+        sram.error = NULL;
+    }
+    else
+    {
+        sram.status = EXIT_FAILURE;
+        sram.error = error;
+    }
+}
+
+void Rtc::getSramValue(const char *socket, RtcSram &sram)
+{
+    char* error;
+    Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
+
+    if (spi)
+    {
+        int len = 2;
+
+        uint8_t w[len];
+        uint8_t r[len];
+
+        memset(&w, 0, sizeof w);
+        memset(&r, 0, sizeof r);
+
+        w[0] = DS3234::SRAM_ADDRESS;
+        w[1] = sram.address;
+
+        int res = spi->WR(w, r, len);
+
+        memset(&w, 0, sizeof w);
+        memset(&r, 0, sizeof r);
+
+        w[0] = DS3234::SRAM_DATA_READ;
+
+        res += spi->WR(w, r, len);
+
+        if (res != len * 2)
+        {
+            sram.status = EXIT_FAILURE;
+            sram.error = "Checksum error while read value from SRAM for RTC";
+            return;
+        }
+
+        sram.value = r[1];
+        sram.status = EXIT_SUCCESS;
+        sram.error = NULL;
+    }
+    else
+    {
+        sram.status = EXIT_FAILURE;
+        sram.error = error;
     }
 }
