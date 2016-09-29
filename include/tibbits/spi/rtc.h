@@ -121,7 +121,7 @@ struct RtcAlarmFlags
     /// Days (false to enable, true to disable)
     bool days;
 
-    /// Day of week == 1/day of month == false
+    /// Day of week == true/day of month == false
     bool wdays;
 
     /// Return status (EXIT_SUCCESS or EXIT_FAILURE)
