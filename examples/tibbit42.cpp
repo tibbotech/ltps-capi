@@ -99,28 +99,32 @@ int main()
     alarm1.hour = 15;
     alarm1.day = 23;
 
-    uint8_t flagsA1[5] = { 0, 0, 0, 0, 0 };
+    RtcAlarmFlags flags;
+    memset(&flags, 0, sizeof flags);
 
-    memset(&result, 0, sizeof result);
+    /*flags.seconds = false;
+    flags.minites = false;
+    flags.hours = false;
+    flags.days = false;
+    flags.wdays = false;*/
 
-    rtc.setAlarm1("s1", alarm1, flagsA1, result); // Set Alarm 1 time
+    rtc.setAlarm1("s1", alarm1, flags); // Set Alarm 1 time
 
-    if (result.status == EXIT_SUCCESS)
+    if (flags.status == EXIT_SUCCESS)
         printf("Alarm 1 time successfully set\n");
     else
-        printf("%s\n", result.error);
+        printf("%s\n", flags.error);
 
     memset(&alarm1, 0, sizeof alarm1);
-    memset(&flagsA1, 0, sizeof flagsA1);
-    memset(&result, 0, sizeof result);
+    memset(&flags, 0, sizeof flags);
 
-    rtc.getAlarm1("s1", alarm1, flagsA1, result); // Get Alarm 1 time
+    rtc.getAlarm1("s1", alarm1, flags); // Get Alarm 1 time
 
-    if (result.status == EXIT_SUCCESS)
-        printf("Alarm 1 time: %02d sec, %02d min, %02d hour, %02d wday, flag0 - %d, flag1 - %d, flag2 - %d, flag3 - %d, flag4 - %d\n",
-            alarm1.sec, alarm1.min, alarm1.hour, alarm1.day, flagsA1[0], flagsA1[1], flagsA1[2], flagsA1[3], flagsA1[4]);
+    if (flags.status == EXIT_SUCCESS)
+        printf("Alarm 1 time: %02d sec, %02d min, %02d hour, %02d wday, flag seconds = %d, flag minutes = %d, flag hours = %d, flag days = %d, flag wdays = %d\n",
+            alarm1.sec, alarm1.min, alarm1.hour, alarm1.day, flags.seconds, flags.minites, flags.hours, flags.days, flags.wdays);
     else
-        printf("%s\n", result.error);
+        printf("%s\n", flags.error);
 
 
     RtcAlarm alarm2;
@@ -130,28 +134,30 @@ int main()
     alarm2.hour = 15;
     alarm2.day = 23;
 
-    uint8_t flagsA2[4] = { 0, 0, 0, 0 };
+    memset(&flags, 0, sizeof flags);
 
-    memset(&result, 0, sizeof result);
+    /*flags.minites = false;
+    flags.hours = false;
+    flags.days = false;
+    flags.wdays = false;*/
 
-    rtc.setAlarm2("s1", alarm2, flagsA2, result); // Set Alarm 2 time
+    rtc.setAlarm2("s1", alarm2, flags); // Set Alarm 2 time
 
-    if (result.status == EXIT_SUCCESS)
+    if (flags.status == EXIT_SUCCESS)
         printf("Alarm 2 time successfully set\n");
     else
-        printf("%s\n", result.error);
+        printf("%s\n", flags.error);
 
     memset(&alarm2, 0, sizeof alarm2);
-    memset(&flagsA2, 0, sizeof flagsA2);
-    memset(&result, 0, sizeof result);
+    memset(&flags, 0, sizeof flags);
 
-    rtc.getAlarm2("s1", alarm2, flagsA2, result); // Get Alarm 2 time
+    rtc.getAlarm2("s1", alarm2, flags); // Get Alarm 2 time
 
-    if (result.status == EXIT_SUCCESS)
-        printf("Alarm 2 time: %02d min, %02d hour, %02d wday, flag0 - %d, flag1 - %d, flag2 - %d, flag3 - %d\n",
-               alarm2.min, alarm2.hour, alarm2.day, flagsA2[0], flagsA2[1], flagsA2[2], flagsA2[3]);
+    if (flags.status == EXIT_SUCCESS)
+        printf("Alarm 2 time: %02d min, %02d hour, %02d wday, flag minutes = %d, flag hours = %d, flag days = %d, flag wdays = %d\n",
+               alarm2.min, alarm2.hour, alarm2.day, flags.minites, flags.hours, flags.days, flags.wdays);
     else
-        printf("%s\n", result.error);
+        printf("%s\n", flags.error);
 
 
     memset(&result, 0, sizeof result);

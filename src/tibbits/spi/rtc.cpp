@@ -289,10 +289,8 @@ void Rtc::getTime(const char *socket, RtcClock &time)
     }
 }
 
-void Rtc::setAlarm1(const char *socket, RtcAlarm &alarm, const uint8_t *flags, RtcResult &result)
+void Rtc::setAlarm1(const char* socket, RtcAlarm& alarm, RtcAlarmFlags& flags)
 {
-    memset(&result, 0, sizeof result);
-
     char* error;
     Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
 
@@ -304,33 +302,32 @@ void Rtc::setAlarm1(const char *socket, RtcAlarm &alarm, const uint8_t *flags, R
         memset(&t, 0, sizeof t);
 
         t[0] = DS3234::A1_WRITE;
-        t[1] = RtcPrivate::decToBcd(alarm.sec) | flags[0] << 7;
-        t[2] = RtcPrivate::decToBcd(alarm.min) | flags[1] << 7;
-        t[3] = RtcPrivate::decToBcd(alarm.hour) | flags[2] << 7;
-        t[4] = RtcPrivate::decToBcd(alarm.day) | flags[3] << 7 | flags[4] << 6;
+        t[1] = RtcPrivate::decToBcd(alarm.sec) | flags.seconds << 7;
+        t[2] = RtcPrivate::decToBcd(alarm.min) | flags.minites << 7;
+        t[3] = RtcPrivate::decToBcd(alarm.hour) | flags.hours << 7;
+        t[4] = RtcPrivate::decToBcd(alarm.day) | flags.days << 7 | flags.wdays << 6;
 
         int res = spi->WR(t, t, len);
 
         if (res != len)
         {
-            result.status = EXIT_FAILURE;
-            result.error = "Checksum error while set Alarm 1 time for RTC";
+            flags.status = EXIT_FAILURE;
+            flags.error = "Checksum error while set Alarm 1 time for RTC";
             return;
         }
 
-        result.status = EXIT_SUCCESS;
+        flags.status = EXIT_SUCCESS;
+        flags.error = NULL;
     }
     else
     {
-        result.status = EXIT_FAILURE;
-        result.error = error;
+        flags.status = EXIT_FAILURE;
+        flags.error = error;
     }
 }
 
-void Rtc::setAlarm2(const char* socket, RtcAlarm& alarm, const uint8_t* flags, RtcResult& result)
+void Rtc::setAlarm2(const char* socket, RtcAlarm& alarm, RtcAlarmFlags& flags)
 {
-    memset(&result, 0, sizeof result);
-
     char* error;
     Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
 
@@ -342,31 +339,32 @@ void Rtc::setAlarm2(const char* socket, RtcAlarm& alarm, const uint8_t* flags, R
         memset(&t, 0, sizeof t);
 
         t[0] = DS3234::A2_WRITE;
-        t[1] = RtcPrivate::decToBcd(alarm.min) | flags[0] << 7;
-        t[2] = RtcPrivate::decToBcd(alarm.hour) | flags[1] << 7;
-        t[3] = RtcPrivate::decToBcd(alarm.day) | flags[2] << 7 | flags[3] << 6;
+        t[1] = RtcPrivate::decToBcd(alarm.min) | flags.minites << 7;
+        t[2] = RtcPrivate::decToBcd(alarm.hour) | flags.hours << 7;
+        t[3] = RtcPrivate::decToBcd(alarm.day) | flags.days << 7 | flags.wdays << 6;
 
         int res = spi->WR(t, t, len);
 
         if (res != len)
         {
-            result.status = EXIT_FAILURE;
-            result.error = "Checksum error while set Alarm 2 time for RTC";
+            flags.status = EXIT_FAILURE;
+            flags.error = "Checksum error while set Alarm 2 time for RTC";
             return;
         }
 
-        result.status = EXIT_SUCCESS;
+        flags.status = EXIT_SUCCESS;
+        flags.error = NULL;
     }
     else
     {
-        result.status = EXIT_FAILURE;
-        result.error = error;
+        flags.status = EXIT_FAILURE;
+        flags.error = error;
     }
 }
 
-void Rtc::getAlarm1(const char *socket, RtcAlarm &alarm, uint8_t* flags, RtcResult &result)
+void Rtc::getAlarm1(const char* socket, RtcAlarm& alarm, RtcAlarmFlags& flags)
 {
-    memset(&result, 0, sizeof result);
+    memset(&flags, 0, sizeof flags);
 
     char* error;
     Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
@@ -389,37 +387,42 @@ void Rtc::getAlarm1(const char *socket, RtcAlarm &alarm, uint8_t* flags, RtcResu
 
         if (res != len)
         {
-            result.status = EXIT_FAILURE;
-            result.error = "Checksum error while get Alarm 1 time for RTC";
+            flags.status = EXIT_FAILURE;
+            flags.error = "Checksum error while get Alarm 1 time for RTC";
             return;
         }
 
-        for (int i = 0; i < len - 1; i++)
-        {
-            flags[i] = (n[i + 1] & 0x80) >> 7;
-            t[i] = RtcPrivate::bcdToDec(n[i + 1] & 0x7F);
-        }
+        flags.seconds = (n[1] & 0x80) >> 7;
+        t[0] = RtcPrivate::bcdToDec(n[1] & 0x7F);
 
-        flags[4] = (n[4] & 0x40) >> 6;
+        flags.minites = (n[2] & 0x80) >> 7;
+        t[1] = RtcPrivate::bcdToDec(n[2] & 0x7F);
+
+        flags.hours = (n[3] & 0x80) >> 7;
+        t[2] = RtcPrivate::bcdToDec(n[3] & 0x7F);
+
+        flags.days = (n[4] & 0x80) >> 7;
         t[3] = RtcPrivate::bcdToDec(n[4] & 0x3F);
+
+        flags.wdays = (n[4] & 0x40) >> 6;
 
         alarm.sec = t[0];
         alarm.min = t[1];
         alarm.hour = t[2];
         alarm.day = t[3];
 
-        result.status = EXIT_SUCCESS;
+        flags.status = EXIT_SUCCESS;
     }
     else
     {
-        result.status = EXIT_FAILURE;
-        result.error = error;
+        flags.status = EXIT_FAILURE;
+        flags.error = error;
     }
 }
 
-void Rtc::getAlarm2(const char *socket, RtcAlarm &alarm, uint8_t* flags, RtcResult &result)
+void Rtc::getAlarm2(const char *socket, RtcAlarm &alarm, RtcAlarmFlags& flags)
 {
-    memset(&result, 0, sizeof result);
+    memset(&flags, 0, sizeof flags);
 
     char* error;
     Cspi *spi = Lutils::getInstance().getSpiPointer(socket, &error);
@@ -442,31 +445,33 @@ void Rtc::getAlarm2(const char *socket, RtcAlarm &alarm, uint8_t* flags, RtcResu
 
         if (res != len)
         {
-            result.status = EXIT_FAILURE;
-            result.error = "Checksum error while get Alarm 2 time for RTC";
+            flags.status = EXIT_FAILURE;
+            flags.error = "Checksum error while get Alarm 2 time for RTC";
             return;
         }
 
-        for (int i = 0; i < len - 1; i++)
-        {
-            flags[i] = (n[i + 1] & 0x80) >> 7;
-            t[i] = RtcPrivate::bcdToDec(n[i + 1] & 0x7F);
-        }
+        flags.minites = (n[1] & 0x80) >> 7;
+        t[0] = RtcPrivate::bcdToDec(n[1] & 0x7F);
 
-        flags[3] = (n[3] & 0x40) >> 6;
+        flags.hours = (n[2] & 0x80) >> 7;
+        t[1] = RtcPrivate::bcdToDec(n[2] & 0x7F);
+
+        flags.days = (n[3] & 0x80) >> 7;
         t[2] = RtcPrivate::bcdToDec(n[3] & 0x3F);
+
+        flags.wdays = (n[3] & 0x40) >> 6;
 
         alarm.sec = 0;
         alarm.min = t[0];
         alarm.hour = t[1];
         alarm.day = t[2];
 
-        result.status = EXIT_SUCCESS;
+        flags.status = EXIT_SUCCESS;
     }
     else
     {
-        result.status = EXIT_FAILURE;
-        result.error = error;
+        flags.status = EXIT_FAILURE;
+        flags.error = error;
     }
 }
 

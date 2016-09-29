@@ -103,6 +103,36 @@ struct RtcClock
 
 
 /*!
+    \struct RtcAlarmFlags
+    \brief Struct with alarm flags for RTC
+*/
+
+struct RtcAlarmFlags
+{
+    /// Seconds (false to enable, true to disable) - does not matter for Alarm 2
+    bool seconds;
+
+    /// Minutes (false to enable, true to disable)
+    bool minites;
+
+    /// Hours (false to enable, true to disable)
+    bool hours;
+
+    /// Days (false to enable, true to disable)
+    bool days;
+
+    /// Day of week == 1/day of month == false
+    bool wdays;
+
+    /// Return status (EXIT_SUCCESS or EXIT_FAILURE)
+    int status;
+
+    /// String error if something goes wrong (NULL for success)
+    const char* error;
+};
+
+
+/*!
     \struct RtcResult
     \brief Struct with some operations result for RTC
 */
@@ -194,55 +224,33 @@ public:
     /*!
         \param socket SPI bus name (eg: s1, s15)
         \param alarm Alarm time in RtcAlarm struct
-        \param flags Component to be checked to trigger the alarm:
-        0 - seconds (0 to enable, 1 to disable)
-        1 - minutes (0 to enable, 1 to disable)
-        2 - hour (0 to enable, 1 to disable)
-        3 - day (0 to enable, 1 to disable)
-        4 - dayofweek == 1/dayofmonth == 0
-        \param result Function execution result
+        \param flags Component to be checked to trigger the alarm
     */
-    void setAlarm1(const char* socket, RtcAlarm& alarm, const uint8_t* flags, RtcResult& result);
+    void setAlarm1(const char* socket, RtcAlarm& alarm, RtcAlarmFlags& flags);
 
     /// Set time for Alarm 2
     /*!
         \param socket SPI bus name (eg: s1, s15)
         \param alarm Alarm time in RtcAlarm struct
-        \param flags Component to be checked to trigger the alarm:
-        0 - minutes (0 to enable, 1 to disable)
-        1 - hour (0 to enable, 1 to disable)
-        2 - day (0 to enable, 1 to disable)
-        3 - dayofweek == 1/dayofmonth == 0
-        \param result Function execution result
+        \param flags Component to be checked to trigger the alarm
     */
-    void setAlarm2(const char* socket, RtcAlarm& alarm, const uint8_t* flags, RtcResult& result);
+    void setAlarm2(const char* socket, RtcAlarm& alarm, RtcAlarmFlags& flags);
 
     /// Get time for Alarm 1
     /*!
         \param socket SPI bus name (eg: s1, s15)
         \param alarm Alarm time in RtcAlarm struct
-        \param flags Component to be checked to trigger the alarm:
-        0 - seconds (0 to enable, 1 to disable)
-        1 - minutes (0 to enable, 1 to disable)
-        2 - hour (0 to enable, 1 to disable)
-        3 - day (0 to enable, 1 to disable)
-        4 - dayofweek == 1/dayofmonth == 0
-        \param result Function execution result
+        \param flags RtcResult struct result
     */
-    void getAlarm1(const char* socket, RtcAlarm& alarm, uint8_t *flags, RtcResult& result);
+    void getAlarm1(const char* socket, RtcAlarm& alarm, RtcAlarmFlags& flags);
 
     /// Get time for Alarm 2
     /*!
         \param socket SPI bus name (eg: s1, s15)
         \param alarm Alarm time in RtcAlarm struct
-        \param flags Component to be checked to trigger the alarm:
-        0 - minutes (0 to enable, 1 to disable)
-        1 - hour (0 to enable, 1 to disable)
-        2 - day (0 to enable, 1 to disable)
-        3 - dayofweek == 1/dayofmonth == 0
-        \param result Function execution result
+        \param flags RtcResult struct result
     */
-    void getAlarm2(const char* socket, RtcAlarm& alarm, uint8_t *flags, RtcResult& result);
+    void getAlarm2(const char* socket, RtcAlarm& alarm, RtcAlarmFlags& flags);
 
     /// Activate alarms pin (if slot activated, INT/MISO pin will be set to LOW when alarms triggered)
     /*!
