@@ -9,17 +9,17 @@
 
  Linking your code with the static library:
  \code
- $GCC -lLtpsStatic -Iltps/capi/
+ $CXX -lLtpsStatic -Iltps/capi/
  \endcode
  With the shared library:
  \code
- $GCC -lLtps -Iltps/capi/
+ $CXX -lLtps -Iltps/capi/
  \endcode
 
  \warning LTPS C++ API is under active development so please note
  \warning that some classes and methods can be changed.
 
- \date 29.09.2016
+ \date 22.03.2017
  \copyright Tibbo Technology Inc.
 
  Please refer to this documentation for information on using the LTPS C++ API.
