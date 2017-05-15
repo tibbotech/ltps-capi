@@ -6,7 +6,6 @@
 #include <stdio.h> // printf
 
 #include "ltps/capi/Cspi.h"
-#include "ltps/capi/lutils.h"
 
 #define MAX_BUF 100
 

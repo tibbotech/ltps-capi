@@ -6,7 +6,6 @@
 #include <stdio.h> // printf
 
 #include "ltps/capi/ci2c_smbus.h"
-#include "ltps/capi/lutils.h"
 
 int main()
 {
