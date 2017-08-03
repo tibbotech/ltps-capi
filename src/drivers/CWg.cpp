@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define SYS_TWG_PFX                "/sys/twg-"
+#define SYS_TWG_PFX                "/sys/devices/platform/twg-"
 
 int CWg::x_open( const char *_sock, const char *_what, int _flags) {
  int f;
