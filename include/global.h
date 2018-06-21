@@ -243,4 +243,14 @@ namespace DS3234
     static const unsigned int ALARM2_FLAG = 0x2;
 }
 
+/*!
+    \namespace ADS1100R
+    \brief ADS1100 address for ADC 4...20 Tibbit
+*/
+
+namespace ADS1100R
+{
+    static const unsigned int I2C_ADDRESS = 0x48;
+}
+
 #endif

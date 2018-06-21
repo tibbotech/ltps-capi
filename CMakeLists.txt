@@ -23,10 +23,10 @@ find_package( Doxygen )
 if( DOXYGEN_FOUND )
 	set( doxyfile ${PROJECT_BINARY_DIR}/Doxyfile )
 	configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY )
-  	add_custom_target ( doc
-    ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating doxygen documentation" VERBATIM
+	add_custom_target ( doc
+	${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	COMMENT "Generating doxygen documentation" VERBATIM
 	)
 else( DOXYGEN_FOUND )
 	message( FATAL_ERROR "Doxygen not found" )
@@ -53,6 +53,7 @@ set ( SOURCES
 		include/tibbits/i2c/accelerometer.h
 		include/tibbits/i2c/potentiometer.h
 		include/tibbits/i2c/portextender.h
+		include/tibbits/i2c/adc-4-20.h
 		include/tibbits/spi/rtc.h
 #		src/main.cpp
 		src/lutils.cpp
@@ -73,8 +74,9 @@ set ( SOURCES
 		src/tibbits/i2c/accelerometer.cpp
 		src/tibbits/i2c/potentiometer.cpp
 		src/tibbits/i2c/portextender.cpp
+		src/tibbits/i2c/adc-4-20.cpp
 		src/tibbits/spi/rtc.cpp
-    )
+	)
 
 include_directories( include include/drivers )
 

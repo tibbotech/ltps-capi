@@ -18,6 +18,7 @@
 #include "tibbits/i2c/accelerometer.h"
 #include "tibbits/i2c/potentiometer.h"
 #include "tibbits/i2c/portextender.h"
+#include "tibbits/i2c/adc-4-20.h"
 
 #include "tibbits/spi/rtc.h"
 

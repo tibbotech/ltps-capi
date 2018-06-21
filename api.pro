@@ -35,6 +35,7 @@ HEADERS			+= \
 			include/tibbits/i2c/accelerometer.h \
 			include/tibbits/i2c/potentiometer.h \
 			include/tibbits/i2c/portextender.h \
+			include/tibbits/i2c/adc-4-20.h \
 			include/tibbits/spi/rtc.h
 
 SOURCES			+= \
@@ -57,4 +58,5 @@ SOURCES			+= \
 			src/tibbits/i2c/accelerometer.cpp \
 			src/tibbits/i2c/potentiometer.cpp \
 			src/tibbits/i2c/portextender.cpp \
+			src/tibbits/i2c/adc-4-20.cpp \
 			src/tibbits/spi/rtc.cpp
