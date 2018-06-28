@@ -244,6 +244,23 @@ namespace DS3234
 }
 
 /*!
+    \namespace ADS1100
+    \brief ADS1100 address for ADC 16 bit Tibbit
+*/
+
+namespace ADS1100
+{
+    static const unsigned int I2C_ADDRESS = 0x10;
+
+    static const unsigned int OUT = 0x00;
+    static const unsigned int CONF = 0x02;
+    static const unsigned int SRAM = 0x03;
+    static const unsigned int COMP = 0x06;
+
+    static const char TBTFW[] = "V1.31 2016/12/15";
+}
+
+/*!
     \namespace ADS1100R
     \brief ADS1100 address for ADC 4...20 Tibbit
 */

@@ -33,7 +33,7 @@ else( DOXYGEN_FOUND )
 endif()
 
 set ( SOURCES
-#		include/ltps.h
+		#include/ltps.h
 		include/global.h
 		include/lutils.h
 		include/drivers/cpin.h
@@ -54,8 +54,9 @@ set ( SOURCES
 		include/tibbits/i2c/potentiometer.h
 		include/tibbits/i2c/portextender.h
 		include/tibbits/i2c/adc-4-20.h
+		include/tibbits/i2c/adc-16bits.h
 		include/tibbits/spi/rtc.h
-#		src/main.cpp
+		#src/main.cpp
 		src/lutils.cpp
 		src/drivers/cpin.cpp
 		src/drivers/Ci2c.cpp
@@ -75,6 +76,7 @@ set ( SOURCES
 		src/tibbits/i2c/potentiometer.cpp
 		src/tibbits/i2c/portextender.cpp
 		src/tibbits/i2c/adc-4-20.cpp
+		src/tibbits/i2c/adc-16bits.cpp
 		src/tibbits/spi/rtc.cpp
 	)
 
@@ -100,4 +102,3 @@ install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/man/man3 DESTINATION /usr/sh
 install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html DESTINATION /usr/share/docs/ltps/capi )
 
 install( FILES LICENSE DESTINATION /usr/share/docs/ltps )
-
