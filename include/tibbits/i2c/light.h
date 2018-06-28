@@ -39,7 +39,7 @@ public:
     /// Get current illumination
     /*!
         \param socket I2C bus name (eg: s1, s15)
-        \param data LightData data struct
+        \param ill LightData data struct
     */
     void getIllumination(const char *socket, LightData &ill);
 };
